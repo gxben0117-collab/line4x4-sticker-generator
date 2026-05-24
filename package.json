@@ -1,0 +1,16 @@
+{
+  "name": "hongbing-codex-sticker-prompt-generator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static prompt generator for Hongbing LINE sticker creation prompts.",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "lint": "node scripts/lint.mjs",
+    "test": "node --test tests/*.mjs",
+    "start": "npx serve .",
+    "dev": "npx serve ."
+  },
+  "devDependencies": {
+    "serve": "^14.2.5"
+  }
+}

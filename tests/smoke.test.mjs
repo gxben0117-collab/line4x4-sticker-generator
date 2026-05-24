@@ -1,0 +1,131 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readdir, readFile } from "node:fs/promises";
+
+test("main html has expected title version", async () => {
+  const html = await readFile("index.html", "utf8");
+  assert.ok(html.includes("v2.0.8"));
+});
+
+test("page title uses new project name", async () => {
+  const html = await readFile("index.html", "utf8");
+  assert.ok(html.includes("LINE 貼圖 4×4 咒語產生器"));
+  assert.ok(!html.includes("紅兵 LINE 貼圖咒語產生器"), "old project name should not appear in title");
+});
+
+test("historical versions are preserved", async () => {
+  const files = await readdir("versions");
+  assert.ok(files.includes("紅兵LINE貼圖咒語產生器-v1.5.7.html"));
+  assert.ok(files.includes("紅兵LINE貼圖咒語產生器-v1.5.8.html"));
+  assert.ok(files.includes("紅兵LINE貼圖咒語產生器-v1.5.9.html"));
+  assert.ok(files.includes("紅兵LINE貼圖咒語產生器-v1.5.10.html"));
+  assert.ok(files.includes("紅兵LINE貼圖咒語產生器-v1.5.11.html"));
+  assert.ok(files.includes("紅兵LINE貼圖咒語產生器-v1.5.12.html"));
+  assert.ok(files.includes("紅兵LINE貼圖咒語產生器-v2.0.8.html"));
+  assert.ok(files.includes("貼圖line4x4咒語產生器-v2.0.7.html"));
+});
+
+test("build output exists after build", async () => {
+  const html = await readFile("dist/index.html", "utf8");
+  assert.ok(html.includes("v2.0.8"));
+});
+
+test("workflow shell and navigation helpers are present", async () => {
+  const html = await readFile("index.html", "utf8");
+  assert.ok(html.includes("workflow-strip"));
+  assert.ok(html.includes("jumpToSection('preset-section')"));
+  assert.ok(html.includes("jumpToSection('script-section')"));
+  assert.ok(html.includes("jumpToSection('combine-section')"));
+});
+
+test("preset and script workspace still exists", async () => {
+  const html = await readFile("index.html", "utf8");
+  assert.ok(html.includes('id="preset-section"'));
+  assert.ok(html.includes('id="preset-grid"'));
+  assert.ok(html.includes("preset-current-label"));
+  assert.ok(html.includes("script-editor-status"));
+  assert.ok(html.includes("fillScriptToSlots"));
+  assert.ok(html.includes("dedupeScriptEditor"));
+  assert.ok(html.includes("sortScriptEditor"));
+  assert.ok(html.includes("blendToneScriptEditor"));
+  assert.ok(html.includes("rebuildBalancedPack"));
+});
+
+test("v2 workspace and smart panels exist", async () => {
+  const html = await readFile("index.html", "utf8");
+  assert.ok(html.includes('id="workspaceSummary"'));
+  assert.ok(html.includes('id="templateGroupSummary"'));
+  assert.ok(html.includes('id="templateGroupPanel"'));
+  assert.ok(html.includes('id="fixSuggestionPanel"'));
+  assert.ok(html.includes('id="scriptComboPanel"'));
+  assert.ok(html.includes('id="batchOutputPanel"'));
+  assert.ok(html.includes('id="smart-workbench-section"'));
+  assert.ok(html.includes('id="workspaceModeToolbar"'));
+  assert.ok(html.includes('id="advancedSummaryBar"'));
+});
+
+test("output is locked to 4x4 only", async () => {
+  const html = await readFile("index.html", "utf8");
+  assert.ok(html.includes("4×4 固定輸出"));
+  assert.ok(html.includes("固定輸出 4×4"));
+  assert.ok(html.includes("4×4 (16 panels)"));
+  assert.ok(!html.includes("id=\"qty-1\""));
+  assert.ok(!html.includes("id=\"qty-4\""));
+  assert.ok(!html.includes("id=\"qty-9\""));
+});
+
+test("template and output logic exists", async () => {
+  const html = await readFile("index.html", "utf8");
+  assert.ok(html.includes("const templateGroups = ["));
+  assert.ok(html.includes("const characterTemplates = ["));
+  assert.ok(html.includes("const scriptQuickCombos = ["));
+  assert.ok(html.includes("function renderFixSuggestionPanel()"));
+  assert.ok(html.includes("function renderBatchOutputPanel()"));
+  assert.ok(html.includes("function applyCharacterTemplate(templateId)"));
+  assert.ok(html.includes("function setBatchMode(mode)"));
+  assert.ok(html.includes("function setWorkspaceMode(mode)"));
+  assert.ok(html.includes("function smartFillWorkspace()"));
+  assert.ok(html.includes("function persistWorkspace()"));
+  assert.ok(html.includes("function restoreWorkspace()"));
+});
+
+test("API config is correct", async () => {
+  const html = await readFile("index.html", "utf8");
+  assert.ok(html.includes("const ANTHROPIC_API_KEY"), "API key constant must exist");
+  assert.ok(html.includes("claude-sonnet-4-6"), "model ID must be current");
+  assert.ok(!html.includes("claude-sonnet-4-20250514"), "deprecated model ID must be removed");
+  assert.ok(html.includes("anthropic-version"), "anthropic-version header must be present");
+});
+
+test("workspace storage key uses new project namespace", async () => {
+  const html = await readFile("index.html", "utf8");
+  assert.ok(html.includes("line4x4-sticker-workspace"));
+  assert.ok(!html.includes("codex-sticker-workspace"), "old storage key must be gone");
+});
+
+test("AI image workflow section exists", async () => {
+  const html = await readFile("index.html", "utf8");
+  assert.ok(html.includes('id="ai-image-section"'), "AI image section must be present");
+  assert.ok(html.includes('id="ai-prompt-result"'), "AI prompt result box must be present");
+  assert.ok(html.includes('id="ai-history-grid"'), "AI history grid must be present");
+  assert.ok(html.includes("function generateAIImagePrompt()"), "generateAIImagePrompt must be present");
+  assert.ok(html.includes("function handleAIFile(file)"), "handleAIFile must be present");
+  assert.ok(html.includes("function renderAIHistory()"), "renderAIHistory must be present");
+});
+
+test("image upload dropzone is functional", async () => {
+  const html = await readFile("index.html", "utf8");
+  assert.ok(html.includes('id="dropzone"'), "character dropzone must exist");
+  assert.ok(html.includes('id="preview-wrap"'), "preview wrapper must exist");
+  assert.ok(html.includes('id="preview-img"'), "preview image must exist");
+  assert.ok(html.includes('id="file-in"'), "file input must exist");
+  assert.ok(html.includes('id="img-status"'), "img status element must exist");
+});
+
+test("cinematic hero UI is present", async () => {
+  const html = await readFile("index.html", "utf8");
+  assert.ok(html.includes("hero-particles"), "hero particles must be present");
+  assert.ok(html.includes("hero-eyebrow"), "hero eyebrow must be present");
+  assert.ok(html.includes("btn-hero"), "hero CTA button class must be present");
+  assert.ok(html.includes("hero-actions"), "hero actions container must be present");
+});
