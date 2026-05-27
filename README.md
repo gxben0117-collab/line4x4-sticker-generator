@@ -2,6 +2,12 @@
 
 單頁 `index.html` 的 LINE 貼圖咒語工作台，固定輸出 4×4（16 格），保留角色卡模板、腳本文案、批次輸出與本地保存流程，並持續以版本快照方式演進。
 
+## 🌐 線上使用
+
+**網址**: [https://gxben0117-collab.github.io/line4x4-sticker-generator/](https://gxben0117-collab.github.io/line4x4-sticker-generator/)
+
+無需安裝，直接在瀏覽器中使用！支援桌面和移動設備。
+
 ## 目前版本
 
 - 正式頁面版本：`v2.0.9`
