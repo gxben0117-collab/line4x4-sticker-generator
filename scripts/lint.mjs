@@ -2,7 +2,7 @@
 // index.html after edits. Update CURRENT_VERSION when bumping the version.
 import { readFile } from "node:fs/promises";
 
-const CURRENT_VERSION = "v2.0.8";
+const CURRENT_VERSION = "v2.0.9";
 
 const html = await readFile("index.html", "utf8");
 
@@ -43,6 +43,11 @@ const requiredSnippets = [
   "const templateGroups = [",
   "const characterTemplates = [",
   "const scriptQuickCombos = [",
+  "daily-ink-doodle",
+  "ink-doodle-daily",
+  "inkdoodle",
+  "水墨手寫",
+  "REFERENCE STYLE LOCK — INK DOODLE DAILY STICKER EXAMPLE",
   // AI image workflow
   'id="ai-image-section"',
   'id="ai-prompt-result"',

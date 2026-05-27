@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LINE 貼圖 4×4 咒語產生器 v2.0.9</title>
+<title>LINE 貼圖 4×4 咒語產生器 v2.0.8</title>
 <style>
 :root {
   --bg: #f5f5f7;
@@ -1175,7 +1175,7 @@ header h1 {
     <span></span><span></span><span></span><span></span><span></span>
     <span></span><span></span><span></span><span></span><span></span>
   </div>
-  <div class="version-badge">v2.0.9</div>
+  <div class="version-badge">v2.0.8</div>
   <p class="hero-eyebrow">Sticker Prompt Generator</p>
   <h1>LINE 貼圖 4×4 咒語產生器</h1>
   <p class="hero-sub">用快速套餐、腳本與 AI 圖片分析，直接完成可複製的貼圖設計咒語</p>
@@ -1250,7 +1250,7 @@ header h1 {
 <div class="section" id="workspace-section">
   <div class="section-header">
     <div class="section-num">0</div>
-    <div class="section-title">v2.0.9 工作台總覽</div>
+    <div class="section-title">v2.0.8 工作台總覽</div>
   </div>
   <div class="section-body">
     <div class="workspace-grid">
@@ -1677,7 +1677,7 @@ const templateGroups = [
     name: '日常主角',
     summary: '高頻日常、問候回覆、陪伴感最穩定的主力模板群。',
     recommendation: '推薦搭配 商業量產包 + 日常高頻 / 禮貌回覆 / 可愛互動。',
-    templateIds: ['daily-red', 'daily-cafe', 'daily-campus', 'daily-ink-doodle']
+    templateIds: ['daily-red', 'daily-cafe', 'daily-campus']
   },
   {
     id: 'office',
@@ -1741,17 +1741,6 @@ const characterTemplates = [
     suggestedBundle: '青春互動包',
     suggestedQuickSet: '可愛互動 16 句',
     recommendation: '適合哈哈、衝呀、來了、出發、收到、讚啦。'
-  },
-  {
-    id: 'daily-ink-doodle',
-    group: 'daily',
-    name: '水墨塗鴉日常女主',
-    character: '以上傳參考圖人物作為主角，臉部相似度約 80%，保留臉型、眼睛、眉毛、鼻唇、髮型與氣質；日系手繪插圖感，表情自然鮮明，眼神有情緒，嘴型要符合每句日常中文短語。',
-    outfit: '藍色一字領或柔軟皺褶上衣，半身構圖仍要看得到肩頸、雙手與動作，服裝細節精修但保持輕盈。',
-    imageNotes: '參考範例：4×4 共 16 格，白色極簡背景、粗黑手寫字、粉彩水墨濺色、鬆散素描線、愛心星星問號汗滴等小符號；每格都是半身表情演出與不同手勢。',
-    suggestedBundle: '水墨日常範例包',
-    suggestedQuickSet: '水墨日常 16 句',
-    recommendation: '適合把真人參考圖轉成「你好、早安、晚安、OK、謝謝、加油、拜拜」這類高頻 LINE 貼圖。'
   },
   {
     id: 'office-lead',
@@ -1916,12 +1905,6 @@ const scriptQuickCombos = [
     name: '戰鬥衝刺包',
     description: '衝刺、開戰、催進度、完成報捷的高動能組合。',
     lines: ['衝', '開打', '跟上', '頂住', '交給我', '快點', '馬上到', '先上了', '拿下', '穩了', '完成', '全開', '再一波', '別退', '出擊', '贏啦']
-  },
-  {
-    id: 'ink-doodle-daily',
-    name: '水墨日常範例包',
-    description: '依照上傳範例整理：問候、道歉、愛心、打氣、驚訝與告別，搭配粗黑手寫字與水墨濺色。',
-    lines: ['你好～', '早安', '晚安zzz', 'OK！', '謝謝你', '對不起...', '愛你', '加油!!', '哼！', '唉...', '哈哈哈～', '欸?!', '偷看', '等你喔', '努力中', '拜拜～']
   }
 ];
 
@@ -2650,7 +2633,6 @@ const presets = [
   { id:'midnight-snack', icon:'🍜', name:'深夜宵夜娘', body:'chibi', outfitCat:'現代潮流', outfitName:'韓系甜美', colors:['暖橘','奶油','深棕'], font:'迷你馬卡龍', layout:'B' },
   { id:'retro-school', icon:'🏫', name:'昭和學院少女', body:'comic', outfitCat:'JK系列', outfitName:'JK制服', colors:['午夜藍','純白','紅'], font:'台灣復古電影', layout:'A' },
   { id:'flower-immortal-east', icon:'🌺', name:'東洋花神仙女', body:'xianxia', outfitCat:'古風中式', outfitName:'花神百花', colors:['珊瑚','金','碧綠'], font:'水墨毛筆', layout:'E' },
-  { id:'ink-doodle-daily-girl', icon:'🖌️', name:'水墨手繪日常女主', body:'inkdoodle', outfitCat:'日韓系', outfitName:'韓劇現代女主', colors:['寶藍','粉','霧灰'], font:'水墨手寫', layout:'F' },
   { id:'idol-stage', icon:'🌟', name:'偶像舞台光', body:'holographic', outfitCat:'日韓系', outfitName:'韓劇現代女主', colors:['電藍','粉','銀灰'], font:'好萊塢片頭', layout:'F' },
 ];
 
@@ -2673,8 +2655,8 @@ function ensurePresetTargetCount() {
   const allOutfits = Object.entries(outfitData).flatMap(([cat, items]) =>
     items.map(item => ({ cat, name: item.name }))
   );
-  const bodyPool = ['popmart','nendo','chibi','plush','watercolor','inkdoodle','oilpaint','sketch','inkwash','comic','sticker','papercraft','enamel','embroidery','holographic','pixel','semirealistic','korean','ghibli','xianxia','dreamy','cyberpunk','beauty','kbeauty','chinese_beauty','ethereal','cinematic'];
-  const fontPool = ['泡泡字','糖果彩虹','奶油蛋糕','絨毛毛茸','果凍透明','可愛手寫','棉花糖','迷你馬卡龍','氣球膨脹','糖霜餅乾','漸層彩虹粗體','水彩暈染','水墨手寫','雲朵棉花','仙女粉塵','夢幻星空','仙女棒光跡','粉筆字','手繪粉筆彩','水墨毛筆','枯山水筆墨','狂草書法','TOP海報體','好萊塢片頭','台灣復古電影','迷因體','表情包衝擊','幹話金句體','正黑體'];
+  const bodyPool = ['popmart','nendo','chibi','plush','watercolor','oilpaint','sketch','inkwash','comic','sticker','papercraft','enamel','embroidery','holographic','pixel','semirealistic','korean','ghibli','xianxia','dreamy','cyberpunk','beauty','kbeauty','chinese_beauty','ethereal','cinematic'];
+  const fontPool = ['泡泡字','糖果彩虹','奶油蛋糕','絨毛毛茸','果凍透明','可愛手寫','棉花糖','迷你馬卡龍','氣球膨脹','糖霜餅乾','漸層彩虹粗體','水彩暈染','雲朵棉花','仙女粉塵','夢幻星空','仙女棒光跡','粉筆字','手繪粉筆彩','水墨毛筆','枯山水筆墨','狂草書法','TOP海報體','好萊塢片頭','台灣復古電影','迷因體','表情包衝擊','幹話金句體','正黑體'];
   const layoutPool = ['random','A','B','C','D','E','F','G','H'];
   const colorPalettes = [
     ['紅','黃金','黑金'], ['粉','純白','金'], ['午夜藍','銀色','粉藍'], ['黑','電藍','午夜藍'],
@@ -2844,7 +2826,7 @@ const bodyRatioData = {
 };
 const styleDefaultRatio = {
   popmart:'q25', nendo:'q2', chibi:'q4', plush:'mascot',
-  sticker:'q25', inkdoodle:'manga6', papercraft:'q25', enamel:'q25', embroidery:'q25', holographic:'q25', pixel:'q25',
+  sticker:'q25', papercraft:'q25', enamel:'q25', embroidery:'q25', holographic:'q25', pixel:'q25',
   semirealistic:'manga6', korean:'korean75', photo:'real8', beauty:'real8', kbeauty:'korean75',
   chinese_beauty:'real8', ethereal:'real8', cinematic:'real8'
 };
@@ -2857,7 +2839,6 @@ const bodyList = [
   {key:'plush',      cat:'Q版玩具', name:'毛絨玩具',   desc:'毛茸茸布偶'},
   // 插畫藝術
   {key:'watercolor', cat:'插畫藝術', name:'水彩插畫',   desc:'水彩暈染'},
-  {key:'inkdoodle',  cat:'插畫藝術', name:'水墨塗鴉',   desc:'手繪水墨'},
   {key:'oilpaint',   cat:'插畫藝術', name:'油畫厚塗',   desc:'厚重油畫'},
   {key:'crayon',     cat:'插畫藝術', name:'蠟筆塗鴉',   desc:'兒童塗鴉風'},
   {key:'sketch',     cat:'插畫藝術', name:'鉛筆素描',   desc:'手繪線條'},
@@ -2976,7 +2957,6 @@ const bodyData = {
   semirealistic: `## BODY STYLE\nSemi-realistic anime style, detailed refined facial features, soft anime shading, Korean webtoon manhwa aesthetic, natural proportions`,
   plush:   `## BODY STYLE\nPlush stuffed toy style, soft fluffy fabric texture, round soft proportions, visible fabric seam details, cozy handmade doll feel`,
   watercolor: `## BODY STYLE\nWatercolor illustration style, soft paint wash texture, loose artistic brushwork, bleeding color edges, hand-painted feel`,
-  inkdoodle: `## BODY STYLE\nJapanese hand-drawn ink doodle sticker illustration, loose sketch linework, expressive ink splash brush strokes, pastel watercolor washes mixed with black ink tones, manga draft texture, refined face and hair detail, cute dynamic half-body poses`,
   oilpaint: `## BODY STYLE\nOil painting thick impasto style, heavy textured brushstrokes, rich layered color depth, fine art painting aesthetic`,
   pixel:   `## BODY STYLE\n8-bit pixel art style, retro video game character, blocky pixel grid, arcade game aesthetic, crisp pixel edges`,
   papercraft: `## BODY STYLE\n3D paper craft style, layered paper cut art, dimensional paper sculpture, soft paper texture, handmade paper art`,
@@ -3516,7 +3496,6 @@ const fontList = [
   {n:'糖霜餅乾',c:'可愛系',p:'royal icing cookie decoration font, piped sugar icing texture, pastel frosting colors, soft white outline, bakery cookie art feel'},
   {n:'漸層彩虹粗體',c:'可愛系',p:'bold chunky font with smooth rainbow gradient fill, hot pink to purple to blue gradient, thick white stroke outline, modern cute style, high contrast'},
   {n:'水彩暈染',c:'夢幻系',p:'watercolor wash font, soft bleeding watercolor texture, pastel rainbow color mix, wet paint spread edges, gentle artistic feel'},
-  {n:'水墨手寫',c:'毛筆系',p:'cute expressive handwritten Traditional Chinese brush font, bold black ink strokes, casual doodle rhythm, visible wet ink splash and dry-brush edges, pastel watercolor accents around the letters, playful but highly readable'},
   {n:'雲朵棉花',c:'夢幻系',p:'dreamy cloud font, soft fluffy cloud texture on letters, sky blue and white, heavenly floating gentle feel'},
   {n:'仙女粉塵',c:'夢幻系',p:'fairy dust magical font, sparkling glitter particles around letters, pastel pink and purple base, enchanted magical soft glow'},
   {n:'夢幻星空',c:'夢幻系',p:'dreamy starry font, deep purple letters with stars and glitter fill, soft shimmer, magical night sky feel'},
@@ -4129,7 +4108,6 @@ function guessPresetForTemplate(template) {
   if (!template) return null;
   const rules = [
     { ids: ['daily-red','daily-cafe','daily-campus'], presetIds: ['korean','flower','lolita'] },
-    { ids: ['daily-ink-doodle'], presetIds: ['ink-doodle-daily-girl'] },
     { ids: ['office-lead','office-support','office-creator'], presetIds: ['office'] },
     { ids: ['healing-soft','healing-bedtime','healing-pet'], presetIds: ['nurse','flower','korean'] },
     { ids: ['festival-lucky','festival-newyear','festival-party'], presetIds: ['halloween','dragon-boat'] },
@@ -4147,7 +4125,6 @@ function guessComboForTemplate(template) {
     item.name.includes(quickSet.slice(0, 2)) ||
     quickSet.includes(item.name.slice(0, 2))
   ) || scriptQuickCombos.find(item => {
-    if (template.id === 'daily-ink-doodle') return item.id === 'ink-doodle-daily';
     if (template.group === 'daily') return item.id === 'daily-balance';
     if (template.group === 'office') return item.id === 'office-rush';
     if (template.group === 'healing') return item.id === 'healing-mix';
@@ -4297,27 +4274,6 @@ function applyCharacterTemplate(templateId) {
       const idx = presetColors.findIndex(item => item.name === color);
       if (idx >= 0) toggleColor(idx);
     });
-  }
-  if (template.id === 'daily-ink-doodle') {
-    state.bodyRatio = 'manga6';
-    state.bgStyle = 'white';
-    state.beautyFilter = true;
-    state.outfitRef = true;
-    state.outfitAI = false;
-    state.outfitSelections = [];
-    selectBody('inkdoodle');
-    selectFont('水墨手寫');
-    selectLayout('F');
-    selectBeauty('on');
-    ['q15','q2','q25','q3','q4','mascot','fashion','manga6','korean75','real8'].forEach(k => {
-      document.getElementById('ratio-'+k)?.classList.toggle('active', k === 'manga6');
-    });
-    ['white','ai'].forEach(k => document.getElementById('bg-'+k)?.classList.toggle('active', k === 'white'));
-    document.getElementById('out-img-mode')?.classList.add('active');
-    document.getElementById('out-manual-mode')?.classList.remove('active');
-    document.getElementById('out-ai-mode')?.classList.remove('active');
-    document.getElementById('outfit-manual') && (document.getElementById('outfit-manual').style.display = 'none');
-    document.getElementById('outfit-display') && (document.getElementById('outfit-display').style.display = 'none');
   }
   const combo = guessComboForTemplate(template);
   if (combo) {
@@ -4666,7 +4622,6 @@ Facial identity must remain stable and recognizable in every single sticker pane
   // Quality base — always included
   // 根據風格分流：Q版 or 寫實
   const isReal = realStyleKeys.includes(state.bodyStyle) || ['manga6','korean75','real8'].includes(state.bodyRatio);
-  const isInkDoodleExample = state.bodyStyle === 'inkdoodle' || state.currentTemplateId === 'daily-ink-doodle';
 
   if (isReal) {
     parts.push(`## RENDER QUALITY — REALISTIC / SEMI-REALISTIC BASE
@@ -4707,18 +4662,6 @@ NOT flat cartoon,
 NOT cheap anime style,
 NOT low-detail mascot style,
 NOT toddler-like proportions`);
-  }
-
-  if (isInkDoodleExample) {
-    parts.push(`## REFERENCE STYLE LOCK — INK DOODLE DAILY STICKER EXAMPLE
-Create one 4x4 LINE sticker illustration sheet inspired by the uploaded example.
-The main character should keep about 80% facial similarity to the uploaded reference image.
-Use Japanese hand-drawn illustration style with vivid character features, natural facial expressions, expressive eyes, and mouth shapes matching each daily phrase.
-Use cute dynamic half-body compositions: shoulders, hands, and upper body gestures must be visible and emotionally readable in every panel.
-Art style: hand-drawn doodle style, ink splash brush strokes, loose sketch lines, pastel color washes mixed with black ink tones, manga draft texture, clean minimal white background.
-Add symbolic decorative elements around the character to enhance each mood: hearts, stars, sun, moon, sleepy marks, sweat drops, question marks, exclamation marks, motion lines, and small ink splashes.
-Text style: daily Traditional Chinese phrases, cute handwritten brush style, bold black ink with pastel ink-splash accents, readable and matched to the character pose.
-Keep the character dominant, high detail, high quality, refined hair, face, outfit folds, and expression in every sticker.`);
   }
 
   // body
@@ -4885,8 +4828,8 @@ no outfit changes between panels, no identity drift, no face inconsistency
 no extra limbs, no extra fingers, no distorted anatomy, no broken hands
 no chibi proportions, no big head small body, no Q-version deformation
 no flat cartoon style, no anime over-simplification
-${isInkDoodleExample ? 'no full-body requirement for this ink doodle example, half-body framing is allowed and preferred' : 'no cropped character, no incomplete body, no floating body parts'}
-${isInkDoodleExample ? 'no tiny full-body character, no stiff passport portrait, no emotionless bust-only headshot' : 'no portrait framing, no waist-up crop, no cut-off legs, no missing feet, no bust-only shot'}
+no cropped character, no incomplete body, no floating body parts
+no portrait framing, no waist-up crop, no cut-off legs, no missing feet, no bust-only shot
 no watermark, no signature, no copyright logo
 no dark dirty background outside panels
 no inconsistent rendering quality between panels
@@ -4902,8 +4845,8 @@ no duplicated poses, no repeated composition
 no outfit changes between panels, no identity drift, no face inconsistency
 no extra limbs, no extra fingers, no distorted anatomy, no broken hands
 no toddler face, no chubby baby face, no flat cheap cartoon style
-${isInkDoodleExample ? 'no full-body requirement for this ink doodle example, half-body framing is allowed and preferred' : 'no cropped character, no incomplete body, no floating body parts'}
-${isInkDoodleExample ? 'no tiny full-body character, no stiff passport portrait, no emotionless bust-only headshot' : 'no portrait framing, no waist-up crop, no cut-off legs, no missing feet, no bust-only shot'}
+no cropped character, no incomplete body, no floating body parts
+no portrait framing, no waist-up crop, no cut-off legs, no missing feet, no bust-only shot
 no watermark, no signature, no copyright logo
 no dark dirty background outside panels
 no inconsistent rendering quality between panels

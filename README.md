@@ -4,16 +4,16 @@
 
 ## 目前版本
 
-- 正式頁面版本：`v2.0.8`
-- 最新快照：`versions/貼圖line4x4咒語產生器-v2.0.7.html`
-- 文件版號：`V2.08`
+- 正式頁面版本：`v2.0.9`
+- 最新快照：`versions/貼圖line4x4咒語產生器-v2.0.8.html`
+- 文件版號：`V2.09`
 
 ## 功能摘要
 
 - 快速套餐一鍵帶入角色、服裝、配色、字體與構圖
 - 圖片上傳自動分析五官（需填入 `ANTHROPIC_API_KEY`）
 - 腳本分類選取、補滿、去重、排序、語氣平衡
-- 角色卡模板群組（日常 / 職場 / 療癒 / 節慶 / 戰鬥）
+- 角色卡模板群組（日常 / 職場 / 療癒 / 節慶 / 戰鬥），含水墨手繪日常範例
 - 批次輸出：完整 Prompt、精簡 Prompt、JSON
 - 精簡模式 / 進階模式切換
 - 工作台本地自動保存與還原（localStorage）
@@ -29,7 +29,7 @@ scripts/
   build.mjs         複製 index.html → dist/
   lint.mjs          結構快速檢查（版本、函式、UI 節點）
 tests/
-  smoke.test.mjs    11 項 smoke test
+  smoke.test.mjs    15 項 smoke test
 docs/
   README.md         文件索引
   版本規則.md        版本升級流程

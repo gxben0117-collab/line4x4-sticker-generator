@@ -4,7 +4,7 @@ import { readdir, readFile } from "node:fs/promises";
 
 test("main html has expected title version", async () => {
   const html = await readFile("index.html", "utf8");
-  assert.ok(html.includes("v2.0.8"));
+  assert.ok(html.includes("v2.0.9"));
 });
 
 test("page title uses new project name", async () => {
@@ -23,11 +23,12 @@ test("historical versions are preserved", async () => {
   assert.ok(files.includes("紅兵LINE貼圖咒語產生器-v1.5.12.html"));
   assert.ok(files.includes("紅兵LINE貼圖咒語產生器-v2.0.8.html"));
   assert.ok(files.includes("貼圖line4x4咒語產生器-v2.0.7.html"));
+  assert.ok(files.includes("貼圖line4x4咒語產生器-v2.0.8.html"));
 });
 
 test("build output exists after build", async () => {
   const html = await readFile("dist/index.html", "utf8");
-  assert.ok(html.includes("v2.0.8"));
+  assert.ok(html.includes("v2.0.9"));
 });
 
 test("workflow shell and navigation helpers are present", async () => {
@@ -128,4 +129,14 @@ test("cinematic hero UI is present", async () => {
   assert.ok(html.includes("hero-eyebrow"), "hero eyebrow must be present");
   assert.ok(html.includes("btn-hero"), "hero CTA button class must be present");
   assert.ok(html.includes("hero-actions"), "hero actions container must be present");
+});
+
+test("ink doodle daily example preset is available", async () => {
+  const html = await readFile("index.html", "utf8");
+  assert.ok(html.includes("daily-ink-doodle"));
+  assert.ok(html.includes("ink-doodle-daily"));
+  assert.ok(html.includes("ink-doodle-daily-girl"));
+  assert.ok(html.includes("水墨手寫"));
+  assert.ok(html.includes("REFERENCE STYLE LOCK — INK DOODLE DAILY STICKER EXAMPLE"));
+  assert.ok(html.includes("The main character should keep about 80% facial similarity"));
 });
