@@ -205,6 +205,16 @@ textarea { resize: vertical; min-height: 120px; }
     <div class="section-title">🎨 步驟 2：風格設定</div>
     <div class="input-grid">
       <div class="form-group">
+        <label class="form-label">人物風格化</label>
+        <select id="characterStyle">
+          <option value="q-version">Q 版化（大頭身、圓潤可愛）</option>
+          <option value="cute">可愛化（萌系、甜美風格）</option>
+          <option value="korean">韓風化（韓系美妝、時尚感）</option>
+          <option value="chibi">迷你化（2-3 頭身、超萌）</option>
+          <option value="original">保持原樣（不特別風格化）</option>
+        </select>
+      </div>
+      <div class="form-group">
         <label class="form-label">畫風</label>
         <select id="style">
           <option value="cute">可愛 Q 版</option>
@@ -409,6 +419,14 @@ function generatePrompt() {
   const lines = text.split('\n').filter(l => l.trim());
   if (lines.length !== 16) { alert('需要 16 句文字（目前：' + lines.length + '）'); return; }
 
+  const characterStyleMap = {
+    'q-version': 'Q 版化：2.5-3 頭身比例，大頭大眼，圓潤身形，四肢短小可愛',
+    'cute': '可愛化：萌系風格，大眼睛，腮紅，甜美表情，柔和線條',
+    'korean': '韓風化：韓系美妝風格，精緻五官，時尚穿搭，清新氣質',
+    'chibi': '迷你化：2 頭身超萌比例，極度簡化，圓滾滾身形',
+    'original': '保持原樣：依照原始描述，不特別風格化'
+  };
+
   const styleMap = {
     cute: 'Q 版可愛風格，大眼睛，圓潤身形',
     realistic: '寫實風格，自然比例，細緻五官',
@@ -427,10 +445,15 @@ function generatePrompt() {
     char = `${document.getElementById('face').value}、${document.getElementById('eyes').value}、${document.getElementById('hair').value}、${document.getElementById('hairColor').value}頭髮、穿著${document.getElementById('clothing').value}${document.getElementById('accessories').value ? '、' + document.getElementById('accessories').value : ''}`;
   }
 
+  const characterStyle = document.getElementById('characterStyle').value;
+
   const prompt = `## LINE 貼圖生成咒語
 
 ### 角色設定
 ${char}
+
+### 人物風格化
+${characterStyleMap[characterStyle]}
 
 ### 畫風
 ${styleMap[document.getElementById('style').value]}
