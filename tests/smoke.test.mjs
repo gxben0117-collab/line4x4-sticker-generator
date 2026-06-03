@@ -4,7 +4,7 @@ import { readdir, readFile } from "node:fs/promises";
 
 test("main html has expected title version", async () => {
   const html = await readFile("index.html", "utf8");
-  assert.ok(html.includes("v2.0.9"));
+  assert.ok(html.includes("v2.2.0"));
 });
 
 test("page title uses new project name", async () => {
@@ -28,22 +28,20 @@ test("historical versions are preserved", async () => {
 
 test("build output exists after build", async () => {
   const html = await readFile("dist/index.html", "utf8");
-  assert.ok(html.includes("v2.0.9"));
+  assert.ok(html.includes("v2.2.0"));
 });
 
 test("workflow shell and navigation helpers are present", async () => {
   const html = await readFile("index.html", "utf8");
   assert.ok(html.includes("workflow-strip"));
-  assert.ok(html.includes("jumpToSection('preset-section')"));
   assert.ok(html.includes("jumpToSection('script-section')"));
   assert.ok(html.includes("jumpToSection('combine-section')"));
 });
 
 test("preset and script workspace still exists", async () => {
   const html = await readFile("index.html", "utf8");
-  assert.ok(html.includes('id="preset-section"'));
-  assert.ok(html.includes('id="preset-grid"'));
-  assert.ok(html.includes("preset-current-label"));
+  assert.ok(html.includes('id="script-section"'));
+  assert.ok(html.includes('id="script-edit-area"'));
   assert.ok(html.includes("script-editor-status"));
   assert.ok(html.includes("fillScriptToSlots"));
   assert.ok(html.includes("dedupeScriptEditor"));
@@ -52,17 +50,13 @@ test("preset and script workspace still exists", async () => {
   assert.ok(html.includes("rebuildBalancedPack"));
 });
 
-test("v2 workspace and smart panels exist", async () => {
+test("script editor UI is optimized for 4x4 production", async () => {
   const html = await readFile("index.html", "utf8");
-  assert.ok(html.includes('id="workspaceSummary"'));
-  assert.ok(html.includes('id="templateGroupSummary"'));
-  assert.ok(html.includes('id="templateGroupPanel"'));
-  assert.ok(html.includes('id="fixSuggestionPanel"'));
-  assert.ok(html.includes('id="scriptComboPanel"'));
-  assert.ok(html.includes('id="batchOutputPanel"'));
-  assert.ok(html.includes('id="smart-workbench-section"'));
-  assert.ok(html.includes('id="workspaceModeToolbar"'));
-  assert.ok(html.includes('id="advancedSummaryBar"'));
+  assert.ok(html.includes("script-workflow"));
+  assert.ok(html.includes("一行一張貼圖"));
+  assert.ok(html.includes("補滿 16 句"));
+  assert.ok(html.includes('id="copy-script-btn"'));
+  assert.ok(html.includes("copyToClipboard(ta.value.trim(), document.getElementById('copy-script-btn'))"));
 });
 
 test("output is locked to 4x4 only", async () => {
@@ -80,12 +74,9 @@ test("template and output logic exists", async () => {
   assert.ok(html.includes("const templateGroups = ["));
   assert.ok(html.includes("const characterTemplates = ["));
   assert.ok(html.includes("const scriptQuickCombos = ["));
-  assert.ok(html.includes("function renderFixSuggestionPanel()"));
-  assert.ok(html.includes("function renderBatchOutputPanel()"));
   assert.ok(html.includes("function applyCharacterTemplate(templateId)"));
-  assert.ok(html.includes("function setBatchMode(mode)"));
-  assert.ok(html.includes("function setWorkspaceMode(mode)"));
-  assert.ok(html.includes("function smartFillWorkspace()"));
+  assert.ok(html.includes("function fillScriptToSlots()"));
+  assert.ok(html.includes("function copyScriptEditor()"));
   assert.ok(html.includes("function persistWorkspace()"));
   assert.ok(html.includes("function restoreWorkspace()"));
 });
@@ -104,14 +95,12 @@ test("workspace storage key uses new project namespace", async () => {
   assert.ok(!html.includes("codex-sticker-workspace"), "old storage key must be gone");
 });
 
-test("AI image workflow section exists", async () => {
+test("script output rules keep text usable for sticker generation", async () => {
   const html = await readFile("index.html", "utf8");
-  assert.ok(html.includes('id="ai-image-section"'), "AI image section must be present");
-  assert.ok(html.includes('id="ai-prompt-result"'), "AI prompt result box must be present");
-  assert.ok(html.includes('id="ai-history-grid"'), "AI history grid must be present");
-  assert.ok(html.includes("function generateAIImagePrompt()"), "generateAIImagePrompt must be present");
-  assert.ok(html.includes("function handleAIFile(file)"), "handleAIFile must be present");
-  assert.ok(html.includes("function renderAIHistory()"), "renderAIHistory must be present");
+  assert.ok(html.includes("Exact text"), "panel text must be exact");
+  assert.ok(html.includes("Map the script line-by-line"), "script must map line by line");
+  assert.ok(html.includes("Do NOT merge, swap, summarize, translate, or add extra text"));
+  assert.ok(html.includes("DO NOT place text over the face"));
 });
 
 test("image upload dropzone is functional", async () => {

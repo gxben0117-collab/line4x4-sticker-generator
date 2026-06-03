@@ -458,6 +458,15 @@ header::after {
 .script-layout { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(320px,0.8fr); }
 .script-pane { border-right:1px solid var(--border); padding:12px; min-height:560px; }
 .script-editor-pane { display:flex; flex-direction:column; padding:12px; gap:8px; }
+.script-workflow { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:8px; margin-bottom:10px; }
+.script-step { border:1px solid var(--border); border-radius:var(--radius); padding:8px 10px; background:var(--surface); }
+.script-step b { display:block; font-size:12px; color:var(--text); margin-bottom:2px; }
+.script-step span { display:block; font-size:11px; color:var(--text-hint); line-height:1.45; }
+.script-editor-head { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.script-editor-actions { display:grid; grid-template-columns:1.2fr 1fr; gap:8px; }
+.script-editor-actions button { min-width:0; }
+.script-primary-action { background:var(--accent); color:#fff; border-color:var(--accent); font-weight:700; }
+.script-primary-action:hover { background:var(--accent-dark); color:#fff; }
 .editor-toolbar { display:flex; flex-wrap:wrap; gap:6px; justify-content:flex-end; }
 .editor-sticky { position:sticky; top:12px; align-self:start; }
 .editor-note { font-size:11px; color:var(--text-hint); line-height:1.6; }
@@ -483,6 +492,10 @@ header::after {
 .outfit-tag { font-size:11px; padding:4px 12px; border-radius:999px; background:var(--accent); color:#fff; display:flex; align-items:center; gap:5px; font-weight:500; }
 .outfit-tag .rm { cursor:pointer; opacity:0.7; }
 .outfit-tag .rm:hover { opacity:1; }
+@media (max-width: 860px) {
+  .script-workflow { grid-template-columns:1fr; }
+  .script-editor-actions { grid-template-columns:1fr; }
+}
 
 /* ── OUTPUT ── */
 .output-box {
@@ -1164,6 +1177,11 @@ header h1 {
   <div class="version-badge">v2.2.0</div>
   <h1>LINE 貼圖 4×4 咒語產生器</h1>
   <p class="hero-sub">填寫角色、造型與腳本，複製咒語貼到 ChatGPT</p>
+  <div class="quick-nav">
+    <button onclick="jumpToSection('char-section')">角色</button>
+    <button onclick="jumpToSection('script-section')">文字腳本</button>
+    <button onclick="jumpToSection('combine-section')">複製咒語</button>
+  </div>
 </header>
 
 
@@ -1181,7 +1199,7 @@ header h1 {
     </div>
     <div id="char-img-panel">
       <input type="file" id="file-in" accept="image/*" style="display:none" onchange="handleFile(this.files[0])">
-      <button onclick="document.getElementById('file-in').click()" style="width:100%;padding:14px;font-size:14px;margin-bottom:8px;border:2px dashed var(--border);background:var(--bg);border-radius:var(--radius);cursor:pointer;">📸 點擊上傳人物圖片</button>
+      <button id="dropzone" onclick="document.getElementById('file-in').click()" style="width:100%;padding:14px;font-size:14px;margin-bottom:8px;border:2px dashed var(--border);background:var(--bg);border-radius:var(--radius);cursor:pointer;">📸 點擊上傳人物圖片</button>
       <p style="font-size:11px;color:var(--text-hint);margin-bottom:10px;">支援 JPG · PNG · WebP — 上傳後請在 ChatGPT 同時貼上圖片與咒語</p>
       <div id="preview-wrap" style="display:none;">
         <img id="preview-img" alt="角色預覽">
@@ -1274,14 +1292,23 @@ header h1 {
         <div class="script-items" id="script-items" style="display:grid;grid-template-columns:1fr;gap:5px;"></div>
       </div>
       <div style="display:flex;flex-direction:column;padding:10px;gap:6px;position:sticky;top:12px;align-self:start;">
-        <div style="display:flex;align-items:center;justify-content:space-between;">
-          <span style="font-size:11px;color:var(--text-hint);">已選腳本（可直接編輯）</span>
+        <div class="script-workflow">
+          <div class="script-step"><b>1. 選分類</b><span>左側點句子，或隨機本分類。</span></div>
+          <div class="script-step"><b>2. 補滿 16 句</b><span>一行一張貼圖，少句就按補滿。</span></div>
+          <div class="script-step"><b>3. 複製出圖</b><span>先複製腳本檢查，再組合完整咒語。</span></div>
+        </div>
+        <div class="script-editor-head">
+          <span style="font-size:11px;color:var(--text-hint);">已選腳本（一行一張，可直接改字）</span>
           <span class="script-counter" style="margin:0;">已選 <span id="sel-count">0</span> / <span id="total-slots">16</span> 格</span>
         </div>
         <div class="script-editor-status" id="script-editor-status">尚未補滿腳本格數</div>
-        <textarea id="script-edit-area" placeholder="點選左側腳本後出現在這裡，可直接修改..." style="height:320px;font-size:13px;line-height:1.9;resize:vertical;" oninput="syncScriptFromTextarea()"></textarea>
+        <textarea id="script-edit-area" placeholder="一行一張貼圖，例如：&#10;早安&#10;收到&#10;辛苦了&#10;晚安" style="height:320px;font-size:13px;line-height:1.9;resize:vertical;" oninput="syncScriptFromTextarea()"></textarea>
+        <div class="script-editor-help">建議短句 2-6 字最穩；純表情可寫「無文字：開心揮手」，輸出時會轉成無字表情貼圖。</div>
+        <div class="script-editor-actions">
+          <button class="script-primary-action" onclick="fillScriptToSlots()">補滿 16 句</button>
+          <button id="copy-script-btn" onclick="copyScriptEditor()">複製腳本</button>
+        </div>
         <div class="tool-row">
-          <button onclick="fillScriptToSlots()">補滿格數</button>
           <button onclick="dedupeScriptEditor()">智能去重</button>
           <button onclick="sortScriptEditor()">智能排序</button>
         </div>
@@ -1290,7 +1317,6 @@ header h1 {
           <button onclick="rebuildBalancedPack()">重建 16 句平衡包</button>
         </div>
         <div class="tool-row">
-          <button onclick="copyScriptEditor()">複製腳本</button>
           <button onclick="clearScriptEditor()">清空腳本</button>
         </div>
       </div>
@@ -4521,13 +4547,16 @@ NOT over-filtered or uncanny — naturally beautiful and attractive refinement o
       if (isSilent) {
         lines.push(`Panel ${i+1}: NO TEXT. Visual emotion/pose: 「${v}」. Mood: ${detail.mood}. Action: ${detail.action}. Scene use: ${detail.scene}. ABSOLUTELY NO TEXT in this panel, zero words, pure visual expression only.`);
       } else {
-        lines.push(`Panel ${i+1}: Text 「${v}」. Mood: ${detail.mood}. Character action: ${detail.action}. Chat context: ${detail.scene}. Make the text readable, but make the character performance carry the emotion.`);
+        lines.push(`Panel ${i+1}: Exact text 「${v}」. Use this phrase exactly as written, no rewriting, no extra words. Mood: ${detail.mood}. Character action: ${detail.action}. Chat context: ${detail.scene}. Make the text readable, but make the character performance carry the emotion.`);
       }
     });
     lines.push('', '## SCRIPT RULES');
+    lines.push('Map the script line-by-line: Panel 1 uses line 1, Panel 2 uses line 2, and so on.');
+    lines.push('Do NOT merge, swap, summarize, translate, or add extra text beyond the listed phrase for each panel.');
     lines.push('Every panel must have a DIFFERENT pose, expression, and gesture — NO repeated poses.');
     lines.push('Text: Traditional Chinese only (繁體中文) — stroke-perfect, immediately readable.');
-    lines.push('Text occupies max 40% panel area — character remains dominant visual element.');
+    lines.push('Place each phrase inside its own panel only; text must never spill into another panel.');
+    lines.push('Text occupies max 35% panel area and must not cover the face, hands, or key gesture — character remains dominant visual element.');
     parts.push(lines.join('\n'));
   }
 
@@ -4540,6 +4569,8 @@ character must remain the DOMINANT visual element occupying at least 50% of the 
 text is a SUPPORTING element — complement the character, NOT overpower or hide it,
 reduce font size by 4 levels compared to default — smaller, more refined, more balanced,
 DO NOT let text cover or crowd the character,
+DO NOT place text over the face, eyes, mouth, hands, or main gesture,
+each panel text must stay inside that panel only, with clear padding from borders and gutters,
 DO NOT make text the dominant element,
 ideal ratio: character 55% visual weight, text 35% visual weight, decoration 10%
 
@@ -4769,7 +4800,7 @@ function clearScriptEditor() {
 function copyScriptEditor() {
   const ta = document.getElementById('script-edit-area');
   if (!ta) return;
-  copyToClipboard(ta.value.trim(), ta);
+  copyToClipboard(ta.value.trim(), document.getElementById('copy-script-btn'));
 }
 
 function fillScriptToSlots() {

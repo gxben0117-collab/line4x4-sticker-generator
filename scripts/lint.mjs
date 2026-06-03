@@ -2,7 +2,7 @@
 // index.html after edits. Update CURRENT_VERSION when bumping the version.
 import { readFile } from "node:fs/promises";
 
-const CURRENT_VERSION = "v2.0.9";
+const CURRENT_VERSION = "v2.2.0";
 
 const html = await readFile("index.html", "utf8");
 
@@ -15,28 +15,26 @@ const requiredSnippets = [
   "claude-sonnet-4-6",
   // Workspace
   "line4x4-sticker-workspace",
-  // UI panels
-  'id="workspaceSummary"',
-  'id="templateGroupSummary"',
-  'id="templateGroupPanel"',
-  'id="fixSuggestionPanel"',
-  'id="scriptComboPanel"',
-  'id="batchOutputPanel"',
-  'id="smart-workbench-section"',
-  'id="workspaceModeToolbar"',
-  'id="advancedSummaryBar"',
+  // Simple production UI
+  'id="char-section"',
+  'id="dropzone"',
+  'id="script-section"',
+  'id="script-edit-area"',
+  'id="script-editor-status"',
+  'id="copy-script-btn"',
+  "script-workflow",
   // Core rules
   "4×4 固定輸出",
-  "全部都要模式",
+  "一行一張貼圖",
+  "補滿 16 句",
   // Core functions
-  "function renderFixSuggestionPanel()",
-  "function renderBatchOutputPanel()",
   "function applyCharacterTemplate(templateId)",
   "function blendToneScriptEditor()",
   "function rebuildBalancedPack()",
-  "function setBatchMode(mode)",
-  "function setWorkspaceMode(mode)",
-  "function smartFillWorkspace()",
+  "function copyScriptEditor()",
+  "function fillScriptToSlots()",
+  "function dedupeScriptEditor()",
+  "function sortScriptEditor()",
   "function persistWorkspace()",
   "function restoreWorkspace()",
   // Data constants
@@ -48,12 +46,10 @@ const requiredSnippets = [
   "inkdoodle",
   "水墨手寫",
   "REFERENCE STYLE LOCK — INK DOODLE DAILY STICKER EXAMPLE",
-  // AI image workflow
-  'id="ai-image-section"',
-  'id="ai-prompt-result"',
-  "function generateAIImagePrompt()",
-  "function handleAIFile(file)",
-  "function renderAIHistory()",
+  // Output rules
+  "Exact text",
+  "Map the script line-by-line",
+  "DO NOT place text over the face",
   // Hero UI elements
   "hero-particles",
   "hero-eyebrow",
