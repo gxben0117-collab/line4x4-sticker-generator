@@ -2,7 +2,7 @@
 // index.html after edits. Update CURRENT_VERSION when bumping the version.
 import { readFile } from "node:fs/promises";
 
-const CURRENT_VERSION = "v2.3.0";
+const CURRENT_VERSION = "v2.4.0";
 
 const html = await readFile("index.html", "utf8");
 
