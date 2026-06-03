@@ -4,7 +4,7 @@ import { readdir, readFile } from "node:fs/promises";
 
 test("main html has expected title version", async () => {
   const html = await readFile("index.html", "utf8");
-  assert.ok(html.includes("v2.2.0"));
+  assert.ok(html.includes("v2.3.0"));
 });
 
 test("page title uses new project name", async () => {
@@ -28,7 +28,7 @@ test("historical versions are preserved", async () => {
 
 test("build output exists after build", async () => {
   const html = await readFile("dist/index.html", "utf8");
-  assert.ok(html.includes("v2.2.0"));
+  assert.ok(html.includes("v2.3.0"));
 });
 
 test("workflow shell and navigation helpers are present", async () => {
@@ -74,6 +74,10 @@ test("template and output logic exists", async () => {
   assert.ok(html.includes("const templateGroups = ["));
   assert.ok(html.includes("const characterTemplates = ["));
   assert.ok(html.includes("const scriptQuickCombos = ["));
+  assert.ok(html.includes("'daily-life-1'"), "daily-life-1 combo must exist");
+  assert.ok(html.includes("'daily-life-2'"), "daily-life-2 combo must exist");
+  assert.ok(html.includes("'daily-life-3'"), "daily-life-3 combo must exist");
+  assert.ok(html.includes("id === 'daily-life-1'"), "default combo preset must apply daily-life-1");
   assert.ok(html.includes("function applyCharacterTemplate(templateId)"));
   assert.ok(html.includes("function fillScriptToSlots()"));
   assert.ok(html.includes("function copyScriptEditor()"));
