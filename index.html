@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LINE 貼圖 4×4 咒語產生器 v2.4.0</title>
+<title>LINE 貼圖 4×4 咒語產生器 v2.5.0</title>
 <style>
 :root {
   --bg: #f5f5f7;
@@ -1174,13 +1174,14 @@ header h1 {
 <body>
 <div class="page">
 <header>
-  <div class="version-badge">v2.4.0</div>
+  <div class="version-badge">v2.5.0</div>
   <h1>LINE 貼圖 4×4 咒語產生器</h1>
   <p class="hero-sub">填寫角色、造型與腳本，複製咒語貼到 ChatGPT</p>
   <div class="quick-nav">
-    <button onclick="jumpToSection('char-section')">角色</button>
-    <button onclick="jumpToSection('script-section')">文字腳本</button>
-    <button onclick="jumpToSection('combine-section')">複製咒語</button>
+    <button onclick="jumpToSection('char-section')">① 角色</button>
+    <button onclick="jumpToSection('style-section')">② 造型</button>
+    <button onclick="jumpToSection('script-section')">③ 腳本</button>
+    <button onclick="jumpToSection('combine-section')">✦ 複製咒語</button>
   </div>
 </header>
 
@@ -1223,7 +1224,7 @@ header h1 {
 </div>
 
 <!-- ② 人物造型 -->
-<div class="section">
+<div class="section" id="style-section">
   <div class="section-header">
     <div class="section-num">2</div>
     <div class="section-title">人物造型</div>
@@ -1241,16 +1242,12 @@ header h1 {
   <div class="section-header">
     <div class="section-num">3</div>
     <div class="section-title">貼圖數量 <span style="font-size:11px;font-weight:400;color:var(--text-muted);margin-left:6px;">固定輸出 4×4</span></div>
-  </div>
-  <div class="section-body">
-    <div class="check-list col1">
-      <div class="c-item active" id="qty-16"><div class="c-check">✓</div><div class="c-body"><div class="c-name">4×4 固定輸出</div><div class="c-desc">16 格貼圖，目前工作台僅輸出此尺寸</div></div></div>
-    </div>
+    <span style="font-size:12px;font-weight:500;color:var(--text-muted);margin-left:auto;padding-right:1.25rem;">4×4 固定輸出 — 16 格</span>
   </div>
 </div>
 
 <!-- ④ 風格設定 -->
-<div class="section">
+<div class="section" id="font-section">
   <div class="section-header">
     <div class="section-num">4</div>
     <div class="section-title">風格設定</div>
@@ -1358,7 +1355,9 @@ const state = {
 };
 
 const WORKSPACE_STORAGE_KEY = 'line4x4-sticker-workspace';
-const ANTHROPIC_API_KEY = ''; // 填入您的 Anthropic API Key（圖片自動分析功能需要）
+const ANTHROPIC_API_KEY_STORAGE = 'line4x4-anthropic-key';
+function getApiKey() { return localStorage.getItem(ANTHROPIC_API_KEY_STORAGE) || ''; }
+function setApiKey(key) { if (key) localStorage.setItem(ANTHROPIC_API_KEY_STORAGE, key); else localStorage.removeItem(ANTHROPIC_API_KEY_STORAGE); }
 const BATCH_OUTPUT_FORMATS = [
   { id: 'full', name: '完整 Prompt', purpose: '直接丟圖像模型或 ChatGPT 生圖流程', description: '保留完整結構、風格、腳本、負面提示與細部規則。' },
   { id: 'compact', name: '精簡 Prompt', purpose: '快速貼到短上下文工作流', description: '把核心資訊濃縮成短格式，方便快速複製與預覽。' },
@@ -1711,14 +1710,15 @@ function handleFile(file) {
 }
 async function analyzeImage() {
   try {
-    if (!ANTHROPIC_API_KEY) {
-      document.getElementById('img-status').textContent = '請在 ANTHROPIC_API_KEY 填入 API Key 才能自動分析';
+    const _apiKey1 = getApiKey();
+  if (!_apiKey1) {
+      document.getElementById('img-status').textContent = '請先在設定輸入 Anthropic API Key 才能自動分析';
       updateDots(); return;
     }
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST', headers: {
         'Content-Type': 'application/json',
-        'x-api-key': ANTHROPIC_API_KEY,
+        'x-api-key': _apiKey1,
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
@@ -3347,7 +3347,7 @@ function selectLayout(key) {
 
 // ── BG ──
 const bgData = {
-  white: `## BACKGROUND\nPure white (#FFFFFF) background — completely clean, solid white, no gradients, no shadows, no environmental elements`,
+  white: `## BACKGROUND\nPure white (#FFFFFF) background.\nSolid white — no transparency, no alpha channel, no gray, no gradient, no texture, no scene, no environment.\nStudio white background only.\nDesigned for JPG export — white canvas, no transparent regions.\nEach sticker panel: 370 × 320 px (max). Full sheet (4×4): 1480 × 1280 px total.`,
   ai: `## BACKGROUND\nAI-generated contextual scene background matching each panel's mood and theme\nSubtle environment, soft atmosphere, thematic setting appropriate to sticker text and character emotion`
 };
 function selectBeauty(key) {
@@ -4391,13 +4391,22 @@ function combineAll(skipAutoRender = false) {
   const parts = [];
   const qtyMap = {16:'4×4 (16 panels)'};
 
-  parts.push(`## STICKER SHEET SIZE\n${qtyMap[state.qty]}\n\n## PANEL SPACING — CRITICAL\nEach sticker panel must have clear padding and separation.\nNO overlapping between stickers.\nNO content touching panel borders.\nMaintain consistent gutters between all panels.\nEach panel is a fully independent composition.`);
+  parts.push(`## STICKER SHEET SIZE\n${qtyMap[state.qty]}\nEach panel: 370 × 320 px (max per LINE spec)\nFull sheet: 1480 × 1280 px total canvas\nCharacter occupies approximately 65–75% of each panel.\nOutput format: JPG, solid white background (#FFFFFF), no transparency.\n\n## PANEL SPACING — CRITICAL\nEach sticker panel must have clear padding and separation.\nNO overlapping between stickers.\nNO content touching panel borders.\nMaintain consistent gutters between all panels.\nEach panel is a fully independent composition.\n\nMAXIMUM PANEL SEPARATION — PRIORITY\nLeave EXTRA LARGE white gutters between all panels.\nPrioritize separation over character size.\nSmaller characters are acceptable.\nPanel contamination is NEVER acceptable.\n\nANTI-CONTAMINATION SYSTEM — ABSOLUTE RULE\nNothing may cross panel boundaries.\nNo crossing hair.\nNo crossing hands.\nNo crossing feet.\nNo crossing accessories.\nNo crossing shadows.\nNo crossing glow effects.\nNo crossing speech bubbles.\nNo crossing text.\nNo crossing outlines.\nNo visual contamination of any kind.\nEach sticker must stay entirely inside its own panel.\n\nSAFE AREA\nNo cropped body parts.\nNo cropped hair.\nNo cropped accessories.\nNo cropped feet.\nNo cropped hands.\nNo cropped ears.\nNo cropped outline.\nCharacter fully visible inside panel.\nLarge safe margins on all sides.`);
 
   // character
   parts.push('## CHARACTER DESCRIPTION');
   if (state.charTab === 'img') {
     const descExtra = state.imgDesc ? `\n\nReference feature notes (supplementary):\n${state.imgDesc}` : '';
-    parts.push(`BASE CHARACTER: Use the person in the uploaded reference image as the character.
+    parts.push(`## ABSOLUTE PRIORITY
+The character must remain the same person as the uploaded photo.
+Do not replace identity.
+Do not generate a different face.
+Do not generate a generic AI beauty face.
+Do not generate a different hairstyle.
+Do not generate a different costume.
+Do not generate a different accessory set.
+
+BASE CHARACTER: Use the person in the uploaded reference image as the character.
 Design this sticker character to look like the uploaded person.
 Faithfully recreate their overall appearance —
 facial features (face shape, eye shape, eyebrow style, nose, lips, skin tone),
@@ -4406,14 +4415,47 @@ clothing and outfit style,
 accessories and decorative details,
 and overall visual styling shown in the uploaded image.${descExtra}
 
-## FACIAL FIDELITY — CRITICAL (Image Reference)
-This character is based on the uploaded reference image.
-Design the character to closely match the uploaded person's facial features.
-Maintain consistent facial structure, eye shape, nose, lips, and overall face across ALL panels.
+## IDENTITY LOCK — CRITICAL
+Preserve original face identity.
+Preserve original face shape.
+Preserve original eye shape.
+Preserve original eyebrow shape.
+Preserve original nose shape.
+Preserve original mouth shape.
+Preserve original jawline.
+Preserve original facial proportions.
+Preserve original facial characteristics.
+Preserve original expression feeling.
+Preserve natural facial asymmetry.
+Preserve recognizable features.
+The character must clearly look like the same person.
+Keep ethnicity unchanged.
+Keep age appearance unchanged.
 DO NOT alter, distort, or generalize the facial features.
-Facial identity must remain stable and recognizable in every single sticker panel.`);
+Facial identity must remain stable and recognizable in every single sticker panel.
+
+## HAIR LOCK
+Keep original hairstyle.
+Keep original hairline.
+Keep original hair color.
+Keep original hair volume.
+Keep original bangs.
+Keep original hair silhouette.`);
   } else {
-    parts.push(document.getElementById('char-input').value.trim() || '（未填寫）');
+    const charText = document.getElementById('char-input').value.trim() || '（未填寫）';
+    parts.push(`## CHARACTER DESCRIPTION\n${charText}
+
+## CHARACTER CONSISTENCY — CRITICAL
+All 16 stickers must show the same character.
+Same face structure and facial features in every panel.
+Same hairstyle and hair color in every panel.
+Same costume and outfit in every panel.
+Same accessories and color palette in every panel.
+Only expression, pose, and gesture may change between panels.
+DO NOT generate a different face in any panel.
+DO NOT change hairstyle between panels.
+DO NOT change costume between panels.
+Maintain recognizable identity throughout the entire sheet.`);
   }
   parts.push(`## STYLE LOCK\nMaintain consistent character identity across all panels.\nSame face, same hairstyle, same outfit, same color palette in every sticker.\nNo identity drift, no costume change, no face inconsistency.`);
 
@@ -4481,7 +4523,15 @@ Keep the character dominant, high detail, high quality, refined hair, face, outf
 
   // outfit
   if (state.outfitRef) {
-    parts.push(`## OUTFIT STYLE — Reference Upload
+    parts.push(`## COSTUME LOCK — Reference Upload
+Keep original costume.
+Keep original clothing style.
+Keep original clothing colors.
+Keep original accessories.
+Keep original jewelry.
+Keep original glasses if present in the photo.
+Keep original handbag if present in the photo.
+Keep original color palette.
 Base the outfit, costume, accessories, and decorative details DIRECTLY on the uploaded reference image.
 Faithfully reproduce the clothing style, colors, patterns, and accessories shown in the reference.
 DO NOT replace or substitute the outfit — maintain the same garment design as uploaded.
@@ -4979,7 +5029,7 @@ function smartFillWorkspace() {
   if (!state.layoutStyle || state.layoutStyle === 'random') selectLayout('random');
   if (!state.bgStyle) selectBg('white');
   if (getAllScriptLines().length < state.qty) fillScriptToSlots();
-  if (getFixSuggestions().some(item => item.severity !== '蝛拙?')) blendToneScriptEditor();
+  if (getFixSuggestions().some(item => item.severity !== '穩定')) blendToneScriptEditor();
   setBatchMode('all');
   renderSmartRecommendations();
   renderAdvancedSummary();
@@ -5117,8 +5167,9 @@ function setAIMode(mode) {
 
 async function generateAIImagePrompt() {
   if (!aiImg.base64) { alert('請先上傳圖片'); return; }
-  if (!ANTHROPIC_API_KEY) {
-    document.getElementById('ai-prompt-result').textContent = '請在程式碼的 ANTHROPIC_API_KEY 填入 API Key 才能使用 AI 分析。';
+  const _apiKey2 = getApiKey();
+  if (!_apiKey2) {
+    document.getElementById('ai-prompt-result').textContent = '請先在設定輸入 Anthropic API Key 才能使用 AI 分析。';
     return;
   }
   const prompts = {
@@ -5131,7 +5182,7 @@ async function generateAIImagePrompt() {
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type':'application/json', 'x-api-key':ANTHROPIC_API_KEY, 'anthropic-version':'2023-06-01' },
+      headers: { 'Content-Type':'application/json', 'x-api-key':getApiKey(), 'anthropic-version':'2023-06-01' },
       body: JSON.stringify({
         model: 'claude-sonnet-4-6', max_tokens: 900,
         system: prompts[aiImg.mode] || prompts.feature,

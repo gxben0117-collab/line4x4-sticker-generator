@@ -4,7 +4,7 @@ import { readdir, readFile } from "node:fs/promises";
 
 test("main html has expected title version", async () => {
   const html = await readFile("index.html", "utf8");
-  assert.ok(html.includes("v2.4.0"));
+  assert.ok(html.includes("v2.5.0"));
 });
 
 test("page title uses new project name", async () => {
@@ -28,7 +28,7 @@ test("historical versions are preserved", async () => {
 
 test("build output exists after build", async () => {
   const html = await readFile("dist/index.html", "utf8");
-  assert.ok(html.includes("v2.4.0"));
+  assert.ok(html.includes("v2.5.0"));
 });
 
 test("workflow shell and navigation helpers are present", async () => {
