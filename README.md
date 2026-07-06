@@ -10,13 +10,14 @@
 
 ## 目前版本
 
-- 正式頁面版本：`v2.5.0`
-- 最新快照：`versions/貼圖line4x4咒語產生器-v2.5.0.html`
+- 正式頁面版本：`v2.6.0`
+- 最新快照：`versions/貼圖line4x4咒語產生器-v2.6.0.html`
 
 ## 功能摘要
 
 - 快速套餐一鍵帶入角色、服裝、配色、字體與構圖
 - 圖片上傳自動分析五官（需填入 `ANTHROPIC_API_KEY`）
+- 腳本句庫 V3 分類：🔥熱門100 預設打開，12 主分類 × 51 子分類 + 關鍵字搜尋（規劃見 `docs/line-sticker-taxonomy-v3.md`）
 - 腳本分類選取、補滿、去重、排序、語氣平衡
 - 角色卡模板群組（日常 / 職場 / 療癒 / 節慶 / 戰鬥），含水墨手繪日常範例
 - 批次輸出：完整 Prompt、精簡 Prompt、JSON
@@ -64,9 +65,9 @@ npm.cmd test
 
 ## 升版流程
 
-1. 複製 `index.html` 到 `versions/貼圖line4x4咒語產生器-vX.Y.Z.html`
-2. 修改 `index.html`（版本標籤、功能）
-3. 更新 `scripts/lint.mjs` 的 `CURRENT_VERSION`
-4. 更新 `tests/smoke.test.mjs` 的版本字串
-5. `npm.cmd run build && npm.cmd run lint && npm.cmd test`
-6. 補 `docs/development-log/VX.YY.md` 與 `docs/project/VX.YY_HANDOFF.md`
+1. 修改 `index.html`（`<title>` 與 version-badge 的版本標籤、功能）
+2. 更新 `package.json` 的 `version`（lint 與 smoke test 會自動讀取）
+3. 複製 `index.html` 到 `versions/貼圖line4x4咒語產生器-vX.Y.Z.html`
+4. `npm.cmd run build && npm.cmd run lint && npm.cmd test`
+5. 補 `docs/development-log/VX.YY.md`，更新本檔「目前版本」
+6. push 到 `master` 即自動部署 GitHub Pages

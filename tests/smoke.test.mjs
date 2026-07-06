@@ -31,7 +31,17 @@ test("historical versions are preserved", async () => {
 
 test("build output exists after build", async () => {
   const html = await readFile("dist/index.html", "utf8");
-  assert.ok(html.includes("v2.5.0"));
+  assert.ok(html.includes(CURRENT_VERSION));
+});
+
+test("V3 taxonomy, hot-100 and script search exist", async () => {
+  const html = await readFile("index.html", "utf8");
+  assert.ok(html.includes("const scriptTaxonomy = ["), "V3 taxonomy data must exist");
+  assert.ok(html.includes("const HOT_SENTENCES = ["), "hot-100 list must exist");
+  assert.ok(html.includes("currentCat: '熱門100'"), "hot-100 must be the default category");
+  assert.ok(html.includes('id="script-search"'), "script search input must exist");
+  assert.ok(html.includes("const scriptSubData = {}"), "sub-category data must be derived");
+  assert.ok(!html.includes("�"), "no mojibake characters in data");
 });
 
 test("workflow shell and navigation helpers are present", async () => {
