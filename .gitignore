@@ -1,4 +1,10 @@
 node_modules/
+docs/archive/
 .DS_Store
 Thumbs.db
 dist/
+
+# temp / experiment backups
+index-*.html
+index.backup.*.html
+*.backup.*.html

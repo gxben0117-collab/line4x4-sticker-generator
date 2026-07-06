@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LINE 貼圖 4×4 咒語產生器 v2.0.9</title>
+<title>LINE 貼圖 4×4 咒語產生器 v2.5.0</title>
 <style>
 :root {
   --bg: #f5f5f7;
@@ -458,6 +458,15 @@ header::after {
 .script-layout { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(320px,0.8fr); }
 .script-pane { border-right:1px solid var(--border); padding:12px; min-height:560px; }
 .script-editor-pane { display:flex; flex-direction:column; padding:12px; gap:8px; }
+.script-workflow { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:8px; margin-bottom:10px; }
+.script-step { border:1px solid var(--border); border-radius:var(--radius); padding:8px 10px; background:var(--surface); }
+.script-step b { display:block; font-size:12px; color:var(--text); margin-bottom:2px; }
+.script-step span { display:block; font-size:11px; color:var(--text-hint); line-height:1.45; }
+.script-editor-head { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.script-editor-actions { display:grid; grid-template-columns:1.2fr 1fr; gap:8px; }
+.script-editor-actions button { min-width:0; }
+.script-primary-action { background:var(--accent); color:#fff; border-color:var(--accent); font-weight:700; }
+.script-primary-action:hover { background:var(--accent-dark); color:#fff; }
 .editor-toolbar { display:flex; flex-wrap:wrap; gap:6px; justify-content:flex-end; }
 .editor-sticky { position:sticky; top:12px; align-self:start; }
 .editor-note { font-size:11px; color:var(--text-hint); line-height:1.6; }
@@ -483,6 +492,10 @@ header::after {
 .outfit-tag { font-size:11px; padding:4px 12px; border-radius:999px; background:var(--accent); color:#fff; display:flex; align-items:center; gap:5px; font-weight:500; }
 .outfit-tag .rm { cursor:pointer; opacity:0.7; }
 .outfit-tag .rm:hover { opacity:1; }
+@media (max-width: 860px) {
+  .script-workflow { grid-template-columns:1fr; }
+  .script-editor-actions { grid-template-columns:1fr; }
+}
 
 /* ── OUTPUT ── */
 .output-box {
@@ -1160,368 +1173,139 @@ header h1 {
 </head>
 <body>
 <div class="page">
-<div class="preset-dock">
-  <div>
-    <strong>快速套餐固定入口</strong>
-    <span id="preset-current-label">目前尚未套用快速套餐</span>
-  </div>
-  <div class="preset-dock-actions">
-    <button class="btn-primary" onclick="jumpToSection('preset-section')">回到快速套餐</button>
-    <button onclick="randomizeAll()">全部隨機套用</button>
-  </div>
-</div>
 <header>
-  <div class="hero-particles" aria-hidden="true">
-    <span></span><span></span><span></span><span></span><span></span>
-    <span></span><span></span><span></span><span></span><span></span>
-  </div>
-  <div class="version-badge">v2.0.9</div>
-  <p class="hero-eyebrow">Sticker Prompt Generator</p>
+  <div class="version-badge">v2.5.0</div>
   <h1>LINE 貼圖 4×4 咒語產生器</h1>
-  <p class="hero-sub">用快速套餐、腳本與 AI 圖片分析，直接完成可複製的貼圖設計咒語</p>
-  <div class="hero-actions">
-    <button onclick="randomizeAll()" class="btn-hero">✦ 全部隨機套用</button>
-    <button onclick="jumpToSection('ai-image-section')" class="btn-hero-outline">AI 圖片分析</button>
-  </div>
+  <p class="hero-sub">填寫角色、造型與腳本，複製咒語貼到 ChatGPT</p>
   <div class="quick-nav">
-    <button onclick="jumpToSection('preset-section')">快速套餐</button>
-    <button onclick="jumpToSection('script-section')">直接編腳本</button>
-    <button onclick="jumpToSection('ai-image-section')">AI 圖片工作流</button>
-    <button onclick="jumpToSection('combine-section')">組合輸出</button>
+    <button onclick="jumpToSection('char-section')">① 角色</button>
+    <button onclick="jumpToSection('style-section')">② 造型</button>
+    <button onclick="jumpToSection('script-section')">③ 腳本</button>
+    <button onclick="jumpToSection('combine-section')">✦ 複製咒語</button>
   </div>
 </header>
-<div class="workflow-strip">
-  <div class="workflow-card">
-    <b>1. 先選快速套餐</b>
-    <p>先套用整體模組，快速把人物、服裝、配色、字體與構圖定住。</p>
-    <button class="btn-primary" onclick="jumpToSection('preset-section')">去快速套餐</button>
-  </div>
-  <div class="workflow-card">
-    <b>2. 再補腳本格數</b>
-    <p>用腳本編輯區補滿、去重複、排序，讓每張貼圖都有清楚語氣。</p>
-    <button onclick="jumpToSection('script-section')">去腳本編輯</button>
-  </div>
-  <div class="workflow-card">
-    <b>3. 最後組合輸出</b>
-    <p>把全部模組整合成最終 prompt，一鍵複製直接貼到 ChatGPT。</p>
-    <button onclick="jumpToSection('combine-section')">去組合輸出</button>
-  </div>
-</div>
 
-<div class="section" id="smart-workbench-section">
-  <div class="section-header">
-    <div class="section-num">0+</div>
-    <div class="section-title">智慧精簡工作台</div>
-  </div>
-  <div class="section-body">
-    <div class="focus-toolbar" id="workspaceModeToolbar">
-      <button class="pill-btn active" id="focusModeBtn" onclick="setWorkspaceMode('focus')">精簡模式</button>
-      <button class="pill-btn" id="advancedModeBtn" onclick="setWorkspaceMode('advanced')">進階模式</button>
-      <button class="pill-btn" id="advancedToggleBtn" onclick="toggleAdvancedSettings()">展開進階設定</button>
-      <button class="btn-primary" onclick="smartFillWorkspace()">一鍵智慧帶入</button>
-    </div>
-    <div class="smart-panel">
-      <div class="smart-card">
-        <strong>智慧帶入</strong>
-        <p id="smartFillMessage">根據目前模板、腳本數量與輸出模式，自動補齊最常用設定。</p>
-        <div class="workspace-actions">
-          <button onclick="smartFillWorkspace()">自動補齊工作台</button>
-          <button onclick="autoBalanceScriptPack()">自動補腳本節奏</button>
-        </div>
-      </div>
-      <div class="smart-card">
-        <strong>推薦模板</strong>
-        <p id="smartTemplateRecommendation">會依目前腳本語氣與角色方向，推薦最合適模板群組。</p>
-        <div class="workspace-actions">
-          <button onclick="applyRecommendedTemplate()">套用推薦模板</button>
-          <button onclick="jumpToSection('preset-section')">查看全部模板</button>
-        </div>
-      </div>
-      <div class="smart-card">
-        <strong>進階設定摘要</strong>
-        <p>把低頻設定收起來，但仍保留完整控制權。</p>
-        <div class="advanced-summary-bar" id="advancedSummaryBar"></div>
-        <span class="mini-note" id="advancedSummaryNote">目前以精簡模式顯示，進階區仍可隨時展開。</span>
-      </div>
-    </div>
-  </div>
-</div>
 
-<div class="section" id="workspace-section">
-  <div class="section-header">
-    <div class="section-num">0</div>
-    <div class="section-title">v2.0.9 工作台總覽</div>
-  </div>
-  <div class="section-body">
-    <div class="workspace-grid">
-      <div class="workspace-card">
-        <h3>工作台狀態摘要</h3>
-        <p>上半部維持輸入與快速套用，下半部專門做模板整理、批次輸出、腳本修正建議與保存還原。</p>
-        <div class="summary-kpis" id="workspaceSummary"></div>
-        <div class="save-note" id="workspaceSaveHint">工作台會自動保存，重新開啟後自動還原。</div>
-      </div>
-      <div class="workspace-stack">
-        <div class="workspace-card">
-          <h3>模板群組摘要</h3>
-          <p>保留原本快速套餐，一樣能一鍵套用所有模組設定，另外新增角色卡模板群組與推薦搭配摘要。</p>
-          <div class="group-summary-grid" id="templateGroupSummary"></div>
-        </div>
-        <div class="workspace-card">
-          <h3>批次輸出模式</h3>
-          <p>可以沿用單一輸出習慣，也可以直接切到「全部都要」模式，一次看完整 Prompt、精簡 Prompt 與 JSON。</p>
-          <div class="pill-row" id="outputFormatToolbar"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 快速套餐 -->
-<div class="section" id="preset-section" style="border-color:var(--accent); box-shadow:0 2px 12px rgba(0,113,227,0.12);">
-  <div class="section-header" style="background:linear-gradient(135deg,var(--accent-light),rgba(0,113,227,0.04));">
-    <div class="section-num">⚡</div>
-    <div class="section-title">快速套餐 <span style="font-size:11px;font-weight:400;color:var(--text-muted);margin-left:6px;">一鍵套用所有模組設定</span></div>
-  </div>
-  <div class="section-body">
-    <div class="preset-hero">
-      <div class="preset-hero-card">
-        <strong>先用快速套餐，再微調細節</strong>
-        <p>這個模組沒有消失，現在被固定放在最前面。先點一組快速套餐，系統會自動帶入體型、服裝、配色、字體與版型，後面只要補腳本和局部調整就能直接出稿。</p>
-        <div class="preset-actions">
-          <button class="btn-primary" onclick="jumpToSection('preset-grid')">立即挑一組快速套餐</button>
-          <button onclick="randomizeAll()">全部隨機套用</button>
-        </div>
-        <div class="preset-current">
-          <div class="preset-pill"><strong>目前狀態</strong><span id="preset-hero-label">尚未套用快速套餐</span></div>
-        </div>
-      </div>
-      <div class="preset-summary">
-        <div class="preset-kpi"><b>500+</b><span>快速套餐組合</span></div>
-        <div class="preset-kpi"><b>1 秒</b><span>一鍵帶入主要模組</span></div>
-        <div class="preset-kpi"><b>最前面</b><span>首頁第一段入口</span></div>
-      </div>
-    </div>
-    <div class="section-help">快速套餐沒有被移除。先在這裡一鍵套用，再往下微調腳本、色系、構圖與輸出內容會最快。</div>
-    <div class="script-cats" id="preset-cats"></div>
-    <div class="check-list col2" id="preset-grid"></div>
-    <div class="workspace-card" style="margin-top:14px;">
-      <h3>角色卡模板群組</h3>
-      <p>分成日常主角、工作職場、療癒陪伴、節慶歡樂、衝刺戰鬥五組，每張模板卡都會附推薦模組與腳本快速組合。</p>
-      <div class="template-grid" id="templateGroupPanel"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ① 角色描述 -->
-<div class="section" id="script-section">
+<!-- ① 角色 -->
+<div class="section" id="char-section">
   <div class="section-header">
     <div class="section-num">1</div>
-    <div class="section-title">角色描述</div>
+    <div class="section-title">角色</div>
   </div>
   <div class="section-body">
     <div class="tabs">
       <div class="tab active" id="tab-img" onclick="switchCharTab('img')">圖片上傳</div>
       <div class="tab" id="tab-text" onclick="switchCharTab('text')">文字輸入</div>
+      <div class="tab" id="tab-template" onclick="switchCharTab('template')">現行角色模板</div>
     </div>
     <div id="char-img-panel">
       <input type="file" id="file-in" accept="image/*" style="display:none" onchange="handleFile(this.files[0])">
-      <div class="dropzone" id="dropzone"
-           onclick="document.getElementById('file-in').click()"
-           ondrop="handleDrop(event)" ondragover="event.preventDefault()"
-           ondragenter="this.classList.add('drag-over')"
-           ondragleave="this.classList.remove('drag-over')">
-        <span class="dropzone-icon">📸</span>
-        <p>點擊或拖拽人物圖片到這裡</p>
-        <small>支援 JPG · PNG · WebP &nbsp;·&nbsp; AI 自動分析五官特徵</small>
-      </div>
+      <button id="dropzone" onclick="document.getElementById('file-in').click()" style="width:100%;padding:14px;font-size:14px;margin-bottom:8px;border:2px dashed var(--border);background:var(--bg);border-radius:var(--radius);cursor:pointer;">📸 點擊上傳人物圖片</button>
+      <p style="font-size:11px;color:var(--text-hint);margin-bottom:10px;">支援 JPG · PNG · WebP — 上傳後請在 ChatGPT 同時貼上圖片與咒語</p>
       <div id="preview-wrap" style="display:none;">
         <img id="preview-img" alt="角色預覽">
         <div style="display:flex;gap:8px;margin-top:8px;align-items:center;">
           <span id="img-status" style="font-size:12px;color:var(--text-muted);flex:1;"></span>
           <button onclick="clearImg()" style="font-size:11px;padding:5px 12px;">移除圖片</button>
         </div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;">
-          <button class="btn-primary" onclick="analyzeImage()" style="font-size:11px;padding:6px 14px;">AI 分析特徵</button>
-          <button onclick="applyImgDescToInput()" style="font-size:11px;padding:6px 14px;">填入角色描述</button>
-        </div>
       </div>
     </div>
     <div id="char-text-panel" style="display:none;">
       <div class="row-flex" style="margin-bottom:6px;">
-        <label style="margin:0; flex:1;">角色特徵描述</label>
+        <label style="margin:0;flex:1;">角色特徵描述</label>
         <button class="btn-rand" onclick="randomCharDesc()">🎲 隨機填入</button>
       </div>
       <textarea id="char-input" rows="3" placeholder="例：瓜子臉、大圓眼、長直黑髮、白皙、齊胸襦裙、珍珠髮簪" oninput="updateDots()"></textarea>
     </div>
-  </div>
-</div>
-
-<!-- ② 貼圖數量 -->
-<div class="section">
-  <div class="section-header">
-    <div class="section-num">2</div>
-    <div class="section-title">貼圖數量 <span style="font-size:11px;font-weight:400;color:var(--text-muted);margin-left:6px;">固定輸出 4×4</span></div>
-  </div>
-  <div class="section-body">
-    <div class="check-list col1">
-      <div class="c-item active" id="qty-16"><div class="c-check">✓</div><div class="c-body"><div class="c-name">4×4 固定輸出</div><div class="c-desc">目前工作台僅輸出 16 格貼圖，其他尺寸已停用。</div></div></div>
+    <div id="char-template-panel" style="display:none;">
+      <div id="char-template-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;margin-top:8px;max-height:360px;overflow-y:auto;"></div>
     </div>
   </div>
 </div>
 
-<!-- ③ 人物比例風格 -->
+<!-- ② 人物造型 -->
+<div class="section" id="style-section">
+  <div class="section-header">
+    <div class="section-num">2</div>
+    <div class="section-title">人物造型</div>
+  </div>
+  <div class="section-body">
+    <div class="check-list col2">
+      <div class="c-item active" id="style-q" onclick="selectBodyPreset('q')"><div class="c-check">✓</div><div class="c-body"><div class="c-name">Q版人物</div><div class="c-desc">2.5頭身貼圖比例，表情動作清楚，最適合 LINE 貼圖</div></div></div>
+      <div class="c-item" id="style-real" onclick="selectBodyPreset('real')"><div class="c-check">✓</div><div class="c-body"><div class="c-name">真實人物</div><div class="c-desc">半寫實比例，接近真人比例，適合精緻風格</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ③ 貼圖數量 -->
 <div class="section">
   <div class="section-header">
     <div class="section-num">3</div>
-    <div class="section-title">人物比例與畫風</div>
-  </div>
-  <div class="section-body">
-    <div class="sub-label">人物比例</div>
-    <div class="check-list col2" id="body-ratio-grid" style="margin-bottom:12px;"></div>
-    <div class="sub-label">畫風／材質</div>
-    <div class="script-cats" id="body-cats" style="margin-bottom:10px;"></div>
-    <div class="check-list col2" id="body-grid" style="margin-bottom:6px;"></div>
-    <div class="c-item ai-pick" id="body-ai" onclick="selectBody('ai')" style="margin-top:4px;"><div class="c-check">✓</div><div class="c-body"><div class="c-name">🎲 AI 隨機選擇</div><div class="c-desc">由 AI 自行決定最適合的比例風格</div></div></div>
+    <div class="section-title">貼圖數量 <span style="font-size:11px;font-weight:400;color:var(--text-muted);margin-left:6px;">固定輸出 4×4</span></div>
+    <span style="font-size:12px;font-weight:500;color:var(--text-muted);margin-left:auto;padding-right:1.25rem;">4×4 固定輸出 — 16 格</span>
   </div>
 </div>
 
-<!-- ④ 服裝風格（複選） -->
-<div class="section">
+<!-- ④ 風格設定 -->
+<div class="section" id="font-section">
   <div class="section-header">
     <div class="section-num">4</div>
-    <div class="section-title">服裝風格</div>
+    <div class="section-title">風格設定</div>
   </div>
   <div class="section-body">
-    <div class="check-list col1" style="gap:6px; margin-bottom:10px;">
-      <div class="c-item active" id="out-ref" onclick="selectOutfitMode('ref')"><div class="c-check">✓</div><div class="c-body"><div class="c-name">A — 使用上傳人物造型</div><div class="c-desc">依據圖片上傳的服裝、配件、裝飾來設計</div></div></div>
-      <div class="c-item" id="out-manual-mode" onclick="selectOutfitMode('manual')"><div class="c-check">✓</div><div class="c-body"><div class="c-name">B — 自選服裝風格</div><div class="c-desc">從古風、現代、奇幻等風格中選擇</div></div></div>
-
-    </div>
-    <div id="outfit-manual" style="display:none;">
-      <div class="check-list col3" id="outfit-main-grid"></div>
-      <div id="outfit-sub-wrap" style="display:none; margin-top:10px;">
-        <div class="sub-label" id="outfit-sub-label"></div>
-        <div class="check-list col2" id="outfit-sub-grid"></div>
-      </div>
-      <div id="outfit-selected-wrap" style="display:none; margin-top:10px;">
-        <div class="sub-label">已選服裝風格</div>
-        <div style="display:flex; flex-wrap:wrap; gap:5px;" id="outfit-tags"></div>
-      </div>
-    </div>
-    <div id="outfit-display" style="display:none; margin-top:10px; background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); padding:10px 12px;">
-      <div style="font-size:11px; color:var(--text-hint); font-family:system-ui,sans-serif; margin-bottom:6px;">已選項目</div>
-      <div id="outfit-display-tags" style="display:flex; flex-wrap:wrap; gap:5px;"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ④.⑤ 服裝色系 -->
-<div class="section">
-  <div class="section-header">
-    <div class="section-num" style="font-size:9px;">4.5</div>
-    <div class="section-title">服裝色系 <span style="font-size:11px;font-weight:400;color:var(--text-muted);margin-left:6px;">可複選主色＋配色</span></div>
-  </div>
-  <div class="section-body">
-    <div style="display:flex; justify-content:flex-end; gap:6px; margin-bottom:8px;">
-      <button class="btn-rand" onclick="clearColors()">讓 AI 自行判斷</button>
-      <button class="btn-rand" onclick="randomColors()">🎲 隨機配色</button>
-    </div>
-    <div class="color-swatches" id="color-swatches"></div>
-
-    <div class="color-tags" id="color-tags"></div>
-    <div id="color-ai-hint" style="font-size:12px; color:var(--text-hint); font-family:system-ui,sans-serif; margin-top:8px;">讓 AI / ChatGPT 自行判斷配色</div>
-  </div>
-</div>
-
-<!-- ⑤ 文字字體 -->
-<div class="section">
-  <div class="section-header">
-    <div class="section-num">5</div>
-    <div class="section-title">文字字體</div>
-  </div>
-  <div class="section-body">
+    <div class="sub-label">文字字體風格</div>
     <div class="c-item ai-pick active" id="font-ai" onclick="selectFont('ai')" style="margin-bottom:10px;"><div class="c-check">✓</div><div class="c-body"><div class="c-name">🎲 AI 隨機選擇</div><div class="c-desc">由 AI 選擇最搭配風格的字體</div></div></div>
     <div class="script-cats" id="font-cats"></div>
-    <div class="check-list col2" id="font-grid" style="max-height:260px; overflow-y:auto;"></div>
-  </div>
-</div>
+    <div class="check-list col2" id="font-grid" style="max-height:220px;overflow-y:auto;"></div>
 
-<!-- ⑥ 構圖位置 -->
-<div class="section">
-  <div class="section-header">
-    <div class="section-num">6</div>
-    <div class="section-title">構圖位置</div>
-  </div>
-  <div class="section-body">
-    <div class="c-item ai-pick active" id="layout-random" onclick="selectLayout('random')" style="margin-bottom:8px;"><div class="c-check">✓</div><div class="c-body"><div class="c-name">🎲 AI 隨機決定</div><div class="c-desc">每格構圖由 AI 自由發揮</div></div></div>
+    <div class="sub-label" style="margin-top:16px;">背景</div>
     <div class="check-list col2">
-      <div class="c-item" id="layout-A" onclick="selectLayout('A')"><div class="c-check">✓</div><div class="c-body"><div class="c-name">A — 文字左＋人物右</div><div class="c-desc">文字佔左40%，人物靠右</div></div></div>
-      <div class="c-item" id="layout-B" onclick="selectLayout('B')"><div class="c-check">✓</div><div class="c-body"><div class="c-name">B — 文字上＋人物下</div><div class="c-desc">文字在上，人物在下</div></div></div>
-      <div class="c-item" id="layout-C" onclick="selectLayout('C')"><div class="c-check">✓</div><div class="c-body"><div class="c-name">C — 大字居中＋人物角落</div><div class="c-desc">文字主角，人物貼緊角落</div></div></div>
-      <div class="c-item" id="layout-D" onclick="selectLayout('D')"><div class="c-check">✓</div><div class="c-body"><div class="c-name">D — 人物左＋文字右</div><div class="c-desc">人物靠左，文字在右</div></div></div>
-      <div class="c-item" id="layout-E" onclick="selectLayout('E')"><div class="c-check">✓</div><div class="c-body"><div class="c-name">E — 人物上＋文字下</div><div class="c-desc">人物在上，文字在下</div></div></div>
-      <div class="c-item" id="layout-F" onclick="selectLayout('F')"><div class="c-check">✓</div><div class="c-body"><div class="c-name">F — 人物全版＋文字疊加</div><div class="c-desc">人物全版，文字浮疊</div></div></div>
-      <div class="c-item" id="layout-G" onclick="selectLayout('G')"><div class="c-check">✓</div><div class="c-body"><div class="c-name">G — 對角線動態</div><div class="c-desc">斜向對角，動感活潑</div></div></div>
-      <div class="c-item" id="layout-H" onclick="selectLayout('H')"><div class="c-check">✓</div><div class="c-body"><div class="c-name">H — 圓框角色＋文字環繞</div><div class="c-desc">圓框角色，文字環繞</div></div></div>
+      <div class="c-item active" id="bg-white" onclick="selectBg('white')"><div class="c-check">✓</div><div class="c-body"><div class="c-name">單純背景</div><div class="c-desc">乾淨純白背景</div></div></div>
+      <div class="c-item" id="bg-ai" onclick="selectBg('ai')"><div class="c-check">✓</div><div class="c-body"><div class="c-name">有背景豐富元素</div><div class="c-desc">根據貼圖主題自動補充情境</div></div></div>
+    </div>
+
+    <div class="sub-label" style="margin-top:16px;">貼圖人物造型</div>
+    <div class="check-list col2">
+      <div class="c-item" id="border-outline" onclick="selectBorder('outline')"><div class="c-check">✓</div><div class="c-body"><div class="c-name">有邊貼紙</div><div class="c-desc">角色外圍有白色描邊，LINE 傳統貼紙風格</div></div></div>
+      <div class="c-item active" id="border-none" onclick="selectBorder('none')"><div class="c-check">✓</div><div class="c-body"><div class="c-name">無邊</div><div class="c-desc">無外框描邊，融入背景</div></div></div>
     </div>
   </div>
 </div>
 
-<!-- ⑦ 背景設定 -->
-<div class="section">
+<!-- ⑤ 貼圖文字腳本 -->
+<div class="section" id="script-section">
   <div class="section-header">
-    <div class="section-num">7</div>
-    <div class="section-title">背景設定</div>
-  </div>
-  <div class="section-body">
-    <div class="check-list col2">
-      <div class="c-item active" id="bg-white" onclick="selectBg('white')"><div class="c-check">✓</div><div class="c-body"><div class="c-name">純白背景</div><div class="c-desc">乾淨純白背景</div></div></div>
-      <div class="c-item" id="bg-ai" onclick="selectBg('ai')"><div class="c-check">✓</div><div class="c-body"><div class="c-name">AI 補充情境背景</div><div class="c-desc">根據貼圖主題自動補充情境</div></div></div>
-    </div>
-  </div>
-</div>
-
-<!-- ⑧ 美顏濾鏡 -->
-<div class="section">
-  <div class="section-header">
-    <div class="section-num">8</div>
-    <div class="section-title">美顏濾鏡 <span style="font-size:11px;font-weight:400;color:var(--text-muted);margin-left:6px;">修飾臉部細節</span></div>
-  </div>
-  <div class="section-body">
-    <div class="check-list col2">
-      <div class="c-item active" id="beauty-on" onclick="selectBeauty('on')"><div class="c-check">✓</div><div class="c-body"><div class="c-name">開啟</div><div class="c-desc">精緻臉型、修飾嬰兒肥、立體五官、精緻妝容、粉嫩光澤肌膚</div></div></div>
-      <div class="c-item" id="beauty-off" onclick="selectBeauty('off')"><div class="c-check">✓</div><div class="c-body"><div class="c-name">關閉</div><div class="c-desc">保持原始設定</div></div></div>
-    </div>
-  </div>
-</div>
-
-<!-- ⑨ 貼圖腳本 -->
-<div class="section">
-  <div class="section-header">
-    <div class="section-num">9</div>
-    <div class="section-title">貼圖腳本</div>
+    <div class="section-num">5</div>
+    <div class="section-title">貼圖文字腳本</div>
     <button class="btn-rand" onclick="randomScript()" style="margin-left:auto;">🎲 隨機填入</button>
   </div>
   <div class="section-body" style="padding:0;">
-    <div style="padding:1rem 1.25rem 0.75rem; border-bottom:1px solid var(--border);">
+    <div style="padding:1rem 1.25rem 0.75rem;border-bottom:1px solid var(--border);">
       <div class="script-cats" id="script-cats"></div>
     </div>
-    <div style="display:grid; grid-template-columns:1fr 1fr;">
-      <!-- 左：腳本選項（完整展開不滾動） -->
-      <div style="border-right:1px solid var(--border); padding:10px;">
-        <button class="btn-rand" onclick="randomCurrentCatScripts()" style="width:100%; margin-bottom:8px; padding:8px 12px;">🎲 隨機選擇本分類</button>
-        <div class="script-items" id="script-items" style="display:grid; grid-template-columns:1fr; gap:5px;"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;">
+      <div style="border-right:1px solid var(--border);padding:10px;">
+        <button class="btn-rand" onclick="randomCurrentCatScripts()" style="width:100%;margin-bottom:8px;padding:8px 12px;">🎲 隨機選擇本分類</button>
+        <div class="script-items" id="script-items" style="display:grid;grid-template-columns:1fr;gap:5px;"></div>
       </div>
-      <!-- 右：已選編輯區（跟左側等高） -->
-      <div style="display:flex; flex-direction:column; padding:10px; gap:6px; position:sticky; top:12px; align-self:start;">
-        <div style="display:flex; align-items:center; justify-content:space-between;">
-          <span style="font-size:11px; color:var(--text-hint); font-family:system-ui,sans-serif;">已選腳本（可直接編輯）</span>
+      <div style="display:flex;flex-direction:column;padding:10px;gap:6px;position:sticky;top:12px;align-self:start;">
+        <div class="script-workflow">
+          <div class="script-step"><b>1. 選分類</b><span>左側點句子，或隨機本分類。</span></div>
+          <div class="script-step"><b>2. 補滿 16 句</b><span>一行一張貼圖，少句就按補滿。</span></div>
+          <div class="script-step"><b>3. 複製出圖</b><span>先複製腳本檢查，再組合完整咒語。</span></div>
+        </div>
+        <div class="script-editor-head">
+          <span style="font-size:11px;color:var(--text-hint);">已選腳本（一行一張，可直接改字）</span>
           <span class="script-counter" style="margin:0;">已選 <span id="sel-count">0</span> / <span id="total-slots">16</span> 格</span>
         </div>
         <div class="script-editor-status" id="script-editor-status">尚未補滿腳本格數</div>
-        <textarea id="script-edit-area" placeholder="點選左側腳本後出現在這裡，可直接修改..." style="height:320px; font-size:13px; line-height:1.9; resize:vertical;" oninput="syncScriptFromTextarea()"></textarea>
+        <textarea id="script-edit-area" placeholder="一行一張貼圖，例如：&#10;早安&#10;收到&#10;辛苦了&#10;晚安" style="height:320px;font-size:13px;line-height:1.9;resize:vertical;" oninput="syncScriptFromTextarea()"></textarea>
+        <div class="script-editor-help">建議短句 2-6 字最穩；純表情可寫「無文字：開心揮手」，輸出時會轉成無字表情貼圖。</div>
+        <div class="script-editor-actions">
+          <button class="script-primary-action" onclick="fillScriptToSlots()">補滿 16 句</button>
+          <button id="copy-script-btn" onclick="copyScriptEditor()">複製腳本</button>
+        </div>
         <div class="tool-row">
-          <button onclick="fillScriptToSlots()">補滿格數</button>
           <button onclick="dedupeScriptEditor()">智能去重</button>
           <button onclick="sortScriptEditor()">智能排序</button>
         </div>
@@ -1530,117 +1314,22 @@ header h1 {
           <button onclick="rebuildBalancedPack()">重建 16 句平衡包</button>
         </div>
         <div class="tool-row">
-          <button onclick="copyScriptEditor()">複製腳本</button>
           <button onclick="clearScriptEditor()">清空腳本</button>
         </div>
-        <div class="script-editor-help">先從左邊挑腳本，再用這裡快速補滿、智能去重、智能排序、補混合語氣與重建平衡包，最後直接複製或組合完整咒語。</div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="section" id="script-quality-section">
-  <div class="section-header">
-    <div class="section-num">9.5</div>
-    <div class="section-title">腳本修正建議</div>
-  </div>
-  <div class="section-body">
-    <div class="workspace-grid">
-      <div class="workspace-card">
-        <h3>腳本健康檢查</h3>
-        <p>依據重複句、過短句、過長句、語氣太接近、節奏不均、場景偏單一，自動提供可直接操作的修正建議。</p>
-        <div class="fix-grid" id="fixSuggestionPanel"></div>
-      </div>
-      <div class="workspace-card">
-        <h3>腳本快速組合</h3>
-        <p>把常用節奏整理成即用型混合包，快速補齊鼓勵、回覆、陪伴與日常場景。</p>
-        <div class="combo-grid" id="scriptComboPanel"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- AI 圖片工作流 -->
-<div class="ai-image-section" id="ai-image-section">
-  <div class="section-header">
-    <div class="section-num">AI</div>
-    <div class="section-title">AI 圖片工作流</div>
-    <span class="ai-section-nav-badge">上傳圖片 → AI 分析 → 生成 Prompt → 歷史紀錄</span>
-  </div>
-  <div class="section-body">
-    <div class="ai-workflow-grid">
-      <div class="ai-panel">
-        <div class="ai-panel-title">圖片上傳與預覽</div>
-        <input type="file" id="ai-file-in" accept="image/*" style="display:none" onchange="handleAIFile(this.files[0])">
-        <div class="dropzone" id="ai-dropzone"
-             style="padding:2rem 1.5rem;background:rgba(0,0,0,0.22);border-color:rgba(0,113,227,0.3);"
-             onclick="document.getElementById('ai-file-in').click()"
-             ondrop="handleAIImageDrop(event)" ondragover="event.preventDefault()"
-             ondragenter="this.classList.add('drag-over')"
-             ondragleave="this.classList.remove('drag-over')">
-          <span class="dropzone-icon">🖼</span>
-          <p style="color:rgba(245,245,247,0.6);">拖拽或點擊上傳角色圖片</p>
-          <small style="color:rgba(245,245,247,0.3);">支援 JPG · PNG · WebP</small>
-        </div>
-        <div id="ai-preview-wrap" style="display:none;">
-          <img id="ai-preview-img" class="ai-preview-img" alt="角色預覽">
-          <div class="ai-status-bar">
-            <span id="ai-status-icon"></span>
-            <span id="ai-status-text">已上傳圖片</span>
-          </div>
-          <div class="ai-actions">
-            <button class="ai-btn primary-ai" onclick="generateAIImagePrompt()">✨ AI 分析生成</button>
-            <button class="ai-btn" onclick="runFullAIWorkflow()">✦ 一鍵完整流程</button>
-            <button class="ai-btn" onclick="clearAIImage()">移除</button>
-          </div>
-        </div>
-        <div style="margin-top:14px;">
-          <div class="ai-panel-title">上傳歷史（最近 20 張）</div>
-          <div id="ai-history-grid" class="ai-history-grid">
-            <div class="ai-empty-msg" id="ai-history-empty">尚無歷史圖片</div>
-          </div>
-        </div>
-      </div>
-      <div class="ai-panel">
-        <div class="ai-panel-title">分析模式</div>
-        <div class="ai-actions" style="margin-top:0;margin-bottom:12px;">
-          <button class="ai-btn active-ai" id="ai-mode-feature" onclick="setAIMode('feature')">五官特徵</button>
-          <button class="ai-btn" id="ai-mode-style" onclick="setAIMode('style')">畫風轉換</button>
-          <button class="ai-btn" id="ai-mode-sticker" onclick="setAIMode('sticker')">貼圖咒語</button>
-        </div>
-        <div class="ai-panel-title" style="margin-top:4px;">AI 分析結果</div>
-        <div id="ai-prompt-result" class="ai-prompt-box">等待圖片上傳與分析...</div>
-        <div class="ai-actions">
-          <button class="ai-btn primary-ai" onclick="copyAIPromptResult(event)">複製結果</button>
-          <button class="ai-btn" onclick="fillAIResultToCharInput()">填入角色描述</button>
-          <button class="ai-btn" onclick="applyAIAndGo()">套入並跳到組合</button>
-          <button class="ai-btn" onclick="clearAIPromptResult()">清除</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 組合全部 -->
+<!-- 組合輸出 -->
 <div class="combine-section" id="combine-section">
   <h2>組合全部咒語</h2>
   <p>複製後貼到 ChatGPT</p>
   <div class="status-dots" id="status-dots"></div>
   <button class="btn-primary" onclick="combineAll()" style="width:100%;padding:16px;font-size:17px;font-weight:700;border-radius:var(--radius-lg);margin-bottom:1rem;letter-spacing:0.04em;">✦ 組合全部並複製</button>
-  <div class="workspace-card" style="margin-bottom:1rem; text-align:left;">
-    <h3>批次輸出組合</h3>
-    <p>保留單一輸出模式，也新增全部都要模式與一鍵複製三種格式的輸出包。</p>
-    <div class="action-row" id="batchModeToolbar">
-      <button class="pill-btn active" id="singleOutputModeBtn" onclick="setBatchMode('single')">單一輸出模式</button>
-      <button class="pill-btn" id="allOutputModeBtn" onclick="setBatchMode('all')">全部都要模式</button>
-      <button onclick="copyAllBatchOutputs()" class="btn-primary">一鍵複製全部輸出包</button>
-      <button onclick="previewAllBatchOutputs()">一鍵預覽全部輸出包</button>
-    </div>
-    <div class="batch-output-grid" id="batchOutputPanel" style="margin-top:10px;"></div>
-  </div>
   <div id="combined-out" style="display:none;">
-    <div style="display:flex; justify-content:flex-end; margin-bottom:6px;">
-      <button onclick="copyFinal()" class="btn-primary" style="font-size:12px; padding:6px 16px;" id="final-copy-btn-top">複製完整咒語</button>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:6px;">
+      <button onclick="copyFinal()" class="btn-primary" style="font-size:12px;padding:6px 16px;" id="final-copy-btn-top">複製完整咒語</button>
     </div>
     <div class="output-box" id="combined-box"></div>
     <button onclick="copyFinal()" class="btn-primary" style="width:100%;padding:10px;font-size:13px;" id="final-copy-btn">複製完整咒語</button>
@@ -1655,7 +1344,8 @@ const state = {
   bodyStyle: 'popmart', bodyRatio: 'q25', outfitRef: true, outfitAI: false, outfitSelections: [],
   colorSelections: [], customColors: [],
   fontStyle: 'ai', layoutStyle: 'random', bgStyle: 'white', beautyFilter: true,
-  scriptSelected: [], customItems: [], currentCat: '禮貌回覆',
+  borderStyle: 'none',
+  scriptSelected: [], customItems: [], currentCat: '日常問候',
   currentTemplateId: 'daily-red',
   outputFormat: 'full',
   batchMode: 'single',
@@ -1665,7 +1355,9 @@ const state = {
 };
 
 const WORKSPACE_STORAGE_KEY = 'line4x4-sticker-workspace';
-const ANTHROPIC_API_KEY = ''; // 填入您的 Anthropic API Key（圖片自動分析功能需要）
+const ANTHROPIC_API_KEY_STORAGE = 'line4x4-anthropic-key';
+function getApiKey() { return localStorage.getItem(ANTHROPIC_API_KEY_STORAGE) || ''; }
+function setApiKey(key) { if (key) localStorage.setItem(ANTHROPIC_API_KEY_STORAGE, key); else localStorage.removeItem(ANTHROPIC_API_KEY_STORAGE); }
 const BATCH_OUTPUT_FORMATS = [
   { id: 'full', name: '完整 Prompt', purpose: '直接丟圖像模型或 ChatGPT 生圖流程', description: '保留完整結構、風格、腳本、負面提示與細部規則。' },
   { id: 'compact', name: '精簡 Prompt', purpose: '快速貼到短上下文工作流', description: '把核心資訊濃縮成短格式，方便快速複製與預覽。' },
@@ -1888,6 +1580,24 @@ const characterTemplates = [
 ];
 const scriptQuickCombos = [
   {
+    id: 'daily-life-1',
+    name: '日常生活用語 A',
+    description: '早安到晚安、問候、回覆、感嘆，最高頻的日常貼圖 16 句。',
+    lines: ['早安','午安','晚安','你好','在嘛','再見','加油','喔','好','不要','對不起','收到','真的假的','哈哈哈哈','這很可以','辛苦了']
+  },
+  {
+    id: 'daily-life-2',
+    name: '日常生活用語 B',
+    description: '聊天互動、狀態回報、情緒感嘆，朋友對話最實用的 16 句。',
+    lines: ['正在忙','吃飽沒','要去哪','等一下喔','沒問題','了解了','還沒耶','馬上來','太扯了','傻眼','我想你了','心累','謝謝你','太好啦','我也這麼覺得','改天約']
+  },
+  {
+    id: 'daily-life-3',
+    name: '日常生活用語 C',
+    description: '應答、讚美、開心、疑惑與閒聊收尾的高頻短句組合。',
+    lines: ['沒問題','太棒了','拜託拜託','笑死','好久不見','原來如此','誇張耶','驚喜','別這樣','想太多','借過','看著辦','加油加油','想喝什麼','好喔','晚點聊']
+  },
+  {
     id: 'daily-balance',
     name: '日常平衡包',
     description: '高頻問候、回覆、收尾、微鼓勵混合，適合第一輪量產。',
@@ -1945,9 +1655,44 @@ function switchCharTab(tab) {
   state.charTab = tab;
   document.getElementById('char-img-panel').style.display = tab==='img' ? 'block' : 'none';
   document.getElementById('char-text-panel').style.display = tab==='text' ? 'block' : 'none';
+  const tmpl = document.getElementById('char-template-panel');
+  if (tmpl) tmpl.style.display = tab==='template' ? 'block' : 'none';
   document.getElementById('tab-img').classList.toggle('active', tab==='img');
   document.getElementById('tab-text').classList.toggle('active', tab==='text');
+  const tabTmpl = document.getElementById('tab-template');
+  if (tabTmpl) tabTmpl.classList.toggle('active', tab==='template');
+  if (tab === 'template') renderCharTemplateGrid();
   updateDots();
+}
+function renderCharTemplateGrid() {
+  const grid = document.getElementById('char-template-grid');
+  if (!grid) return;
+  grid.innerHTML = characterTemplates.map(t => {
+    const isActive = state.currentTemplateId === t.id;
+    return `<div class="c-item${isActive?' active':''}" onclick="applyCharacterTemplate('${t.id}')" style="cursor:pointer;">
+      <div class="c-check">✓</div>
+      <div class="c-body">
+        <div class="c-name" style="font-size:12px;">${t.name}</div>
+        <div class="c-desc" style="font-size:11px;">${t.outfit||''}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function selectBodyPreset(type) {
+  if (type === 'q') {
+    state.bodyStyle = 'popmart'; state.bodyRatio = 'q25';
+  } else {
+    state.bodyStyle = 'semirealistic'; state.bodyRatio = 'real8';
+  }
+  document.getElementById('style-q').classList.toggle('active', type==='q');
+  document.getElementById('style-real').classList.toggle('active', type==='real');
+  updateDots(); persistWorkspace();
+}
+function selectBorder(style) {
+  state.borderStyle = style;
+  document.getElementById('border-outline').classList.toggle('active', style==='outline');
+  document.getElementById('border-none').classList.toggle('active', style==='none');
+  updateDots(); persistWorkspace();
 }
 function handleDrop(e) { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('image/')) handleFile(f); }
 function handleFile(file) {
@@ -1958,7 +1703,6 @@ function handleFile(file) {
     state.imgBase64 = result.split(',')[1]; state.imgType = file.type;
     document.getElementById('preview-img').src = result;
     document.getElementById('preview-wrap').style.display = 'block';
-    document.getElementById('dropzone').style.display = 'none';
     document.getElementById('img-status').textContent = '🔄 AI 分析五官特徵中...';
     await analyzeImage();
   };
@@ -1966,14 +1710,15 @@ function handleFile(file) {
 }
 async function analyzeImage() {
   try {
-    if (!ANTHROPIC_API_KEY) {
-      document.getElementById('img-status').textContent = '請在 ANTHROPIC_API_KEY 填入 API Key 才能自動分析';
+    const _apiKey1 = getApiKey();
+  if (!_apiKey1) {
+      document.getElementById('img-status').textContent = '請先在設定輸入 Anthropic API Key 才能自動分析';
       updateDots(); return;
     }
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST', headers: {
         'Content-Type': 'application/json',
-        'x-api-key': ANTHROPIC_API_KEY,
+        'x-api-key': _apiKey1,
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
@@ -2008,8 +1753,6 @@ function selectQty(n) {
   trimSelections();
   document.getElementById('total-slots').textContent = 16;
   updateCounter(); updateDots();
-  renderBatchOutputPanel();
-  renderWorkspaceSummary();
   persistWorkspace();
 }
 function trimSelections() {
@@ -2729,6 +2472,7 @@ function initPresets() {
 
 function renderPresetCats() {
   const wrap = document.getElementById('preset-cats');
+  if (!wrap) return;
   wrap.innerHTML = presetCategories.map(cat => {
     const count = cat.name === '全部'
       ? presets.length
@@ -2739,6 +2483,7 @@ function renderPresetCats() {
 
 function renderPresetGrid() {
   const grid = document.getElementById('preset-grid');
+  if (!grid) return;
   const cat = getPresetCategory();
   const items = presets.filter(p => presetInCategory(p, cat));
   grid.innerHTML = items.map(p =>
@@ -2894,6 +2639,7 @@ let currentBodyCat = '全部';
 function initBodyUI() {
   initBodyRatioUI();
   const catsEl = document.getElementById('body-cats');
+  if (!catsEl) return;
   catsEl.innerHTML = `
     <div style="font-size:10px;color:rgba(0,113,227,0.7);font-weight:600;margin-bottom:5px;letter-spacing:0.06em;text-transform:uppercase;">Q 版 路 線</div>
     <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;">
@@ -2950,6 +2696,7 @@ function filterBody(cat) {
   );
   const items = bodyList.filter(b => b.cat === cat);
   const grid = document.getElementById('body-grid');
+  if (!grid) return;
   grid.innerHTML = items.map(b => {
     const isRealStyle = realStyleKeys.includes(b.key);
     const badge = isRealStyle
@@ -3165,6 +2912,7 @@ let currentOutfitCat = null;
 
 function initOutfitGrid() {
   const grid = document.getElementById('outfit-main-grid');
+  if (!grid) return;
   grid.innerHTML = Object.keys(outfitData).map(cat =>
     `<div class="c-item" id="outcat-${cat}" onclick="openOutfitCat('${cat}')"><div class="c-check">✓</div><div class="c-body"><div class="c-name">${cat}</div></div></div>`
   ).join('');
@@ -3182,7 +2930,7 @@ function selectOutfitMode(mode) {
     );
   });
   const manual = document.getElementById('outfit-manual');
-  manual.style.display = mode === 'manual' ? 'block' : 'none';
+  if (manual) manual.style.display = mode === 'manual' ? 'block' : 'none';
   if (mode === 'manual') renderOutfitTags();
   updateDots();
 }
@@ -3441,6 +3189,7 @@ const presetColors = [
 
 function initColorSwatches() {
   const wrap = document.getElementById('color-swatches');
+  if (!wrap) return;
   wrap.innerHTML = presetColors.map((col, i) =>
     `<div class="swatch" id="swatch-${i}" title="${col.name}" style="background:${col.hex}; border-color:${col.border}; ${col.gradient ? 'border-width:2px;' : ''}" onclick="toggleColor(${i})">
       <div class="sticker">✓</div>
@@ -3598,24 +3347,25 @@ function selectLayout(key) {
 
 // ── BG ──
 const bgData = {
-  white: `## BACKGROUND\nPure white (#FFFFFF) background — completely clean, solid white, no gradients, no shadows, no environmental elements`,
+  white: `## BACKGROUND\nPure white (#FFFFFF) background.\nSolid white — no transparency, no alpha channel, no gray, no gradient, no texture, no scene, no environment.\nStudio white background only.\nDesigned for JPG export — white canvas, no transparent regions.\nEach sticker panel: 370 × 320 px (max). Full sheet (4×4): 1480 × 1280 px total.`,
   ai: `## BACKGROUND\nAI-generated contextual scene background matching each panel's mood and theme\nSubtle environment, soft atmosphere, thematic setting appropriate to sticker text and character emotion`
 };
 function selectBeauty(key) {
   state.beautyFilter = key === 'on';
-  ['on','off'].forEach(k => document.getElementById('beauty-'+k).classList.toggle('active', k===key));
-  renderBatchOutputPanel();
+  ['on','off'].forEach(k => { const el = document.getElementById('beauty-'+k); if (el) el.classList.toggle('active', k===key); });
   persistWorkspace();
 }
 function selectBg(key) {
-  ['white','ai'].forEach(k => document.getElementById('bg-'+k).classList.toggle('active', k===key));
+  ['white','ai'].forEach(k => { const el = document.getElementById('bg-'+k); if (el) el.classList.toggle('active', k===key); });
   state.bgStyle = key; updateDots();
-  renderBatchOutputPanel();
   persistWorkspace();
 }
 
 // ── SCRIPT ──
 const scriptData = {
+  '日常問候': ['早安','午安','晚安','你好','在嘛','再見','加油','喔','好','不要','對不起','收到','真的假的','哈哈哈哈','這很可以','辛苦了'],
+  '好友互動': ['正在忙','吃飽沒','要去哪','等一下喔','沒問題','了解了','還沒耶','馬上來','太扯了','傻眼','我想你了','心累','謝謝你','太好啦','我也這麼覺得','改天約'],
+  '聊天回應': ['沒問題','太棒了','拜託拜託','笑死','好久不見','原來如此','誇張耶','驚喜','別這樣','想太多','借過','看著辦','加油加油','想喝什麼','好喔','晚點聊'],
   '禮貌回覆': ['感謝感謝','感恩啦','辛苦囉','辛苦你了','好的收到','OK沒問題','馬上處理','交給我吧','麻煩你囉','拜託拜託','太感謝了','我知道了','了解收到','沒事沒事','不用客氣','請多多指教'],
   '上班崩潰': ['我想下班','累到懷疑人生','今天也太累','已燃燒殆盡','不想努力了','我快不行了','崩潰中','心態炸裂','靈魂出走','今天先這樣','我需要放假','再撐一下','上班好難','眼神已死','我直接放空','精神內耗ing'],
   '敷衍搞笑': ['喔是喔','好喔~','真假啦','原來如此','蛤？？？','哈哈哈','我笑死','隨便啦','你開心就好','我不知道','先不要','太扯了吧','好像有道理','洗耳恭聽','可以不要嗎','這合理嗎'],
@@ -3705,7 +3455,7 @@ scriptData['打氣加油'] = ['你可以的！','衝衝衝','不怕失敗','今�
 const allCats = [...Object.keys(scriptData)];
 const noTextCats = ['純表情·正面積極','純旅拍大片·無文字','純表情·旅拍姿勢','純表情無字'];
 const scriptGroups = [
-  {name:'常用聊天', cats:['禮貌回覆','敷衍搞笑','日常生活','小確幸']},
+  {name:'常用聊天', cats:['日常問候','好友互動','聊天回應','禮貌回覆','敷衍搞笑','日常生活','小確幸']},
   {name:'情緒反應', cats:['純表情無字','純表情·正面積極','流行迷因','網路流行語']},
   {name:'職場上班', cats:['上班崩潰','職場社畜','辦公室生存','上班族爆款','打工日常','咖啡因依賴']},
   {name:'戀愛情侶', cats:['戀愛曖昧','戀愛撒嬌','情侶甜蜜包','告白心動','情人節','周年紀念','失戀療傷']},
@@ -4326,10 +4076,8 @@ function applyCharacterTemplate(templateId) {
     renderSelectedTags();
   }
   updatePresetStatus(`模板：${template.name}`);
-  renderWorkspaceSummary();
-  renderTemplateGroupPanel();
+  renderCharTemplateGrid();
   renderFixSuggestionPanel();
-  renderScriptComboPanel();
   renderBatchOutputPanel();
   updateDots();
   persistWorkspace();
@@ -4462,6 +4210,7 @@ function restoreWorkspace() {
     state.fontStyle = payload.fontStyle || state.fontStyle;
     state.layoutStyle = payload.layoutStyle || state.layoutStyle;
     state.bgStyle = payload.bgStyle || state.bgStyle;
+    state.borderStyle = payload.borderStyle || state.borderStyle;
     state.beautyFilter = typeof payload.beautyFilter === 'boolean' ? payload.beautyFilter : state.beautyFilter;
     state.outfitRef = typeof payload.outfitRef === 'boolean' ? payload.outfitRef : state.outfitRef;
     state.outfitAI = typeof payload.outfitAI === 'boolean' ? payload.outfitAI : state.outfitAI;
@@ -4642,24 +4391,71 @@ function combineAll(skipAutoRender = false) {
   const parts = [];
   const qtyMap = {16:'4×4 (16 panels)'};
 
-  parts.push(`## STICKER SHEET SIZE\n${qtyMap[state.qty]}\n\n## PANEL SPACING — CRITICAL\nEach sticker panel must have clear padding and separation.\nNO overlapping between stickers.\nNO content touching panel borders.\nMaintain consistent gutters between all panels.\nEach panel is a fully independent composition.`);
+  parts.push(`## STICKER SHEET SIZE\n${qtyMap[state.qty]}\nEach panel: 370 × 320 px (max per LINE spec)\nFull sheet: 1480 × 1280 px total canvas\nCharacter occupies approximately 65–75% of each panel.\nOutput format: JPG, solid white background (#FFFFFF), no transparency.\n\n## PANEL SPACING — CRITICAL\nEach sticker panel must have clear padding and separation.\nNO overlapping between stickers.\nNO content touching panel borders.\nMaintain consistent gutters between all panels.\nEach panel is a fully independent composition.\n\nMAXIMUM PANEL SEPARATION — PRIORITY\nLeave EXTRA LARGE white gutters between all panels.\nPrioritize separation over character size.\nSmaller characters are acceptable.\nPanel contamination is NEVER acceptable.\n\nANTI-CONTAMINATION SYSTEM — ABSOLUTE RULE\nNothing may cross panel boundaries.\nNo crossing hair.\nNo crossing hands.\nNo crossing feet.\nNo crossing accessories.\nNo crossing shadows.\nNo crossing glow effects.\nNo crossing speech bubbles.\nNo crossing text.\nNo crossing outlines.\nNo visual contamination of any kind.\nEach sticker must stay entirely inside its own panel.\n\nSAFE AREA\nNo cropped body parts.\nNo cropped hair.\nNo cropped accessories.\nNo cropped feet.\nNo cropped hands.\nNo cropped ears.\nNo cropped outline.\nCharacter fully visible inside panel.\nLarge safe margins on all sides.`);
 
   // character
   parts.push('## CHARACTER DESCRIPTION');
   if (state.charTab === 'img') {
     const descExtra = state.imgDesc ? `\n\nReference feature notes (supplementary):\n${state.imgDesc}` : '';
-    parts.push(`BASE CHARACTER: Use the person in the uploaded reference image as the character.
-Design this sticker character to look like the uploaded person.
-Faithfully recreate their facial features — face shape, eye shape, eyebrow style, nose, lips, skin tone, and hairstyle.${descExtra}
+    parts.push(`## ABSOLUTE PRIORITY
+The character must remain the same person as the uploaded photo.
+Do not replace identity.
+Do not generate a different face.
+Do not generate a generic AI beauty face.
+Do not generate a different hairstyle.
+Do not generate a different costume.
+Do not generate a different accessory set.
 
-## FACIAL FIDELITY — CRITICAL (Image Reference)
-This character is based on the uploaded reference image.
-Design the character to closely match the uploaded person's facial features.
-Maintain consistent facial structure, eye shape, nose, lips, and overall face across ALL panels.
+BASE CHARACTER: Use the person in the uploaded reference image as the character.
+Design this sticker character to look like the uploaded person.
+Faithfully recreate their overall appearance —
+facial features (face shape, eye shape, eyebrow style, nose, lips, skin tone),
+hairstyle and hair color,
+clothing and outfit style,
+accessories and decorative details,
+and overall visual styling shown in the uploaded image.${descExtra}
+
+## IDENTITY LOCK — CRITICAL
+Preserve original face identity.
+Preserve original face shape.
+Preserve original eye shape.
+Preserve original eyebrow shape.
+Preserve original nose shape.
+Preserve original mouth shape.
+Preserve original jawline.
+Preserve original facial proportions.
+Preserve original facial characteristics.
+Preserve original expression feeling.
+Preserve natural facial asymmetry.
+Preserve recognizable features.
+The character must clearly look like the same person.
+Keep ethnicity unchanged.
+Keep age appearance unchanged.
 DO NOT alter, distort, or generalize the facial features.
-Facial identity must remain stable and recognizable in every single sticker panel.`);
+Facial identity must remain stable and recognizable in every single sticker panel.
+
+## HAIR LOCK
+Keep original hairstyle.
+Keep original hairline.
+Keep original hair color.
+Keep original hair volume.
+Keep original bangs.
+Keep original hair silhouette.`);
   } else {
-    parts.push(document.getElementById('char-input').value.trim() || '（未填寫）');
+    const charText = document.getElementById('char-input').value.trim() || '（未填寫）';
+    parts.push(`## CHARACTER DESCRIPTION\n${charText}
+
+## CHARACTER CONSISTENCY — CRITICAL
+All 16 stickers must show the same character.
+Same face structure and facial features in every panel.
+Same hairstyle and hair color in every panel.
+Same costume and outfit in every panel.
+Same accessories and color palette in every panel.
+Only expression, pose, and gesture may change between panels.
+DO NOT generate a different face in any panel.
+DO NOT change hairstyle between panels.
+DO NOT change costume between panels.
+Maintain recognizable identity throughout the entire sheet.`);
   }
   parts.push(`## STYLE LOCK\nMaintain consistent character identity across all panels.\nSame face, same hairstyle, same outfit, same color palette in every sticker.\nNo identity drift, no costume change, no face inconsistency.`);
 
@@ -4727,7 +4523,15 @@ Keep the character dominant, high detail, high quality, refined hair, face, outf
 
   // outfit
   if (state.outfitRef) {
-    parts.push(`## OUTFIT STYLE — Reference Upload
+    parts.push(`## COSTUME LOCK — Reference Upload
+Keep original costume.
+Keep original clothing style.
+Keep original clothing colors.
+Keep original accessories.
+Keep original jewelry.
+Keep original glasses if present in the photo.
+Keep original handbag if present in the photo.
+Keep original color palette.
 Base the outfit, costume, accessories, and decorative details DIRECTLY on the uploaded reference image.
 Faithfully reproduce the clothing style, colors, patterns, and accessories shown in the reference.
 DO NOT replace or substitute the outfit — maintain the same garment design as uploaded.
@@ -4781,6 +4585,11 @@ You may enhance details for sticker quality, but the core outfit must match the 
   // bg
   parts.push(bgData[state.bgStyle]);
 
+  // border
+  if (state.borderStyle === 'outline') {
+    parts.push(`## STICKER BORDER STYLE — OUTLINED\nEach character must have a clean white border outline around the entire figure.\nOutline width: 3-5px consistent stroke around the character silhouette.\nThis is the traditional LINE sticker outlined style.\nThe white border must be clearly visible against any background.\nDO NOT let the border break or become irregular around complex details like hair strands.`);
+  }
+
   // beauty filter
   if (state.beautyFilter) {
     parts.push(`## FACE BEAUTY FILTER — ENABLED
@@ -4809,13 +4618,16 @@ NOT over-filtered or uncanny — naturally beautiful and attractive refinement o
       if (isSilent) {
         lines.push(`Panel ${i+1}: NO TEXT. Visual emotion/pose: 「${v}」. Mood: ${detail.mood}. Action: ${detail.action}. Scene use: ${detail.scene}. ABSOLUTELY NO TEXT in this panel, zero words, pure visual expression only.`);
       } else {
-        lines.push(`Panel ${i+1}: Text 「${v}」. Mood: ${detail.mood}. Character action: ${detail.action}. Chat context: ${detail.scene}. Make the text readable, but make the character performance carry the emotion.`);
+        lines.push(`Panel ${i+1}: Exact text 「${v}」. Use this phrase exactly as written, no rewriting, no extra words. Mood: ${detail.mood}. Character action: ${detail.action}. Chat context: ${detail.scene}. Make the text readable, but make the character performance carry the emotion.`);
       }
     });
     lines.push('', '## SCRIPT RULES');
+    lines.push('Map the script line-by-line: Panel 1 uses line 1, Panel 2 uses line 2, and so on.');
+    lines.push('Do NOT merge, swap, summarize, translate, or add extra text beyond the listed phrase for each panel.');
     lines.push('Every panel must have a DIFFERENT pose, expression, and gesture — NO repeated poses.');
     lines.push('Text: Traditional Chinese only (繁體中文) — stroke-perfect, immediately readable.');
-    lines.push('Text occupies max 40% panel area — character remains dominant visual element.');
+    lines.push('Place each phrase inside its own panel only; text must never spill into another panel.');
+    lines.push('Text occupies max 35% panel area and must not cover the face, hands, or key gesture — character remains dominant visual element.');
     parts.push(lines.join('\n'));
   }
 
@@ -4828,6 +4640,8 @@ character must remain the DOMINANT visual element occupying at least 50% of the 
 text is a SUPPORTING element — complement the character, NOT overpower or hide it,
 reduce font size by 4 levels compared to default — smaller, more refined, more balanced,
 DO NOT let text cover or crowd the character,
+DO NOT place text over the face, eyes, mouth, hands, or main gesture,
+each panel text must stay inside that panel only, with clear padding from borders and gutters,
 DO NOT make text the dominant element,
 ideal ratio: character 55% visual weight, text 35% visual weight, decoration 10%
 
@@ -5057,7 +4871,7 @@ function clearScriptEditor() {
 function copyScriptEditor() {
   const ta = document.getElementById('script-edit-area');
   if (!ta) return;
-  copyToClipboard(ta.value.trim(), ta);
+  copyToClipboard(ta.value.trim(), document.getElementById('copy-script-btn'));
 }
 
 function fillScriptToSlots() {
@@ -5109,45 +4923,29 @@ function sortScriptEditor() {
 // ── INIT ──
 initCats();
 filterScripts();
-initOutfitGrid();
-initColorSwatches();
 initFontUI();
 initBodyUI();
-initPresets();
 restoreWorkspace();
-renderTemplateGroupSummary();
-renderTemplateGroupPanel();
-renderOutputFormatToolbar();
-renderScriptComboPanel();
-renderBatchOutputPanel();
-updatePresetStatus();
-selectBody(state.bodyStyle || 'popmart');
-selectFont(state.fontStyle || 'ai');
-selectLayout(state.layoutStyle || 'random');
-selectBg(state.bgStyle || 'white');
-selectBeauty(state.beautyFilter ? 'on' : 'off');
-selectOutfitMode(state.outfitRef ? 'ref' : state.outfitAI ? 'ai' : 'manual');
-document.getElementById(`qty-${state.qty}`)?.click();
-if (state.currentTemplateId) {
-  renderWorkspaceSummary();
+// 首次開啟（無 localStorage）時預載第一組日常生活用語
+if (state.customItems.length === 0 && state.scriptSelected.length === 0) {
+  const defaultCombo = scriptQuickCombos.find(c => c.id === 'daily-life-1');
+  if (defaultCombo) {
+    state.customItems = defaultCombo.lines.slice(0, state.qty);
+  }
 }
+selectFont(state.fontStyle || 'ai');
+selectBg(state.bgStyle || 'white');
+selectBorder(state.borderStyle || 'none');
+// restore body preset buttons
+const isReal = ['semirealistic','korean','photo','beauty','kbeauty','chinese_beauty','ethereal','cinematic'].includes(state.bodyStyle);
+document.getElementById('style-q').classList.toggle('active', !isReal);
+document.getElementById('style-real').classList.toggle('active', isReal);
+document.getElementById(`qty-${state.qty}`)?.click();
 updateCounter();
 updateDots();
-renderFixSuggestionPanel();
-renderBatchOutputPanel();
-renderWorkspaceSummary();
 persistWorkspace();
-setWorkspaceMode(state.workspaceMode || 'focus');
-toggleAdvancedSettings(state.advancedSettingsVisible);
-renderAdvancedSummary();
-renderSmartRecommendations();
 
-function getAdvancedSections() {
-  return [...document.querySelectorAll('.section')].filter(section => {
-    const num = section.querySelector('.section-num')?.textContent?.trim();
-    return ['3', '4', '4.5', '5', '6', '7', '8'].includes(num);
-  });
-}
+function getAdvancedSections() { return []; }
 
 function getTemplateRecommendation() {
   const report = getScriptHealthReport();
@@ -5231,7 +5029,7 @@ function smartFillWorkspace() {
   if (!state.layoutStyle || state.layoutStyle === 'random') selectLayout('random');
   if (!state.bgStyle) selectBg('white');
   if (getAllScriptLines().length < state.qty) fillScriptToSlots();
-  if (getFixSuggestions().some(item => item.severity !== '蝛拙?')) blendToneScriptEditor();
+  if (getFixSuggestions().some(item => item.severity !== '穩定')) blendToneScriptEditor();
   setBatchMode('all');
   renderSmartRecommendations();
   renderAdvancedSummary();
@@ -5369,8 +5167,9 @@ function setAIMode(mode) {
 
 async function generateAIImagePrompt() {
   if (!aiImg.base64) { alert('請先上傳圖片'); return; }
-  if (!ANTHROPIC_API_KEY) {
-    document.getElementById('ai-prompt-result').textContent = '請在程式碼的 ANTHROPIC_API_KEY 填入 API Key 才能使用 AI 分析。';
+  const _apiKey2 = getApiKey();
+  if (!_apiKey2) {
+    document.getElementById('ai-prompt-result').textContent = '請先在設定輸入 Anthropic API Key 才能使用 AI 分析。';
     return;
   }
   const prompts = {
@@ -5383,7 +5182,7 @@ async function generateAIImagePrompt() {
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type':'application/json', 'x-api-key':ANTHROPIC_API_KEY, 'anthropic-version':'2023-06-01' },
+      headers: { 'Content-Type':'application/json', 'x-api-key':getApiKey(), 'anthropic-version':'2023-06-01' },
       body: JSON.stringify({
         model: 'claude-sonnet-4-6', max_tokens: 900,
         system: prompts[aiImg.mode] || prompts.feature,

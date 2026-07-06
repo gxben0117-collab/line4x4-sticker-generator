@@ -10,9 +10,8 @@
 
 ## 目前版本
 
-- 正式頁面版本：`v2.0.9`
-- 最新快照：`versions/貼圖line4x4咒語產生器-v2.0.8.html`
-- 文件版號：`V2.09`
+- 正式頁面版本：`v2.5.0`
+- 最新快照：`versions/貼圖line4x4咒語產生器-v2.5.0.html`
 
 ## 功能摘要
 
@@ -35,13 +34,13 @@ scripts/
   build.mjs         複製 index.html → dist/
   lint.mjs          結構快速檢查（版本、函式、UI 節點）
 tests/
-  smoke.test.mjs    15 項 smoke test
+  smoke.test.mjs    smoke test 套件
 docs/
   README.md         文件索引
-  版本規則.md        版本升級流程
   project/          專案總覽、程式邏輯說明、HANDOFF
   development-log/  各版本開發紀錄
-  process/          文件維護流程
+  process/          部署說明、404 排除、維護流程
+  archive/          實驗設計稿與舊版備份（不參與 build）
 ```
 
 ## API Key 設定（選用）

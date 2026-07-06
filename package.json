@@ -1,8 +1,8 @@
 {
-  "name": "hongbing-codex-sticker-prompt-generator",
-  "version": "1.0.0",
+  "name": "sticker-line4x4-prompt-generator",
+  "version": "2.5.0",
   "private": true,
-  "description": "Static prompt generator for Hongbing LINE sticker creation prompts.",
+  "description": "LINE 4×4 sticker prompt generator — builds ChatGPT-ready prompts for LINE sticker sheet production.",
   "scripts": {
     "build": "node scripts/build.mjs",
     "lint": "node scripts/lint.mjs",

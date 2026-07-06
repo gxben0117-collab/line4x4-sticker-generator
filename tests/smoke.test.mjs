@@ -2,9 +2,12 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readdir, readFile } from "node:fs/promises";
 
+const { version } = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
+const CURRENT_VERSION = `v${version}`;
+
 test("main html has expected title version", async () => {
   const html = await readFile("index.html", "utf8");
-  assert.ok(html.includes("v2.5.0"));
+  assert.ok(html.includes(CURRENT_VERSION));
 });
 
 test("page title uses new project name", async () => {
@@ -105,6 +108,14 @@ test("script output rules keep text usable for sticker generation", async () => 
   assert.ok(html.includes("Map the script line-by-line"), "script must map line by line");
   assert.ok(html.includes("Do NOT merge, swap, summarize, translate, or add extra text"));
   assert.ok(html.includes("DO NOT place text over the face"));
+});
+
+test("script editor warns when sticker text is too long", async () => {
+  const html = await readFile("index.html", "utf8");
+  assert.ok(html.includes("line.length >= 7"), "7+ character lines should be flagged");
+  assert.ok(html.includes("7 字以上建議縮短"), "editor status should warn about long sticker text");
+  assert.ok(html.includes("建議將 7 字以上句子縮成 4-6 字"));
+  assert.ok(html.includes(".script-editor-status.warn"));
 });
 
 test("image upload dropzone is functional", async () => {

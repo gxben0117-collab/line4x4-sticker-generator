@@ -2,7 +2,8 @@
 // index.html after edits. Update CURRENT_VERSION when bumping the version.
 import { readFile } from "node:fs/promises";
 
-const CURRENT_VERSION = "v2.4.0";
+const { version } = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
+const CURRENT_VERSION = `v${version}`;
 
 const html = await readFile("index.html", "utf8");
 

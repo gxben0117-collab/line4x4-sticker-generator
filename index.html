@@ -474,6 +474,7 @@ header::after {
 .tool-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
 .tool-row button { flex:1; min-width:120px; }
 .script-editor-status { font-size:11px; color:var(--accent-dark); padding:5px 12px; border-radius:999px; background:var(--accent-light); border:1px solid rgba(0,113,227,0.14); }
+.script-editor-status.warn { color:#9f4b00; background:#fff7ed; border-color:#fed7aa; }
 .script-editor-help { font-size:11px; color:var(--text-hint); line-height:1.6; }
 .s-item { border:1px solid var(--border); border-radius:var(--radius); padding:9px 12px; cursor:pointer; background:var(--surface); transition:all 0.15s var(--ease); }
 .s-item:hover { border-color:rgba(0,113,227,0.22); background:var(--accent-light); }
@@ -3657,7 +3658,7 @@ function getScriptHealthReport() {
     }
   });
   const shortLines = lines.filter(line => line.length <= 2);
-  const longLines = lines.filter(line => line.length >= 8);
+  const longLines = lines.filter(line => line.length >= 7);
   const toneCounts = {};
   const sceneCounts = {};
   lines.forEach((line) => {
@@ -3709,7 +3710,7 @@ function getFixSuggestions() {
       severity: '提醒',
       title: '有過長句',
       detail: `過長句包含：${report.longLines.join('、')}`,
-      action: '建議將 8 字以上句子縮成 4-6 字，保留最有辨識度的核心情緒與動作。'
+      action: '建議將 7 字以上句子縮成 4-6 字，保留最有辨識度的核心情緒與動作。'
     });
   }
   if (report.dominantToneCount >= Math.max(6, Math.ceil(report.lines.length * 0.55))) {
@@ -4351,9 +4352,17 @@ function updateCounter() {
   document.getElementById('total-slots').textContent = state.qty;
   const status = document.getElementById('script-editor-status');
   if (status) {
-    status.textContent = count >= state.qty
-      ? `腳本已補滿 ${count}/${state.qty} 格`
-      : `腳本尚差 ${state.qty - count} 格`;
+    const longLines = getAllScriptLines().filter(line => line.length >= 7);
+    status.classList.toggle('warn', longLines.length > 0);
+    if (longLines.length) {
+      const examples = longLines.slice(0, 3).join('、');
+      const suffix = longLines.length > 3 ? ` 等 ${longLines.length} 句` : '';
+      status.textContent = `7 字以上建議縮短：${examples}${suffix}`;
+    } else {
+      status.textContent = count >= state.qty
+        ? `腳本已補滿 ${count}/${state.qty} 格`
+        : `腳本尚差 ${state.qty - count} 格`;
+    }
   }
 }
 
