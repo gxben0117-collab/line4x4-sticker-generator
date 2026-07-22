@@ -5,6 +5,41 @@ import { readdir, readFile } from "node:fs/promises";
 const { version } = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
 const CURRENT_VERSION = `v${version}`;
 
+function extractConstArray(html, constName, nextToken) {
+  const start = html.indexOf(`const ${constName} = [`);
+  const end = html.indexOf(nextToken, start);
+  assert.ok(start >= 0 && end > start, `${constName} block must exist`);
+  return new Function(`${html.slice(start, end)}; return ${constName};`)();
+}
+
+function extractScriptData(html) {
+  const start = html.indexOf("const scriptData = {");
+  const end = html.indexOf("const allCats", start);
+  assert.ok(start >= 0 && end > start, "scriptData block must exist");
+  return new Function(`${html.slice(start, end)}; return scriptData;`)();
+}
+
+function extractScriptTaxonomy(html) {
+  const start = html.indexOf("const scriptTaxonomy = [");
+  const end = html.indexOf("const hotFirst", start);
+  assert.ok(start >= 0 && end > start, "scriptTaxonomy block must exist");
+  return new Function(`${html.slice(start, end)}; return scriptTaxonomy;`)();
+}
+
+function extractEmotionCards(html) {
+  const start = html.indexOf("const EMOTION_CARDS = [");
+  const end = html.indexOf("const EMOTION_MAP", start);
+  assert.ok(start >= 0 && end > start, "EMOTION_CARDS block must exist");
+  return new Function(`${html.slice(start, end)}; return EMOTION_CARDS;`)();
+}
+
+function extractModeTagHelpers(html) {
+  const start = html.indexOf("function stripModeTag");
+  const end = html.indexOf("function selectCreationMode", start);
+  assert.ok(start >= 0 && end > start, "mode tag helpers must exist");
+  return new Function(`${html.slice(start, end)}; return { stripModeTag, parseModeTag };`)();
+}
+
 test("main html has expected title version", async () => {
   const html = await readFile("index.html", "utf8");
   assert.ok(html.includes(CURRENT_VERSION));
@@ -42,6 +77,73 @@ test("V3 taxonomy, hot-100 and script search exist", async () => {
   assert.ok(html.includes('id="script-search"'), "script search input must exist");
   assert.ok(html.includes("const scriptSubData = {}"), "sub-category data must be derived");
   assert.ok(!html.includes("�"), "no mojibake characters in data");
+});
+
+test("V3 script taxonomy is internally consistent", async () => {
+  const html = await readFile("index.html", "utf8");
+  const scriptData = extractScriptData(html);
+  const hotSentences = extractConstArray(html, "HOT_SENTENCES", "const HOT_SET");
+  const taxonomy = extractScriptTaxonomy(html);
+
+  assert.equal(hotSentences.length, 100, "hot list should be exactly 100 sentences");
+  assert.equal(new Set(hotSentences).size, 100, "hot list should not contain duplicates");
+
+  const allSentences = new Set(Object.values(scriptData).flat());
+  const missingHot = hotSentences.filter((line) => !allSentences.has(line));
+  assert.deepEqual(missingHot, [], "hot sentences must exist in scriptData");
+
+  const mappedCats = new Set(
+    taxonomy.flatMap((main) => main.subs.flatMap((sub) => sub.cats)),
+  );
+  const missingCats = Object.keys(scriptData).filter((cat) => !mappedCats.has(cat));
+  const staleCats = [...mappedCats].filter((cat) => !scriptData[cat]);
+  assert.deepEqual(missingCats, [], "all old scriptData categories must map to V3 taxonomy");
+  assert.deepEqual(staleCats, [], "V3 taxonomy should not reference missing old categories");
+
+  assert.equal(taxonomy[0].name, "熱門100", "hot-100 should remain first");
+  assert.equal(taxonomy.at(-1).name, "特殊主題", "low-priority special topics should remain last");
+});
+
+test("V4: three creation modes (character/emotion/text) are merged into one tool", async () => {
+  const html = await readFile("index.html", "utf8");
+  assert.ok(html.includes("creationMode: 'character'"), "creationMode must default to character (backward compatible)");
+  assert.ok(html.includes('id="creation-mode-switch"'), "mode switch UI must exist");
+  assert.ok(html.includes("function selectCreationMode"), "mode switch handler must exist");
+  assert.ok(html.includes("const EMOTION_CARDS = ["), "emotion card data must exist");
+  assert.ok(html.includes("function renderEmotionPicker"), "emotion picker must exist");
+  assert.ok(html.includes("function toggleEmotionCard"), "emotion card toggle must exist");
+  assert.ok(html.includes("EMOTION+FX PANEL"), "combineAll must branch for emotion-mode panels");
+  assert.ok(html.includes("TEXT-HERO PANEL"), "combineAll must branch for text-hero-mode panels");
+  assert.ok(html.includes("function buildCoverPrompt"), "main/tab cover image prompt builder must exist");
+  assert.ok(html.includes('id="cover-main-btn"') && html.includes('id="cover-tab-btn"'), "cover image buttons must exist");
+});
+
+test("V4: emotion card data is well-formed and unique", async () => {
+  const html = await readFile("index.html", "utf8");
+  const cards = extractEmotionCards(html);
+  assert.ok(cards.length >= 20, "should have a healthy spread of emotion cards");
+  assert.equal(new Set(cards.map((c) => c.name)).size, cards.length, "emotion card names must be unique");
+  for (const card of cards) {
+    assert.ok(card.face && card.face.length > 0, `card "${card.name}" must have a face description`);
+    assert.ok(card.bgFx && card.bgFx.length > 0, `card "${card.name}" must have a background FX description`);
+  }
+});
+
+test("V4: mode tag parsing is backward compatible and correctly tagged", async () => {
+  const html = await readFile("index.html", "utf8");
+  const { stripModeTag, parseModeTag } = extractModeTagHelpers(html);
+  assert.deepEqual(parseModeTag("早安"), { mode: "character", text: "早安" }, "untagged lines must default to character mode");
+  assert.deepEqual(parseModeTag("[情緒] 晴天霹靂"), { mode: "emotion", text: "晴天霹靂" });
+  assert.deepEqual(parseModeTag("[文字] 早安"), { mode: "text", text: "早安" });
+  assert.equal(stripModeTag("[情緒] 晴天霹靂"), "晴天霹靂");
+  assert.equal(stripModeTag("早安"), "早安", "stripModeTag must be a no-op on untagged lines");
+});
+
+test("V4: green chroma-key background is the new default", async () => {
+  const html = await readFile("index.html", "utf8");
+  assert.ok(html.includes("bgStyle: 'green'"), "bgStyle must default to green");
+  assert.ok(html.includes("green: `## BACKGROUND"), "bgData must define a green key entry");
+  assert.ok(html.includes('id="bg-green"'), "green background option must exist in the UI");
 });
 
 test("workflow shell and navigation helpers are present", async () => {

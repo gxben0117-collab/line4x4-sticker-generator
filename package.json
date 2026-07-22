@@ -1,10 +1,12 @@
 {
   "name": "sticker-line4x4-prompt-generator",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "private": true,
   "description": "LINE 4×4 sticker prompt generator — builds ChatGPT-ready prompts for LINE sticker sheet production.",
   "scripts": {
     "build": "node scripts/build.mjs",
+    "docs:sentences": "node scripts/build-sentences-report.mjs",
+    "docs:taxonomy": "node scripts/build-taxonomy-v3.mjs",
     "lint": "node scripts/lint.mjs",
     "test": "node --test tests/*.mjs",
     "start": "npx serve .",
