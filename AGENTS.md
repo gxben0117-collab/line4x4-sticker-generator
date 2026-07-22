@@ -16,4 +16,10 @@
 
 ## 目前狀態與下一步
 
-（每次收工前更新，供下一個 AI 接手。）
+- 2026-07-09：Codex 已完成 V3-lite 文件與實作一致性收斂：
+  `HOT_SENTENCES` 確認為正式 100 句，`docs/line-sticker-taxonomy-v3.md`、
+  `docs/line-sticker-sentences-v3-draft.md`、`docs/line-sticker-sentences.md`
+  已與 `index.html` 實際句庫同步；新增 `scripts/build-sentences-report.mjs` 與
+  `docs:sentences` / `docs:taxonomy` 維護指令；測試補上熱門100與 taxonomy 完整性檢查。
+- 下一步：若要再動內容，優先人工審 `docs/line-sticker-sentences-v3-draft.md`
+  裡的 7 字以上 ⚠ 句子；暫不建議做自動縮句，以免破壞貼圖語氣。
