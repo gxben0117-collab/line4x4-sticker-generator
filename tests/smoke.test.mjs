@@ -143,15 +143,16 @@ test("V4: mode tag parsing is backward compatible and correctly tagged", async (
   assert.equal(stripModeTag("早安"), "早安", "stripModeTag must be a no-op on untagged lines");
 });
 
-test("chroma-key green is back as the recommended default background", async () => {
+test("three chroma-key background colors (green/blue/magenta) plus white/AI", async () => {
   const html = await readFile("index.html", "utf8");
   assert.ok(html.includes("bgStyle: 'green'"), "bgStyle must default to green");
-  assert.ok(html.includes('id="bg-green"'), "green background option must exist in the UI");
-  assert.ok(html.includes("selectBg('green')"), "green option must be selectable");
-  assert.ok(html.includes("#00FF00"), "must use the standard pure chroma-key green, not an off-shade");
-  assert.ok(html.includes("no shadow") && html.includes("no floor or ground plane") && html.includes("safe margin"),
-    "green background prompt must cover the practices that actually affect keying success (no shadow/floor, safe margin)");
-  assert.ok(["green","white","ai"].every((k) => html.includes(`id="bg-${k}"`)), "all three background options must exist");
+  assert.ok(html.includes("#00FF00"), "green must be the standard pure chroma-key shade");
+  assert.ok(html.includes("#0000FF"), "blue chroma-key option must exist, for characters with lots of green");
+  assert.ok(html.includes("#FF00FF"), "magenta chroma-key option must exist, for characters with green and blue");
+  assert.ok(/no shadow/i.test(html) && /no floor or ground plane/i.test(html) && html.includes("safe margin"),
+    "chroma-key background prompt must cover the practices that actually affect keying success (no shadow/floor, safe margin)");
+  assert.ok(["green","blue","magenta","white","ai"].every((k) => html.includes(`id="bg-${k}"`)), "all five background options must exist");
+  assert.ok(["green","blue","magenta","white","ai"].every((k) => html.includes(`selectBg('${k}')`)), "all five background options must be selectable");
 });
 
 test("workflow shell and navigation helpers are present", async () => {
