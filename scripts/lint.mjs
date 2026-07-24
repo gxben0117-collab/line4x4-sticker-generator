@@ -42,7 +42,7 @@ const requiredSnippets = [
   "inkdoodle",
   "水墨手寫",
   // Output rules
-  "Exact text",
+  "no merging, swapping, summarizing, translating",
   "Map the script line-by-line",
   "do not cover the face",
   // Hero UI elements

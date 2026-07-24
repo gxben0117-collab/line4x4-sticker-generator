@@ -2556,11 +2556,12 @@ function scriptCatsForText(text) {
 function isNoTextScript(text) {
   return noTextCats.some(cat => scriptData[cat]?.includes(text));
 }
+const GENERIC_SCRIPT_MOOD = '清楚、有貼圖感、情緒一眼可讀';
 function scriptDetail(text) {
   const cats = scriptCatsForText(text);
   const catText = cats.join('、');
   const has = (...keys) => keys.some(k => catText.includes(k) || text.includes(k));
-  let mood = '清楚、有貼圖感、情緒一眼可讀';
+  let mood = GENERIC_SCRIPT_MOOD;
   let action = '使用明確手勢與誇張但可愛的肢體語言';
   let scene = 'LINE 聊天常用回覆情境';
 
@@ -2685,7 +2686,7 @@ function scriptDetail(text) {
     action = '握拳衝鋒、舉起雙手振臂或放射光芒';
     scene = '互相激勵、正能量傳遞、考前工作前打氣';
   }
-  return { mood, action, scene };
+  return { mood, action, scene, isGeneric: mood === GENERIC_SCRIPT_MOOD };
 }
 
 function getAllScriptLines() {
@@ -3389,37 +3390,39 @@ Keep original costume, clothing style and colors, accessories, jewelry, color pa
   }
 
   // script
-  let usesTextHero = false;
+  let usesTextHero = false, usesEmotion = false, usesSilent = false;
   const allSelected = [...state.scriptSelected, ...state.customItems];
   if (allSelected.length > 0) {
     const lines = [`## STICKER SCRIPT (${allSelected.length} / ${state.qty} panels)`, ''];
     allSelected.forEach((raw, i) => {
       const { mode, text: v } = parseModeTag(raw);
       if (mode === 'emotion') {
+        usesEmotion = true;
         const card = EMOTION_MAP.get(v);
         const emotionName = card ? card.name : v;
-        lines.push(`Panel ${i+1}: Character reacts with an exaggerated 「${emotionName}」-style expression and matching background effect, manga/meme reaction-panel style. No text. Use your own judgment for the exact pose and effect details.`);
+        lines.push(`Panel ${i+1}: [EMOTION-FX] 「${emotionName}」`);
       } else if (mode === 'text') {
         usesTextHero = true;
-        lines.push(`Panel ${i+1}: Large stylized text 「${v}」 is the entire content of this panel, artistic typography/poster-style layout. No character. Use your own judgment for the exact layout and decoration.`);
+        lines.push(`Panel ${i+1}: [TEXT-ONLY] 「${v}」`);
       } else {
         const isSilent = isNoTextScript(v);
         const detail = scriptDetail(v);
+        const hint = detail.isGeneric ? '' : ` — ${detail.mood}`;
         if (isSilent) {
-          lines.push(`Panel ${i+1}: NO TEXT. Visual emotion/pose: 「${v}」. Mood: ${detail.mood}. Action: ${detail.action}. Scene use: ${detail.scene}. ABSOLUTELY NO TEXT in this panel, zero words, pure visual expression only.`);
+          usesSilent = true;
+          lines.push(`Panel ${i+1}: [NO-TEXT POSE] 「${v}」${hint}`);
         } else {
-          lines.push(`Panel ${i+1}: Exact text 「${v}」. Use this phrase exactly as written, no rewriting, no extra words. Mood: ${detail.mood}. Character action: ${detail.action}. Chat context: ${detail.scene}. Make the text readable, but make the character performance carry the emotion.`);
+          lines.push(`Panel ${i+1}: 「${v}」${hint}`);
         }
       }
     });
     lines.push('', '## SCRIPT RULES');
-    lines.push('Map the script line-by-line: Panel 1 uses line 1, Panel 2 uses line 2, and so on.');
-    lines.push('Do NOT merge, swap, summarize, translate, or add extra text beyond the listed phrase for each panel.');
-    lines.push('Every panel must have a DIFFERENT pose, expression, and gesture — NO repeated poses.');
-    lines.push('Text: Traditional Chinese only (繁體中文) — stroke-perfect, immediately readable.');
-    lines.push('Place each phrase inside its own panel only; text must never spill into another panel.');
-    if (usesTextHero) lines.push('Text-only panels (no character) are exempt from the 50/50 text/character balance rule below.');
-    else lines.push('Text occupies roughly 45-50% of panel area, sharing visual weight evenly with the character (~50/50) — must not cover the face, hands, or key gesture.');
+    lines.push('Map the script line-by-line: Panel 1 uses line 1, Panel 2 uses line 2, and so on. Use each phrase exactly as written — no merging, swapping, summarizing, translating, or adding extra text.');
+    lines.push('Every panel must have a DIFFERENT pose, expression, and gesture — the character\'s performance carries the emotion; text stays readable but never dominates.');
+    lines.push('Text: Traditional Chinese only (繁體中文) — stroke-perfect, immediately readable. Each phrase stays inside its own panel, never spilling into another.');
+    if (usesTextHero) lines.push('[TEXT-ONLY] panels are exempt from the text/character balance rule below: pure typography, poster-style layout, NO character at all — use your own judgment for the exact design.');
+    if (usesEmotion) lines.push('[EMOTION-FX] panels: exaggerated manga/meme-style reaction — expression + matching background FX act out the named emotion, ABSOLUTELY no text — use your own judgment for the exact pose and effect.');
+    if (usesSilent) lines.push('[NO-TEXT POSE] panels: pure visual expression/pose only, zero text.');
     parts.push(lines.join('\n'));
   }
 

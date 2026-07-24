@@ -217,9 +217,8 @@ test("workspace storage key uses new project namespace", async () => {
 
 test("script output rules keep text usable for sticker generation", async () => {
   const html = await readFile("index.html", "utf8");
-  assert.ok(html.includes("Exact text"), "panel text must be exact");
   assert.ok(html.includes("Map the script line-by-line"), "script must map line by line");
-  assert.ok(html.includes("Do NOT merge, swap, summarize, translate, or add extra text"));
+  assert.ok(html.includes("no merging, swapping, summarizing, translating"));
   assert.ok(html.includes("do not cover the face"));
 });
 
@@ -333,16 +332,13 @@ test("quick-pack panel filters by creation mode", async () => {
   assert.ok(body.includes("comboCreationMode(combo) === state.creationMode"), "combo panel must only list packs matching the active creation mode");
 });
 
-test("text-hero panels are pure text with no character, and emotion panels trust the model on details", async () => {
+test("text-hero and emotion panels use short per-panel tags, with the mode explained once (not repeated per panel)", async () => {
   const html = await readFile("index.html", "utf8");
-  const start = html.indexOf("mode === 'text'");
-  const end = html.indexOf("lines.push", start);
-  const body = html.slice(start, html.indexOf(";", end) + 1);
-  assert.match(body, /No character/, "text-hero per-panel instruction must exclude the character entirely");
-  const emoStart = html.indexOf("mode === 'emotion'");
-  const emoEnd = html.indexOf("lines.push", emoStart);
-  const emoBody = html.slice(emoStart, html.indexOf(";", emoEnd) + 1);
-  assert.match(emoBody, /Use your own judgment/, "emotion panel instruction should stay brief and trust the model for exact execution");
+  assert.ok(html.includes("[TEXT-ONLY] 「${v}」"), "text-hero panels must be a short tagged line, not a repeated full sentence");
+  assert.ok(html.includes("[EMOTION-FX] 「${emotionName}」"), "emotion panels must be a short tagged line, not a repeated full sentence");
+  assert.ok(html.includes("[NO-TEXT POSE] 「${v}」"), "silent panels must be a short tagged line, not a repeated full sentence");
+  assert.match(html, /\[TEXT-ONLY\] panels[^`]*NO character[^`]*use your own judgment/, "TEXT-ONLY explanation (stated once) must exclude the character and defer details to the model");
+  assert.match(html, /\[EMOTION-FX\] panels[^`]*no text[^`]*use your own judgment/i, "EMOTION-FX explanation (stated once) must forbid text and defer details to the model");
 });
 
 test("empty character-text fallback still describes a drawable character", async () => {

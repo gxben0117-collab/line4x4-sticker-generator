@@ -16,6 +16,26 @@
 
 ## 目前狀態與下一步
 
+- 2026-07-24（上午，修「每格咒語重複」問題）：
+  使用者實際貼出兩份 16 格咒語輸出，發現 `combineAll()` 的 `## STICKER SCRIPT` 段落每一格
+  都重複同一大段固定句子（一般模式：「Use this phrase exactly as written...Make the text
+  readable, but make the character performance carry the emotion.」；情緒特效模式：「Character
+  reacts with an exaggerated...manga/meme reaction-panel style. No text. Use your own judgment
+  for the exact pose and effect details.」），16 格重複 16 次，`scriptDetail()` 又對大多數常見
+  短句（沒問題、太棒了、原來如此等）回傳同一組預設 mood/action/scene，等於重複又更重複。
+  改法：
+  1. `scriptDetail()` 新增 `isGeneric` 旗標（`mood === GENERIC_SCRIPT_MOOD` 時為 true），
+     只有真的命中特定分類（職場/戀愛/節日/迷因…等）才附加簡短 mood 提示，命中不到分類的一般
+     短句（大多數熱門100句）就不再附加任何贅字。
+  2. 每格咒語改成極短標籤格式：一般模式 `Panel N: 「文字」${有分類時才加 — mood}`、情緒特效
+     `Panel N: [EMOTION-FX] 「情緒卡名稱」`、純文字主體 `Panel N: [TEXT-ONLY] 「文字」`、
+     無字表情 `Panel N: [NO-TEXT POSE] 「文字」`。
+  3. 原本每格都重複的說明句（不可改寫文字、情緒特效不寫文字、純文字不出角色…）全部搬到
+     `## SCRIPT RULES` 區塊裡「只講一次」，用 `usesTextHero`/`usesEmotion`/`usesSilent` 判斷
+     要不要附加對應標籤的說明段落。
+  用使用者提供的兩組真實 16 句測試過：一般模式 12/16 格現在完全不加贅字、只有 4 格真正命中
+  分類才加簡短 mood；情緒特效/純文字主體每格從一長句砍到 3-5 個字的標籤格式。
+  補了對應測試，build/lint/test 32 項全過。
 - 2026-07-24（清晨，全專案死程式碼大掃除 + 咒語內容精簡）：
   使用者要求「全專案檢查，將沒用到的功能、程式碼、咒語去除掉」。先派一個 fork 對 index.html
   做完整可達性分析（哪些 function／資料／CSS class 從使用者實際操作路徑永遠碰不到），抓出：
