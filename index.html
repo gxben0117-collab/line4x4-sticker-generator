@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LINE 貼圖 4×4 咒語產生器 v2.7.0</title>
+<title>LINE 貼圖 4×4 咒語產生器 v2.8.0</title>
 <style>
 :root {
   --bg: #f5f5f7;
@@ -93,94 +93,6 @@ header p {
   background: rgba(255,255,255,0.2);
   border-color: rgba(255,255,255,0.32);
   transform: translateY(-1px);
-}
-
-/* ── PRESET DOCK ── */
-.preset-dock {
-  position: sticky;
-  top: 8px;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 11px 20px;
-  margin-bottom: 20px;
-  border: 1px solid rgba(255,255,255,0.65);
-  border-radius: 999px;
-  background: var(--surface-glass);
-  backdrop-filter: blur(24px) saturate(1.6);
-  -webkit-backdrop-filter: blur(24px) saturate(1.6);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1px 0 rgba(255,255,255,0.8) inset;
-}
-.preset-dock strong { font-size:12px; color:var(--text); font-weight:600; }
-.preset-dock span { font-size:11px; color:var(--text-muted); }
-.preset-dock-actions { display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end; }
-.workflow-strip { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:10px; margin:14px 0 18px; }
-.workflow-card { border:1px solid var(--border); border-radius:var(--radius-lg); background:var(--surface-glass); padding:12px 14px; box-shadow:var(--shadow-sm); }
-.workflow-card b { display:block; font-size:13px; color:var(--text); margin-bottom:4px; }
-.workflow-card p { font-size:11px; line-height:1.6; color:var(--text-muted); }
-.workflow-card button { width:100%; margin-top:8px; }
-.focus-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-.smart-panel {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-.smart-card {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(247,248,252,0.96) 100%);
-  padding: 14px;
-  box-shadow: var(--shadow-sm);
-}
-.smart-card strong {
-  display: block;
-  font-size: 13px;
-  margin-bottom: 6px;
-}
-.smart-card p {
-  font-size: 12px;
-  color: var(--text-muted);
-  line-height: 1.6;
-}
-.smart-card .mini-note {
-  display: block;
-  margin-top: 8px;
-  font-size: 11px;
-  color: var(--text-hint);
-}
-.advanced-summary-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.advanced-pill {
-  font-size: 11px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(0,113,227,0.08);
-  color: var(--accent-dark);
-  border: 1px solid rgba(0,113,227,0.14);
-}
-.advanced-settings-block.is-hidden {
-  display: none;
-}
-.page[data-workspace-mode="focus"] .workflow-card p,
-.page[data-workspace-mode="focus"] .workspace-card p,
-.page[data-workspace-mode="focus"] .section-help {
-  display: none;
-}
-.page[data-workspace-mode="focus"] .workflow-card {
-  padding-bottom: 10px;
-}
-.page[data-workspace-mode="focus"] #templateGroupSummary {
-  display: none;
 }
 
 /* ── SECTIONS ── */
@@ -365,15 +277,10 @@ button:active { transform:translateY(0) !important; }
 @keyframes fadeInUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
 @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 @keyframes shimmerSlide { 0% { background-position:-200% center; } 100% { background-position:200% center; } }
-@keyframes spin { to { transform:rotate(360deg); } }
-@keyframes dropGlow { 0%,100% { box-shadow:0 0 0 0 rgba(0,113,227,0); } 50% { box-shadow:0 0 0 6px rgba(0,113,227,0.09); } }
-@keyframes floatIcon { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-5px); } }
 
 /* Entrance animations */
 .section { animation:fadeInUp 0.45s var(--ease) both; }
 header { animation:fadeIn 0.5s var(--ease) both; }
-.workflow-strip { animation:fadeInUp 0.5s var(--ease) 0.08s both; }
-.preset-dock { animation:fadeInUp 0.4s var(--ease) both; }
 
 /* Cinematic header shimmer */
 header::after {
@@ -386,38 +293,6 @@ header::after {
   pointer-events:none;
 }
 
-/* ── DROPZONE ── */
-.dropzone {
-  border: 2px dashed rgba(0,113,227,0.25);
-  border-radius: var(--radius-lg);
-  padding: 2.5rem 2rem;
-  text-align: center;
-  cursor: pointer;
-  background: linear-gradient(135deg,rgba(0,113,227,0.025) 0%,rgba(255,255,255,0.96) 50%,rgba(0,113,227,0.025) 100%);
-  transition: all 0.28s var(--ease);
-  position: relative;
-  overflow: hidden;
-}
-.dropzone::before {
-  content:'';
-  position:absolute;
-  inset:0;
-  background:linear-gradient(135deg,rgba(0,113,227,0.07),transparent);
-  opacity:0;
-  transition:opacity 0.28s var(--ease);
-}
-.dropzone:hover::before, .dropzone.drag-over::before { opacity:1; }
-.dropzone:hover, .dropzone.drag-over {
-  border-color:rgba(0,113,227,0.52);
-  transform:translateY(-2px);
-  box-shadow:0 8px 32px rgba(0,113,227,0.11);
-  animation:dropGlow 1.4s ease infinite;
-}
-.dropzone-icon { font-size:38px; display:block; margin-bottom:14px; transition:transform 0.28s var(--ease); animation:floatIcon 3s ease-in-out infinite; }
-.dropzone:hover .dropzone-icon, .dropzone.drag-over .dropzone-icon { animation:none; transform:scale(1.15) translateY(-4px); }
-.dropzone p { font-size:13px; color:var(--text-muted); margin-bottom:4px; font-weight:500; }
-.dropzone small { font-size:11px; color:var(--text-hint); }
-#preview-img { width:100%; max-height:220px; object-fit:contain; border-radius:var(--radius); border:1px solid var(--border); }
 
 /* ── COLOR SWATCHES ── */
 .color-swatches { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
@@ -496,10 +371,14 @@ header::after {
 .sel-tag { font-size:12px; padding:3px 10px; border-radius:999px; background:var(--accent-light); border:1px solid rgba(0,113,227,0.14); color:var(--text); display:flex; align-items:center; gap:5px; }
 .sel-tag .rm { cursor:pointer; color:var(--text-hint); font-size:10px; }
 .sel-tag .rm:hover { color:var(--text); }
-.custom-add { display:flex; gap:6px; margin-top:8px; }
-.outfit-tag { font-size:11px; padding:4px 12px; border-radius:999px; background:var(--accent); color:#fff; display:flex; align-items:center; gap:5px; font-weight:500; }
-.outfit-tag .rm { cursor:pointer; opacity:0.7; }
-.outfit-tag .rm:hover { opacity:1; }
+.combo-grid { display:flex; gap:10px; overflow-x:auto; padding-bottom:6px; scroll-snap-type:x proximity; }
+.combo-grid .combo-card { flex:0 0 220px; scroll-snap-align:start; display:flex; flex-direction:column; }
+.combo-grid .preview-snippet { max-height:66px; font-size:11px; }
+.combo-grid .workspace-actions { margin-top:auto; }
+.combo-grid .workspace-actions button { font-size:11px; padding:5px 10px; }
+.fix-panel { display:flex; flex-direction:column; gap:6px; margin-top:4px; }
+.fix-panel:empty { display:none; }
+.fix-card small { line-height:1.5; }
 @media (max-width: 860px) {
   .script-workflow { grid-template-columns:1fr; }
   .script-editor-actions { grid-template-columns:1fr; }
@@ -590,116 +469,25 @@ label { font-size:12px; color:var(--text-muted); display:block; margin-bottom:6p
   color: var(--text-muted);
   line-height: 1.7;
 }
-.summary-kpis {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-  margin-top: 12px;
-}
-.summary-kpi {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: rgba(255,255,255,0.9);
-  padding: 12px;
-}
-.summary-kpi b {
-  display: block;
-  font-size: 18px;
-  color: var(--accent-dark);
-  margin-bottom: 4px;
-}
-.summary-kpi span {
-  font-size: 11px;
-  color: var(--text-hint);
-  line-height: 1.5;
-}
-.summary-kpi .mini-note {
-  display: block;
-  margin-top: 6px;
-  font-size: 11px;
-  color: var(--text-muted);
-}
-.pill-row, .action-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.pill-btn {
-  border-radius: 999px;
-  padding: 8px 14px;
-  font-size: 12px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-}
-.pill-btn.active {
-  background: var(--accent);
-  color: #fff;
-  border-color: var(--accent);
-}
-.group-summary-grid,
-.template-grid,
-.combo-grid,
-.fix-grid,
-.batch-output-grid {
-  display: grid;
-  gap: 10px;
-}
-.group-summary-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-.template-grid {
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-}
-.combo-grid,
-.fix-grid,
-.batch-output-grid {
-  grid-template-columns: 1fr;
-}
-.template-card,
 .combo-card,
-.fix-card,
-.batch-card,
-.group-card {
+.fix-card {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: rgba(255,255,255,0.92);
   padding: 12px;
 }
-.group-card strong,
-.template-card strong,
-.combo-card strong,
-.batch-card strong {
+.combo-card strong {
   display: block;
   font-size: 13px;
   margin-bottom: 6px;
 }
-.group-card small,
-.template-card small,
 .combo-card small,
-.batch-card small,
 .fix-card small {
   display: block;
   font-size: 11px;
   color: var(--text-hint);
   line-height: 1.6;
 }
-.template-meta,
-.batch-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 8px;
-}
-.meta-tag {
-  font-size: 11px;
-  padding: 4px 9px;
-  border-radius: 999px;
-  background: rgba(0,113,227,0.08);
-  color: var(--accent-dark);
-  border: 1px solid rgba(0,113,227,0.14);
-}
-.template-actions,
-.batch-actions,
 .workspace-actions {
   display: flex;
   flex-wrap: wrap;
@@ -739,11 +527,6 @@ label { font-size:12px; color:var(--text-muted); display:block; margin-bottom:6p
   background: rgba(10, 122, 60, 0.10);
   color: #0a7a3c;
 }
-.save-note {
-  margin-top: 8px;
-  font-size: 11px;
-  color: var(--text-hint);
-}
 
 @media (max-width: 900px) {
   .page { max-width:760px; }
@@ -751,162 +534,9 @@ label { font-size:12px; color:var(--text-muted); display:block; margin-bottom:6p
   .script-pane { border-right:0; border-bottom:1px solid var(--border); min-height:auto; }
   .script-editor-pane { min-height:auto; }
   .editor-sticky { position:static; }
-  .preset-dock { border-radius:18px; align-items:flex-start; }
-  .preset-dock-actions { width:100%; justify-content:flex-start; }
-  .workflow-strip { grid-template-columns:1fr; }
-  .preset-hero { grid-template-columns:1fr; }
-  .workspace-grid,
-  .template-grid,
-  .group-summary-grid,
-  .summary-kpis {
-    grid-template-columns: 1fr;
-  }
   header { padding:2.5rem 1.25rem 2rem; border-radius:0 0 var(--radius) var(--radius); }
   .combine-section { padding:2rem 1.25rem; }
-  .ai-workflow-grid { grid-template-columns:1fr; }
-  .ai-history-grid { grid-template-columns:repeat(auto-fill,minmax(56px,1fr)); }
 }
-
-/* ── AI IMAGE WORKFLOW SECTION ── */
-.ai-image-section {
-  background:linear-gradient(160deg,#080f1c 0%,#0c1929 50%,#091522 100%);
-  border:1px solid rgba(0,113,227,0.2);
-  border-radius:var(--radius-lg);
-  margin-bottom:12px;
-  overflow:hidden;
-  box-shadow:0 8px 40px rgba(0,0,0,0.24);
-  animation:fadeInUp 0.5s var(--ease) 0.12s both;
-}
-.ai-image-section .section-header {
-  background:rgba(0,113,227,0.1);
-  border-bottom:1px solid rgba(0,113,227,0.18);
-}
-.ai-image-section .section-title { color:rgba(245,245,247,0.9); }
-.ai-image-section .section-num { background:linear-gradient(135deg,#0071e3 0%,#0058b0 100%); }
-.ai-image-section .section-body { padding:1.25rem; }
-.ai-workflow-grid {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-}
-.ai-panel {
-  border:1px solid rgba(255,255,255,0.09);
-  border-radius:var(--radius-lg);
-  background:rgba(255,255,255,0.04);
-  padding:16px;
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
-}
-.ai-panel-title {
-  font-size:10px;
-  font-weight:700;
-  letter-spacing:0.09em;
-  text-transform:uppercase;
-  color:rgba(245,245,247,0.38);
-  margin-bottom:12px;
-}
-.ai-preview-img {
-  width:100%;
-  border-radius:var(--radius);
-  border:1px solid rgba(255,255,255,0.1);
-  max-height:180px;
-  object-fit:contain;
-  background:rgba(0,0,0,0.3);
-  display:block;
-}
-.ai-prompt-box {
-  background:rgba(0,0,0,0.45);
-  border:1px solid rgba(0,113,227,0.18);
-  border-radius:var(--radius);
-  padding:12px;
-  font-size:11px;
-  color:rgba(199,221,245,0.88);
-  font-family:'SF Mono','Fira Code','Consolas',monospace;
-  line-height:1.8;
-  min-height:90px;
-  max-height:200px;
-  overflow-y:auto;
-  white-space:pre-wrap;
-  word-break:break-word;
-}
-.ai-status-bar {
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-top:8px;
-  font-size:11px;
-  color:rgba(245,245,247,0.42);
-  min-height:22px;
-}
-.ai-spinner {
-  width:13px;height:13px;
-  border:2px solid rgba(0,113,227,0.3);
-  border-top-color:var(--accent);
-  border-radius:50%;
-  animation:spin 0.75s linear infinite;
-  flex-shrink:0;
-}
-.ai-status-dot {
-  width:7px;height:7px;
-  border-radius:50%;
-  background:rgba(52,199,89,0.9);
-  box-shadow:0 0 6px rgba(52,199,89,0.55);
-  flex-shrink:0;
-}
-.ai-history-grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(70px,1fr));
-  gap:7px;
-  margin-top:10px;
-  min-height:30px;
-}
-.ai-history-thumb {
-  aspect-ratio:1;
-  border-radius:var(--radius);
-  overflow:hidden;
-  cursor:pointer;
-  border:2px solid transparent;
-  transition:all 0.2s var(--ease);
-  position:relative;
-  background:rgba(255,255,255,0.05);
-}
-.ai-history-thumb:hover { border-color:var(--accent); transform:scale(1.06); }
-.ai-history-thumb.active { border-color:var(--accent); box-shadow:0 0 0 2px rgba(0,113,227,0.32); }
-.ai-history-thumb img { width:100%;height:100%;object-fit:cover; }
-.thumb-rm {
-  position:absolute;top:2px;right:2px;
-  width:15px;height:15px;
-  background:rgba(0,0,0,0.75);
-  color:#fff;
-  border-radius:50%;
-  font-size:8px;
-  display:flex;align-items:center;justify-content:center;
-  opacity:0;
-  transition:opacity 0.18s;
-  cursor:pointer;
-}
-.ai-history-thumb:hover .thumb-rm { opacity:1; }
-.ai-actions { display:flex;gap:7px;margin-top:10px;flex-wrap:wrap; }
-.ai-btn {
-  font-size:12px;padding:7px 14px;border-radius:999px;
-  background:rgba(255,255,255,0.07);
-  border:1px solid rgba(255,255,255,0.14);
-  color:rgba(245,245,247,0.84);
-  cursor:pointer;
-  transition:all 0.2s var(--ease);
-  font-family:inherit;font-weight:500;
-  white-space:nowrap;
-}
-.ai-btn:hover { background:rgba(255,255,255,0.14);border-color:rgba(255,255,255,0.26);transform:translateY(-1px); }
-.ai-btn.primary-ai {
-  background:var(--accent);
-  border-color:var(--accent);
-  color:#fff;
-  box-shadow:0 2px 12px rgba(0,113,227,0.38);
-}
-.ai-btn.primary-ai:hover { background:var(--accent-dark);box-shadow:0 4px 20px rgba(0,113,227,0.52);transform:translateY(-1px); }
-.ai-btn.active-ai { background:rgba(0,113,227,0.28);border-color:rgba(0,113,227,0.5); }
-.ai-empty-msg { text-align:center;padding:16px 8px;color:rgba(245,245,247,0.22);font-size:11px;grid-column:1/-1; }
 
 /* ══════════════════════════════════════════
    CINEMATIC VISUAL SYSTEM — Apple Tier
@@ -1110,31 +740,6 @@ header h1 {
   transform: translateY(-1px);
 }
 
-/* ── WORKFLOW CARD UPGRADE ── */
-.workflow-card {
-  background: rgba(255,255,255,0.92);
-  border: 1px solid rgba(0,0,0,0.068);
-  border-radius: 18px;
-  padding: 20px 18px 17px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 18px rgba(0,0,0,0.04);
-  backdrop-filter: blur(20px) saturate(1.5);
-  -webkit-backdrop-filter: blur(20px) saturate(1.5);
-  transition: transform 0.22s var(--ease), box-shadow 0.22s var(--ease);
-}
-.workflow-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.04), 0 12px 34px rgba(0,0,0,0.07);
-}
-
-/* ── PRESET DOCK UPGRADE ── */
-.preset-dock {
-  background: rgba(255,255,255,0.84);
-  backdrop-filter: blur(32px) saturate(1.9);
-  -webkit-backdrop-filter: blur(32px) saturate(1.9);
-  border: 1px solid rgba(255,255,255,0.74);
-  box-shadow: 0 4px 28px rgba(0,0,0,0.09), 0 1px 0 rgba(255,255,255,0.92) inset;
-}
-
 /* ── VERSION BADGE UPGRADE ── */
 .version-badge {
   background: linear-gradient(135deg, rgba(0,113,227,0.62), rgba(0,80,180,0.72));
@@ -1150,20 +755,6 @@ header h1 {
   background: rgba(248,249,252,0.96);
 }
 .c-item:hover { transform: translateY(-1px); }
-
-/* ── SMART CARD UPGRADE ── */
-.smart-card {
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(246,248,253,0.97) 100%);
-  box-shadow: 0 1px 1px rgba(0,0,0,0.04), 0 4px 14px rgba(0,0,0,0.04);
-}
-
-/* ── WORKSPACE CARD UPGRADE ── */
-.workspace-card {
-  border-radius: 18px;
-  background: rgba(255,255,255,0.97);
-  box-shadow: 0 1px 1px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04);
-}
 
 /* ── QUICK NAV UPGRADE ── */
 .quick-nav button {
@@ -1182,7 +773,7 @@ header h1 {
 <body>
 <div class="page">
 <header>
-  <div class="version-badge">v2.7.0</div>
+  <div class="version-badge">v2.8.0</div>
   <h1>LINE 貼圖 4×4 咒語產生器</h1>
   <p class="hero-sub">填寫角色、造型與腳本，複製咒語貼到 ChatGPT</p>
   <div class="quick-nav">
@@ -1202,21 +793,16 @@ header h1 {
   </div>
   <div class="section-body">
     <div class="tabs">
-      <div class="tab active" id="tab-img" onclick="switchCharTab('img')">圖片上傳</div>
+      <div class="tab active" id="tab-img" onclick="switchCharTab('img')">依照上傳照片人物</div>
       <div class="tab" id="tab-text" onclick="switchCharTab('text')">文字輸入</div>
       <div class="tab" id="tab-template" onclick="switchCharTab('template')">現行角色模板</div>
     </div>
     <div id="char-img-panel">
-      <input type="file" id="file-in" accept="image/*" style="display:none" onchange="handleFile(this.files[0])">
-      <button id="dropzone" onclick="document.getElementById('file-in').click()" style="width:100%;padding:14px;font-size:14px;margin-bottom:8px;border:2px dashed var(--border);background:var(--bg);border-radius:var(--radius);cursor:pointer;">📸 點擊上傳人物圖片</button>
-      <p style="font-size:11px;color:var(--text-hint);margin-bottom:10px;">支援 JPG · PNG · WebP — 上傳後請在 ChatGPT 同時貼上圖片與咒語</p>
-      <div id="preview-wrap" style="display:none;">
-        <img id="preview-img" alt="角色預覽">
-        <div style="display:flex;gap:8px;margin-top:8px;align-items:center;">
-          <span id="img-status" style="font-size:12px;color:var(--text-muted);flex:1;"></span>
-          <button onclick="clearImg()" style="font-size:11px;padding:5px 12px;">移除圖片</button>
-        </div>
+      <p style="font-size:12px;color:var(--text-muted);line-height:1.7;margin-bottom:10px;">這個模式不需要在這裡上傳照片——複製下方咒語後，請直接在 <b>ChatGPT 對話框</b>同時貼上「你的照片」和「這裡產生的咒語」，AI 會依照你上傳的照片人物來畫，並盡量保留五官與服裝特徵。</p>
+      <div class="row-flex" style="margin-bottom:6px;">
+        <label style="margin:0;flex:1;">補充五官／服裝備註（非必填）</label>
       </div>
+      <textarea id="char-img-note" rows="2" placeholder="例：想加強保留眼鏡、髮色、某個配件特徵…（可留空）" oninput="updateDots()"></textarea>
     </div>
     <div id="char-text-panel" style="display:none;">
       <div class="row-flex" style="margin-bottom:6px;">
@@ -1295,19 +881,25 @@ header h1 {
         <button type="button" class="mode-btn" data-mode="emotion" onclick="selectCreationMode('emotion')">👤✨ 人物＋情緒特效</button>
         <button type="button" class="mode-btn" data-mode="text" onclick="selectCreationMode('text')">🔤 純文字主體</button>
       </div>
-      <div class="mode-hint" id="creation-mode-hint">角色搭配常用文字，維持角色一致性；適合快速做主題包。</div>
+      <div class="mode-hint" id="creation-mode-hint">人物與文字各佔約 50%，兩者同樣醒目；維持角色一致性，適合快速做主題包。</div>
+    </div>
+    <div style="padding:0.85rem 1.25rem;border-bottom:1px solid var(--border);" id="quickPackWrap">
+      <div style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:8px;">⚡ 快速套用組合包 — 一鍵補滿 16 句，套用後仍可自行調整</div>
+      <div class="combo-grid" id="scriptComboPanel"></div>
+    </div>
+    <div style="padding:0.85rem 1.25rem 0;">
       <input id="script-search" type="search" placeholder="🔍 搜尋句子（例如：加班、想你、謝謝）…" oninput="searchScripts(this.value)" style="width:100%;margin-bottom:10px;padding:8px 12px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:inherit;outline:none;">
       <div class="script-cats" id="script-cats"></div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;">
-      <div style="border-right:1px solid var(--border);padding:10px;">
+    <div class="script-layout">
+      <div class="script-pane">
         <button class="btn-rand" onclick="randomCurrentCatScripts()" style="width:100%;margin-bottom:8px;padding:8px 12px;">🎲 從目前清單隨機選</button>
         <div class="script-items" id="script-items" style="display:grid;grid-template-columns:1fr;gap:5px;"></div>
       </div>
-      <div style="display:flex;flex-direction:column;padding:10px;gap:6px;position:sticky;top:12px;align-self:start;">
+      <div class="script-editor-pane editor-sticky">
         <div class="script-workflow">
-          <div class="script-step"><b>1. 選句子</b><span>預設是🔥熱門100，也可切分類或直接搜尋。</span></div>
-          <div class="script-step"><b>2. 補滿 16 句</b><span>一行一張貼圖，少句就按補滿。</span></div>
+          <div class="script-step"><b>1. 套組合包或選句子</b><span>上面一鍵套用一組 16 句，或自己從句庫挑、搜尋。</span></div>
+          <div class="script-step"><b>2. 看健康度提示</b><span>下方會提示重複、過長過短、語氣太集中等問題。</span></div>
           <div class="script-step"><b>3. 複製出圖</b><span>先複製腳本檢查，再組合完整咒語。</span></div>
         </div>
         <div class="script-editor-head">
@@ -1332,22 +924,8 @@ header h1 {
         <div class="tool-row">
           <button onclick="clearScriptEditor()">清空腳本</button>
         </div>
+        <div class="fix-panel" id="fixSuggestionPanel"></div>
       </div>
-    </div>
-  </div>
-</div>
-
-<!-- ⑥ 封面圖／標籤圖 -->
-<div class="section" id="cover-section">
-  <div class="section-header">
-    <div class="section-num">6</div>
-    <div class="section-title">封面圖／標籤圖（上架必備）</div>
-  </div>
-  <div class="section-body">
-    <p style="font-size:12px;color:var(--text-hint);margin-bottom:10px;">LINE 上架除了 16 張貼圖，還需要主圖（240×240）與標籤圖（96×74），這裡各生成一份 Prompt，用同一個角色分開請 AI 生成。</p>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <button class="btn-primary" id="cover-main-btn" onclick="copyCoverPrompt('main')">複製主圖 Prompt (240×240)</button>
-      <button class="btn-primary" id="cover-tab-btn" onclick="copyCoverPrompt('tab')">複製標籤圖 Prompt (96×74)</button>
     </div>
   </div>
 </div>
@@ -1370,38 +948,23 @@ header h1 {
 
 <script>
 const state = {
-  qty: 16, charTab: 'img',
-  imgBase64: null, imgType: null, imgDesc: '',
-  bodyStyle: 'popmart', bodyRatio: 'q25', outfitRef: true, outfitAI: false, outfitSelections: [],
-  colorSelections: [], customColors: [],
-  fontStyle: 'ai', layoutStyle: 'random', bgStyle: 'green', beautyFilter: true,
+  qty: 16, charTab: 'text',
+  bodyStyle: 'popmart', bodyRatio: 'q25', outfitRef: false, outfitAI: true,
+  fontStyle: 'ai', layoutStyle: 'random', bgStyle: 'green',
   creationMode: 'character',
   borderStyle: 'none',
   scriptSelected: [], customItems: [], currentCat: '熱門100',
-  currentTemplateId: 'daily-red',
-  outputFormat: 'full',
-  batchMode: 'single',
-  batchPreviewFormat: 'full',
-  workspaceMode: 'focus',
-  advancedSettingsVisible: false
+  currentTemplateId: 'daily-red'
 };
 
 const WORKSPACE_STORAGE_KEY = 'line4x4-sticker-workspace';
-const ANTHROPIC_API_KEY_STORAGE = 'line4x4-anthropic-key';
-function getApiKey() { return localStorage.getItem(ANTHROPIC_API_KEY_STORAGE) || ''; }
-function setApiKey(key) { if (key) localStorage.setItem(ANTHROPIC_API_KEY_STORAGE, key); else localStorage.removeItem(ANTHROPIC_API_KEY_STORAGE); }
-const BATCH_OUTPUT_FORMATS = [
-  { id: 'full', name: '完整 Prompt', purpose: '直接丟圖像模型或 ChatGPT 生圖流程', description: '保留完整結構、風格、腳本、負面提示與細部規則。' },
-  { id: 'compact', name: '精簡 Prompt', purpose: '快速貼到短上下文工作流', description: '把核心資訊濃縮成短格式，方便快速複製與預覽。' },
-  { id: 'json', name: 'JSON', purpose: '串接外部流程或後續程式轉換', description: '固定欄位輸出，便於後續自動化流程讀取。' }
-];
 const templateGroups = [
   {
     id: 'daily',
     name: '日常主角',
     summary: '高頻日常、問候回覆、陪伴感最穩定的主力模板群。',
     recommendation: '推薦搭配 商業量產包 + 日常高頻 / 禮貌回覆 / 可愛互動。',
-    templateIds: ['daily-red', 'daily-cafe', 'daily-campus', 'daily-ink-doodle']
+    templateIds: ['daily-red', 'daily-cafe', 'daily-campus']
   },
   {
     id: 'office',
@@ -1465,17 +1028,6 @@ const characterTemplates = [
     suggestedBundle: '青春互動包',
     suggestedQuickSet: '可愛互動 16 句',
     recommendation: '適合哈哈、衝呀、來了、出發、收到、讚啦。'
-  },
-  {
-    id: 'daily-ink-doodle',
-    group: 'daily',
-    name: '水墨塗鴉日常女主',
-    character: '以上傳參考圖人物作為主角，臉部相似度約 80%，保留臉型、眼睛、眉毛、鼻唇、髮型與氣質；日系手繪插圖感，表情自然鮮明，眼神有情緒，嘴型要符合每句日常中文短語。',
-    outfit: '藍色一字領或柔軟皺褶上衣，半身構圖仍要看得到肩頸、雙手與動作，服裝細節精修但保持輕盈。',
-    imageNotes: '參考範例：4×4 共 16 格，白色極簡背景、粗黑手寫字、粉彩水墨濺色、鬆散素描線、愛心星星問號汗滴等小符號；每格都是半身表情演出與不同手勢。',
-    suggestedBundle: '水墨日常範例包',
-    suggestedQuickSet: '水墨日常 16 句',
-    recommendation: '適合把真人參考圖轉成「你好、早安、晚安、OK、謝謝、加油、拜拜」這類高頻 LINE 貼圖。'
   },
   {
     id: 'office-lead',
@@ -1660,10 +1212,64 @@ const scriptQuickCombos = [
     lines: ['衝', '開打', '跟上', '頂住', '交給我', '快點', '馬上到', '先上了', '拿下', '穩了', '完成', '全開', '再一波', '別退', '出擊', '贏啦']
   },
   {
-    id: 'ink-doodle-daily',
-    name: '水墨日常範例包',
-    description: '依照上傳範例整理：問候、道歉、愛心、打氣、驚訝與告別，搭配粗黑手寫字與水墨濺色。',
-    lines: ['你好～', '早安', '晚安zzz', 'OK！', '謝謝你', '對不起...', '愛你', '加油!!', '哼！', '唉...', '哈哈哈～', '欸?!', '偷看', '等你喔', '努力中', '拜拜～']
+    id: 'couple-flirty',
+    name: '戀愛放閃包',
+    description: '撒嬌、想念、鬧脾氣與甜蜜互動，適合情侶／曖昧對象專用貼圖。',
+    lines: ['想你了', '抱一下', '親一下', '愛你唷', '在幹嘛呀', '陪我聊天', '不理你啦', '哼！', '我生氣了', '睡了嗎？', '啾咪', '快回我', '晚點找你', '我在等你', '抱一下嘛', '你最好了']
+  },
+  {
+    id: 'pet-parent',
+    name: '貓奴狗奴寵物包',
+    description: '鏟屎官與毛孩視角混搭，日常餵食、散步、賣萌全都有。',
+    lines: ['摸摸我', '陪我玩', '抱抱我', '肚子餓了', '汪！', '喵~', '好開心', '求投餵', '摸摸頭', '鏟屎官到', '去散步嗎', '乖乖睡覺', '貓奴報到', '生病了嗎', '胖了好多', '毛孩子']
+  },
+  {
+    id: 'binge-lazy',
+    name: '追劇耍廢迷因包',
+    description: '追劇上頭、躺平擺爛的廢版日常，適合宅系／耍廢人設。',
+    lines: ['追劇中', '不要劇透', '哭爆了', '神作！', '爛尾了', '看到哭', '超好看', '躺平', '擺爛', '發瘋', '破防了', '已讀不回', '我不行了', '躺平中', '直接裂開', '二刷中']
+  },
+  {
+    id: 'broke-humor',
+    name: '月光荷包警報包',
+    description: '發薪、花光、吃土的荷包心情，自嘲理財失敗最有共鳴。',
+    lines: ['沒錢了', '花完了', '帳單來了', '哭窮中', '荷包大失血', '精打細算', '吃土了', '錢包空了', '薪水到了', '存錢計畫', '等發薪', '財源滾滾', '加薪了！', '月光族報到', '理財中', '要節省一點']
+  },
+  {
+    id: 'meme-comeback',
+    name: '廢文迷因嘴砲包',
+    description: '網路流行語、迷因梗回應，聊天鬥嘴、吐槽必備。',
+    lines: ['超派', '無言欸', '好扯喔', '我可以！', '很可以！', '這合理嗎', '整頓', '絕絕子', 'YYDS', '太頂了', '笑死', '求放過', '崩潰邊緣', '太狠了吧', '先不要欸', '根本不可能']
+  },
+  {
+    id: 'greeting-daily',
+    name: '打招呼＋日常生活用語',
+    description: '早中晚問候、道謝道歉、暫離告知，最基本最高頻的日常聊天 16 句。',
+    lines: ['早安', '午安', '晚安', '你好', '嗨', '對不起', '謝謝你', '不客氣', '下次見', '有事暫離', '掰掰', '稍等一下', '收到', '我到了', '在忙', '沒問題']
+  },
+  {
+    id: 'workplace-common',
+    name: '職場常用包',
+    description: '已讀回覆、開會忙碌、交件下班，上班族聊天群組最常打的狀態句。',
+    lines: ['已讀', '收到！', '稍後回覆', '開會中', '忙碌中', '如附件', '請確認一下', '已處理完成', '今天請假', '遠端工作中', '馬上來', '等我一下', '我改好了', '辛苦大家了', '下班啦！', '搞定！']
+  },
+  {
+    id: 'couple-daily',
+    name: '情侶生活用語',
+    description: '日常鬥嘴、撒嬌、想念與和好，情侶／另一半聊天最實用的互動句。',
+    lines: ['抱抱', '愛你', '生氣了', '撒嬌', '討厭你', '想你了', '快來陪我', '不理你了', '你最好了', '麼麼噠', '好想你', '你在哪', '吃醋了', '原諒你了', '你是我的', '永遠愛你']
+  },
+  {
+    id: 'emotion-words',
+    name: '情緒用語包',
+    description: '驚喜、害羞、傻眼、委屈等情緒感嘆句，適合搭配誇張表情演出。',
+    lines: ['太好了吧', '我快哭了', '也太扯', '嚇一跳', '好害羞喔', '氣噗噗', '委屈巴巴', '超期待', '我不行了', '有夠可愛', '這也太讚', '我傻眼', '心動了', '我裂開了', '太驚喜了', '超級無語']
+  },
+  {
+    id: 'emotion-fx',
+    name: '情緒特效包',
+    description: '直接套用「人物＋情緒特效」模式的 16 張表情卡（無文字，純表情＋背景特效演出）。',
+    lines: ['[情緒] 狂喜尖叫', '[情緒] 暖哭感動', '[情緒] 傻眼無語', '[情緒] 得意炫耀', '[情緒] 害羞臉紅', '[情緒] 心動小鹿', '[情緒] 委屈想哭', '[情緒] 疲憊癱軟', '[情緒] 期待雀躍', '[情緒] 黑人問號', '[情緒] 尷尬冒汗', '[情緒] 驕傲挺胸', '[情緒] 撒嬌討抱', '[情緒] 加油打氣', '[情緒] 睡意來襲', '[情緒] 恍然大悟']
   }
 ];
 
@@ -1694,6 +1300,9 @@ function switchCharTab(tab) {
   const tabTmpl = document.getElementById('tab-template');
   if (tabTmpl) tabTmpl.classList.toggle('active', tab==='template');
   if (tab === 'template') renderCharTemplateGrid();
+  // 服裝模式跟著角色來源走：上傳照片人物 → 沿用照片服裝；文字/模板 → AI 自動選服裝
+  if (tab === 'img') { state.outfitRef = true; state.outfitAI = false; }
+  else if (state.outfitRef) { state.outfitRef = false; state.outfitAI = true; }
   updateDots();
 }
 function renderCharTemplateGrid() {
@@ -1726,57 +1335,6 @@ function selectBorder(style) {
   document.getElementById('border-none').classList.toggle('active', style==='none');
   updateDots(); persistWorkspace();
 }
-function handleDrop(e) { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('image/')) handleFile(f); }
-function handleFile(file) {
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    const result = e.target.result;
-    state.imgBase64 = result.split(',')[1]; state.imgType = file.type;
-    document.getElementById('preview-img').src = result;
-    document.getElementById('preview-wrap').style.display = 'block';
-    document.getElementById('img-status').textContent = '🔄 AI 分析五官特徵中...';
-    await analyzeImage();
-  };
-  reader.readAsDataURL(file);
-}
-async function analyzeImage() {
-  try {
-    const _apiKey1 = getApiKey();
-  if (!_apiKey1) {
-      document.getElementById('img-status').textContent = '請先在設定輸入 Anthropic API Key 才能自動分析';
-      updateDots(); return;
-    }
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST', headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': _apiKey1,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6', max_tokens: 600,
-        system: '你是 LINE 貼圖咒語師。觀察圖片角色，用繁體中文條列描述外觀特徵：臉型、眼睛、眉毛、嘴唇、髮型、髮色、膚色、服裝、配件。純粹特徵，逗號分隔，不要說明文字。',
-        messages: [{ role: 'user', content: [
-          { type: 'image', source: { type: 'base64', media_type: state.imgType, data: state.imgBase64 } },
-          { type: 'text', text: '描述這個角色的外觀特徵。' }
-        ]}]
-      })
-    });
-    const data = await res.json();
-    state.imgDesc = data.content?.map(i => i.text||'').join('') || '';
-    document.getElementById('img-status').textContent = '✓ 五官特徵分析完成';
-  } catch(e) { document.getElementById('img-status').textContent = '分析失敗，請重試'; }
-  updateDots();
-}
-function clearImg() {
-  state.imgBase64 = null; state.imgType = null; state.imgDesc = '';
-  document.getElementById('preview-wrap').style.display = 'none';
-  document.getElementById('dropzone').style.display = 'block';
-  document.getElementById('file-in').value = '';
-  document.getElementById('img-status').textContent = '';
-  updateDots();
-}
-
 // ── QTY ──
 function selectQty(n) {
   state.qty = 16;
@@ -2429,171 +1987,6 @@ const presets = [
   { id:'idol-stage', icon:'🌟', name:'偶像舞台光', body:'holographic', outfitCat:'日韓系', outfitName:'韓劇現代女主', colors:['電藍','粉','銀灰'], font:'好萊塢片頭', layout:'F' },
 ];
 
-let currentPresetCat = '全部';
-const presetCategories = [
-  { name:'全部', cats:[] },
-  { name:'古風神話', cats:['古風中式','聊齋誌異','希臘神祇','埃及神祇'] },
-  { name:'現代日韓', cats:['現代潮流','日韓系'] },
-  { name:'制服職業', cats:['制服系','職業系'] },
-  { name:'JK萌系', cats:['JK系列','貓娘系','歐西系'] },
-  { name:'奇幻魔法', cats:['魔法世界','幻想系','節慶特定'] },
-  { name:'異國異世界', cats:['異世界系','希臘神祇','埃及神祇','各國風情'] },
-  { name:'補充造型', cats:['補充造型'] },
-];
-const presetTargetCount = 500;
-
-function ensurePresetTargetCount() {
-  if (presets.length >= presetTargetCount) return;
-
-  const allOutfits = Object.entries(outfitData).flatMap(([cat, items]) =>
-    items.map(item => ({ cat, name: item.name }))
-  );
-  const bodyPool = ['popmart','nendo','chibi','plush','watercolor','inkdoodle','oilpaint','sketch','inkwash','comic','sticker','papercraft','enamel','embroidery','holographic','pixel','semirealistic','korean','ghibli','xianxia','dreamy','cyberpunk','beauty','kbeauty','chinese_beauty','ethereal','cinematic'];
-  const fontPool = ['泡泡字','糖果彩虹','奶油蛋糕','絨毛毛茸','果凍透明','可愛手寫','棉花糖','迷你馬卡龍','氣球膨脹','糖霜餅乾','漸層彩虹粗體','水彩暈染','水墨手寫','雲朵棉花','仙女粉塵','夢幻星空','仙女棒光跡','粉筆字','手繪粉筆彩','水墨毛筆','枯山水筆墨','狂草書法','TOP海報體','好萊塢片頭','台灣復古電影','迷因體','表情包衝擊','幹話金句體','正黑體'];
-  const layoutPool = ['random','A','B','C','D','E','F','G','H'];
-  const colorPalettes = [
-    ['紅','黃金','黑金'], ['粉','純白','金'], ['午夜藍','銀色','粉藍'], ['黑','電藍','午夜藍'],
-    ['薄荷','白','香檳'], ['青綠','金','紅'], ['象牙白','深棕','金'], ['檸檬黃','粉藍','純白'],
-    ['深紅','金色','黑'], ['獸皮棕','苔蘚綠','暖橘'], ['霧灰藍','純白','水藍'], ['茄紫','黑','銀色'],
-    ['奶黃','粉','白'], ['墨綠','銅棕','金'], ['青金石','黃金','白'], ['薰衣草','粉','金']
-  ];
-  const themes = [
-    ['晨光','🌅'], ['月夜','🌙'], ['星河','🌌'], ['花宴','🌸'], ['霓虹','⚡'], ['甜心','🎀'], ['王冠','👑'], ['戰場','⚔️'],
-    ['學院','🏫'], ['咖啡','☕'], ['雪國','❄️'], ['海風','🌊'], ['森林','🌿'], ['寶石','💎'], ['玫瑰','🌹'], ['糖果','🍬'],
-    ['銀河','🪐'], ['祕境','🗝️'], ['祭典','🏮'], ['復古','🎞️'], ['偶像','🎤'], ['守護','🛡️'], ['魔法','🪄'], ['冒險','🧭'],
-    ['夢境','☁️'], ['金砂','🏜️'], ['櫻花','🌸'], ['龍焰','🐉'], ['貓步','🐱'], ['狐影','🦊'], ['天使','🪽'], ['暗夜','🦇']
-  ];
-
-  let i = 0;
-  while (presets.length < presetTargetCount && allOutfits.length) {
-    const outfit = allOutfits[i % allOutfits.length];
-    const theme = themes[i % themes.length];
-    const serial = presets.length + 1;
-    presets.push({
-      id: `auto-${String(serial).padStart(3, '0')}-${i}`,
-      icon: theme[1],
-      name: `${theme[0]}${outfit.name}`,
-      body: bodyPool[(i + serial) % bodyPool.length],
-      outfitCat: outfit.cat,
-      outfitName: outfit.name,
-      colors: colorPalettes[(i + serial) % colorPalettes.length],
-      font: fontPool[(i + serial) % fontPool.length],
-      layout: layoutPool[(i + serial) % layoutPool.length]
-    });
-    i++;
-  }
-}
-
-function presetArg(v) {
-  return JSON.stringify(v).replace(/</g, '\\u003c');
-}
-
-function getPresetCategory(name = currentPresetCat) {
-  return presetCategories.find(c => c.name === name) || presetCategories[0];
-}
-
-function presetInCategory(p, cat = getPresetCategory()) {
-  return cat.name === '全部' || cat.cats.includes(p.outfitCat);
-}
-
-function initPresets() {
-  ensurePresetTargetCount();
-  renderPresetCats();
-  renderPresetGrid();
-}
-
-function renderPresetCats() {
-  const wrap = document.getElementById('preset-cats');
-  if (!wrap) return;
-  wrap.innerHTML = presetCategories.map(cat => {
-    const count = cat.name === '全部'
-      ? presets.length
-      : presets.filter(p => presetInCategory(p, cat)).length;
-    return `<div class="cat-tag ${cat.name === currentPresetCat ? 'active' : ''}" onclick='selectPresetCat(${presetArg(cat.name)})'>${cat.name} ${count}</div>`;
-  }).join('');
-}
-
-function renderPresetGrid() {
-  const grid = document.getElementById('preset-grid');
-  if (!grid) return;
-  const cat = getPresetCategory();
-  const items = presets.filter(p => presetInCategory(p, cat));
-  grid.innerHTML = items.map(p =>
-    `<div class="c-item" id="preset-${p.id}" onclick="applyPreset('${p.id}')">
-      <div style="font-size:20px; flex-shrink:0; line-height:1;">${p.icon}</div>
-      <div class="c-body">
-        <div class="c-name">${p.name}</div>
-        <div class="c-desc">${p.outfitName} · ${p.font || 'AI字體'}</div>
-      </div>
-    </div>`
-  ).join('');
-}
-
-function selectPresetCat(name) {
-  currentPresetCat = name;
-  renderPresetCats();
-  renderPresetGrid();
-}
-
-function applyPreset(id) {
-  const p = presets.find(x => x.id === id);
-  if (!p) return;
-
-  // 高亮選中的套餐
-  presets.forEach(x => {
-    const el = document.getElementById('preset-'+x.id);
-    if (el) el.classList.toggle('active', x.id === id);
-  });
-
-  // 比例風格
-  selectBody(p.body);
-  filterBody(currentBodyCat);
-
-  // 服裝：切到 B 自選，選對應分類和細項
-  selectOutfitMode('manual');
-  state.outfitSelections = [];
-  const catItems = outfitData[p.outfitCat];
-  if (catItems) {
-    const item = catItems.find(i => i.name === p.outfitName);
-    if (item) {
-      state.outfitSelections = [{ cat: p.outfitCat, name: item.name, p: item.p, garment: item.garment, headpiece: item.headpiece, accessories: item.accessories, shoes: item.shoes }];
-      // 展開對應分類
-      openOutfitCat(p.outfitCat);
-      renderOutfitTags();
-    }
-  }
-
-  // 色系：清空後套用
-  state.colorSelections = []; state.customColors = [];
-  document.querySelectorAll('.swatch').forEach(el => el.classList.remove('active'));
-  p.colors.forEach(name => {
-    const idx = presetColors.findIndex(col => col.name === name);
-    if (idx >= 0) toggleColor(idx);
-  });
-
-  // 字體
-  selectFont(p.font);
-  filterFonts('全部');
-
-  // 構圖
-  selectLayout(p.layout);
-
-  updatePresetStatus(p.name);
-
-  updateDots();
-
-  // 滾動提示
-  document.getElementById('preset-'+id).scrollIntoView({ behavior:'smooth', block:'nearest' });
-}
-
-function updatePresetStatus(name = '') {
-  const text = name ? `已套用：${name}` : '尚未套用快速套餐';
-  const dock = document.getElementById('preset-current-label');
-  const hero = document.getElementById('preset-hero-label');
-  if (dock) dock.textContent = text;
-  if (hero) hero.textContent = text;
-}
-
 // ── BODY STYLE UI ──
 const bodyRatioList = [
   {key:'q15', name:'1.5頭身 超Q娃娃', desc:'最大頭最短身，適合迷你吉祥物'},
@@ -2715,7 +2108,6 @@ function selectBodyRatio(key) {
   const el = document.getElementById('ratio-'+key);
   if (el) el.classList.add('active');
   updateDots();
-  renderBatchOutputPanel();
   persistWorkspace();
 }
 
@@ -2793,495 +2185,6 @@ function selectBody(key) {
   updateDots();
 }
 
-// ── OUTFIT ──
-const outfitData = {
-  古風中式: [
-    {name:'唐朝宮廷', garment:`Tang Dynasty imperial court hanfu, rich crimson or deep sapphire silk, elaborate golden phoenix embroidery on chest and hem, wide flowing layered sleeves, high-waisted fitted bodice with ornate brocade panel`, headpiece:`ornate golden hair crown with dangling pearl chains, multiple jade hairpins, gold filigree side ornaments, red coral bead strands`, accessories:`gold filigree collar neckpiece, delicate waist sash with tassels, jade pendant on silk cord, gold and ruby bracelet`, shoes:`embroidered silk court shoes with curved toe, gold trim platform`},
-    {name:'齊胸襦裙', garment:`chest-high qixiong ruqun, soft pastel pink or lilac silk top tied just below chest, long flowing gradient skirt from light to deeper tone, sheer outer robe overlay`, headpiece:`simple pearl hairpin, small fresh flower ornament, delicate gold filigree hairband`, accessories:`wide ribbon sash tied in elegant bow at front, wrist ribbon in matching color, small jade pendant`, shoes:`simple embroidered cloth shoes, barefoot optional for ethereal look`},
-    {name:'曲裾深衣', garment:`Han Dynasty ququ shenyi, diagonal wrapped front hem, deep burgundy or forest green silk, gold trim border along all edges, straight layered collar, wide ceremonial sleeves`, headpiece:`lacquer hair pin in neat upswept bun, simple gold hairband`, accessories:`jade bi disc pendant on silk cord, no excessive jewelry, dignified restraint`, shoes:`flat silk shoes with rounded toe, minimal decoration`},
-    {name:'宋代褙子', garment:`Song Dynasty beizi open-front vest robe in soft ivory or muted sage green silk, subtle woven pattern fabric, straight-cut open front with no buttons, narrow fitted inner dress underneath`, headpiece:`elegant low bun with single seasonal flower hairpin, simple wooden pin`, accessories:`jade pendant on silk cord, subtle silver earrings, no heavy jewelry`, shoes:`plain silk slippers, simple and understated`},
-    {name:'明制漢服', garment:`Ming Dynasty daxiu wide-sleeve hanfu, deep teal or vermillion fabric, elaborate embroidered yunjian cloud collar piece draped over shoulders, xiapei ceremonial sash with phoenix embroidery, layered mamianqun horse-face skirt`, headpiece:`ornate hair crown with kingfisher feather tian-cui decoration, gold hair combs, hanging jade ornaments`, accessories:`pearl drop earrings, layered jade bracelet, gold phoenix waist ornament`, shoes:`embroidered platform shoes with floral pattern`},
-    {name:'仙俠仙女', garment:`xianxia immortal robes, sheer translucent outer sleeves floating like clouds, white or pale gold base robe with celestial blue gradient, silver embroidered cranes and clouds throughout`, headpiece:`phoenix crown hairpiece with dangling crystal pendants, jade forehead ornament on chain`, accessories:`long trailing ribbon sashes flowing behind, jade bracelet, silver anklet`, shoes:`white cloud-stepping shoes or barefoot with ankle ribbon`},
-    {name:'武俠俠女', garment:`fitted dark navy or charcoal grey kung fu style top with side slits, wide-leg trousers with contrast lining, leather belt with sword scabbard prop`, headpiece:`hair tied in high ponytail with silver ring accessory, no elaborate ornament`, accessories:`simple jade earrings, leather wrist guard, small medicine pouch at waist`, shoes:`black soft-sole martial arts boots, practical and swift`},
-    {name:'旗袍', garment:`form-fitting qipao cheongsam in deep red or emerald silk with intricate floral brocade pattern, mandarin collar with delicate knotted frog buttons, side slits revealing elegant legs`, headpiece:`styled finger waves hair with jade butterfly pin, simple elegant coif`, accessories:`pearl stud or drop earrings, single jade bracelet, small clutch purse`, shoes:`block heel or kitten heel pumps in matching fabric`},
-    {name:'道袍仙人', garment:`flowing pure white outer daopao robe with pale grey cloud pattern, wide sash belt in contrasting blue or gold, inner robe with straight collar, crane feather accent at cuffs`, headpiece:`wooden or jade hairpin in simple topknot, no elaborate decoration`, accessories:`horsehair fly-whisk fuchen prop, jade ring, simple cord bracelet`, shoes:`simple cloth shoes or cloud-pattern slippers`},
-    {name:'花神百花', garment:`robes made entirely of layered flower petals in soft pinks yellows and whites, botanical embroidery covering full garment, sheer petal-shaped outer cape`, headpiece:`living flower crown headpiece with fresh blooms in season, vines threaded through hair`, accessories:`vine and leaf cuffs at wrists, flower petal collar, holding blooming flower branch prop`, shoes:`barefoot with flower garland anklets`},
-    {name:'水墨仙女', garment:`flowing white silk robes with abstract black ink splash brushstroke pattern across fabric, blue-grey gradient outer sleeves, ink-painted plum blossom at hem`, headpiece:`monochrome ink-stroke style hair ornament, simple black pin`, accessories:`ink-wash painted fan prop, minimal jewelry, single dark jade pendant`, shoes:`plain white cloth shoes with ink splatter accent`},
-    {name:'鳳凰命格', garment:`dramatic crimson and gold two-tone layered robes, phoenix feather motif embroidery covering entire garment, wide ceremonial sleeves with flame-gradient lining`, headpiece:`elaborate nine-phoenix golden crown headdress with dangling ruby and gold chains`, accessories:`red coral statement earrings, golden waist ornament with phoenix pendant, multi-layer jade and gold bracelet`, shoes:`elevated embroidered platform shoes in red and gold`},
-    {name:'清宮嬪妃', garment:`fitted Qing palace robe in soft powder blue or blush pink with intricate embroidered butterflies and peonies, mandarin collar, fitted sleeves with horse-hoof cuffs`, headpiece:`elaborate qitou banner headdress with fresh flowers and hanging ornaments`, accessories:`jade bead collar, long decorative curved fingernail guards, jade bracelet, palace lantern prop`, shoes:`elevated flower-pot platform shoes (花盆底) in embroidered silk`},
-    {name:'古裝新娘', garment:`luxurious crimson red silk xiuhe wedding suit with gold double-happiness embroidery throughout, layered ceremonial skirt with dragon and phoenix pattern`, headpiece:`elaborate phoenix crown with hanging pearl strands and red silk tassels, red veil optional`, accessories:`complete bridal jewelry set — gold phoenix hairpins, pearl drop earrings, jade and gold bracelet, red bouquet prop`, shoes:`red embroidered wedding shoes with gold trim`},
-    {name:'敦煌飛天', garment:`colorful bare-shoulder top with elaborate bejeweled neckpiece, flowing ribbon sashes in warm ochre vermillion and turquoise flowing dramatically behind`, headpiece:`elaborate floral crown with Dunhuang-style ornaments, dot forehead bindi decoration`, accessories:`multiple layered necklaces in gold and coral, arm bangles, holding lotus flower or instrument prop`, shoes:`barefoot with anklet bangles, levitating aesthetic`},
-    {name:'錦衣衛女官', garment:`deep navy formal military robe with flying fish feiyu emblem embroidery on chest, fitted structured silhouette, red inner collar contrast lining`, headpiece:`formal official headpiece in black, neat structured style`, accessories:`formal waist belt with official jade plaque, holding official tablet, no feminine ornament`, shoes:`black official court boots, flat and authoritative`},
-    {name:'宮廷女醫', garment:`clean white or pale blue scholar robes with medical herb embroidery at cuffs, simple practical silhouette without elaborate court decoration`, headpiece:`simple practical hairstyle with medical hairpin, neat low bun`, accessories:`medicine chest or herb basket prop, holding acupuncture case or scroll prescription`, shoes:`plain flat cloth shoes, functional`},
-    {name:'江南水鄉女', garment:`soft sky blue or white cotton hanfu with indigo printed pattern, simple practical silhouette, modest and graceful`, headpiece:`gentle wavy hairstyle with small fresh flower pin, simple wooden hairpin`, accessories:`round oil-paper umbrella prop, delicate silver earrings, simple ribbon at waist`, shoes:`simple flat embroidered shoes or wooden sandals`},
-    {name:'女將軍', garment:`golden ceremonial battle armor over flowing crimson war robe, armor pauldrons with dragon scale pattern, red battle sash at waist`, headpiece:`elaborate general helmet with phoenix plume and gold filigree`, accessories:`commanding sword or spear prop, war drum or battle flag prop optional`, shoes:`tall black leather military boots with gold trim`},
-    {name:'崑曲旦角', garment:`elaborate stage robes in vivid pink or green with theatrical embroidery, dramatic water sleeves baisuixiu extending far beyond hands for dance`, headpiece:`ornate opera phoenix crown headdress with hanging tassels and bead chains`, accessories:`stage performance prop fan, theatrical long sleeve movement, full stage makeup implied`, shoes:`elevated opera platform shoes (厚底靴) in matching color`},
-    {name:'七夕織女', garment:`flowing deep midnight blue silk robes scattered with embroidered silver stars and Milky Way pattern, sheer galaxy-gradient outer sleeves`, headpiece:`star crown headpiece with falling star pendants, galaxy-blue hair ornaments`, accessories:`silver thread weaving shuttle prop, constellation motif bracelet, star and moon earrings`, shoes:`dark blue embroidered shoes with star pattern`},
-    {name:'山海經神祇', garment:`archaic pre-dynasty robes with totem animal embroidery, rough-woven ancient fabric texture, dramatic wide primitive sleeves`, headpiece:`feather and horn headdress with tribal markings, face markings or divine markings on forehead`, accessories:`bone and shell primitive jewelry, holding ancient ritual bronze vessel prop, totemic amulet`, shoes:`primitive leather sandals or barefoot`},
-    {name:'南詔公主', garment:`vibrant exotic southwest China royal dress in jewel tones turquoise and gold, intricate ethnic embroidery patterns distinct from Han Chinese style`, headpiece:`peacock feather headdress with gold filigree base and hanging ornaments`, accessories:`silver coin necklace layered multiple strands, elaborate silver drop earrings, silver cuff bracelets`, shoes:`embroidered ethnic sandals with ankle wrap`},
-  ],
-  日韓系: [
-    {name:'和服', garment:`traditional Japanese kimono in elaborate floral pattern silk, wide structured obi sash tied in formal taiko knot at back, multiple layered under-kimono`, headpiece:`kanzashi hair ornaments — comb, pin and dangling bira-bira style`, accessories:`folding fan prop, small silk pouch clutch, kimono sleeve modesty`, shoes:`wooden geta sandals or zori with white tabi socks`},
-    {name:'浴衣', garment:`light cotton yukata in simple floral or geometric pattern, casual obi sash tied in simple butterfly bow, single layer summer garment`, headpiece:`simple kanzashi pin or fresh flower in loose updo`, accessories:`small fabric pouch bag, folding fan, optional wrist ribbon`, shoes:`wooden geta sandals with yukata socks`},
-    {name:'平安貴族', garment:`Heian period junihitoe twelve-layered ceremonial robe, multiple graduated color silk layers visible at cuffs and hem creating rainbow gradation`, headpiece:`formal court style, long straight black hair flowing to floor, simple gold hairband`, accessories:`folding fan prop, no jewelry per Heian custom`, shoes:`tall wooden geta platform shoes`},
-    {name:'大正浪漫', garment:`kimono top paired with Western-style hakama skirt in retro combination, mix of traditional and modern fabrics`, headpiece:`round Western glasses, hair in loose bun or braid, retro wave style`, accessories:`parasol or Western umbrella prop, small book or satchel, leather buckle boots`, shoes:`lace-up short leather boots`},
-    {name:'和風巫女', garment:`white haori top with wide sleeves, red hakama pleated trousers, sacred white sash at waist`, headpiece:`simple white ribbon in straight hair, no elaborate ornament`, accessories:`sacred gohei wand prop, small purification charm, simple wood rosary beads`, shoes:`flat white sandals or bare feet on shrine grounds`},
-    {name:'忍者少女', garment:`dark navy or black fitted shinobi shozoku, wrapped cloth binding at waist and limbs, practical close-fitting silhouette`, headpiece:`cloth mask covering lower face, hair wrapped in black cloth`, accessories:`kunai throwing knife prop, scroll tucked in belt, shuriken pouch`, shoes:`split-toe tabi boots (忍び足袋) for silent movement`},
-    {name:'韓服', garment:`traditional Korean Hanbok, vibrant jeogori short jacket top in contrasting color to full chima skirt, silk fabric with natural sheen`, headpiece:`formal norigae (노리개) ornamental pendant in hair, simple pin`, accessories:`norigae pendant hanging from jeogori, small ornamental pouch`, shoes:`boat-shaped kosin shoes (코신) in embroidered silk`},
-    {name:'韓劇宮廷女官', garment:`Joseon Dynasty formal dang-ui ceremonial robe in vibrant red or green over layered underskirt, structured court silhouette`, headpiece:`elaborate court hair binyeo pin, additional flower ornaments`, accessories:`jade and gold accessories set, ceremonial fan, court sash`, shoes:`embroidered silk court shoes (당혜)`},
-    {name:'韓系街頭潮', garment:`oversized trendy jacket with logo or pattern, wide-leg trousers or mini skirt, layered top underneath`, headpiece:`bucket hat or baseball cap, Y2K-influenced hair clips`, accessories:`layered chain necklaces, small crossbody bag, chunky rings`, shoes:`chunky platform sneakers or chunky boots`},
-    {name:'韓劇現代女主', garment:`clean minimalist chic outfit, fitted turtleneck or structured chic blouse, high-waist wide trousers or pleated midi skirt`, headpiece:`simple elegant natural hair, minimal hair accessory`, accessories:`simple gold or pearl jewelry, structured leather tote or shoulder bag`, shoes:`block heel loafers or clean white sneakers`},
-  ],
-  歐西系: [
-    {name:'維多利亞', garment:`Victorian era corseted dress, lace trim collar and cuffs, puff sleeves at shoulders, full petticoat skirt with bustle silhouette`, headpiece:`small fascinator hat with ribbon and feather, or elaborate updo with pearl pins`, accessories:`parasol prop, elbow-length gloves, cameo brooch at collar`, shoes:`lace-up leather boots with small heel`},
-    {name:'甜美Lolita', garment:`sweet lolita dress with enormous fluffy petticoat skirt, lace frills at hem and collar, bow decorations throughout, pastel pink or mint fabric`, headpiece:`bonnet or large bow headband matching dress, lace trim`, accessories:`wrist cuffs with lace, small purse with ribbon, heart or star motif jewelry`, shoes:`mary jane shoes with lace socks`},
-    {name:'哥德Lolita', garment:`gothic lolita black and white contrast dress, Victorian corset bodice, lace overlay on skirt, cross and bat motifs in design`, headpiece:`black bonnet with veil, dark ribbon bow`, accessories:`choker necklace with cross, dark lace gloves, black parasol prop`, shoes:`platform mary jane shoes or platform boots`},
-    {name:'洛可可公主', garment:`Rococo enormous panniers side-hoop skirt in pastel pink silk, ornate lace-trimmed bodice, elbow-length sleeves with ruffled engageantes`, headpiece:`powdered tall white wig with ribbon flowers and feather decoration`, accessories:`folding painted fan prop, elbow-length gloves, pearl and cameo jewelry`, shoes:`Louis heel shoes with buckle decoration`},
-    {name:'法國宮廷', garment:`French Versailles court gown with structured grand pannier skirt, silk bodice with lace jabot at chest, ribbon and rosette decoration throughout`, headpiece:`powdered tall white wig with ribbon flowers and feather plumes`, accessories:`elbow-length white gloves, folding court fan, diamond and pearl jewelry set`, shoes:`Louis heel court shoes with buckle`},
-    {name:'北歐女武神', garment:`silver chainmail and leather armor combination, Viking knotwork etching on breastplate, dramatic shoulder pauldrons, flowing battle cape`, headpiece:`winged helmet with silver metalwork, braided hair beneath`, accessories:`spear or shield prop, arm ring torc bracelet, Norse rune pendant`, shoes:`leather warrior boots with wrap binding`},
-    {name:'文藝復興貴婦', garment:`Italian Renaissance gown in rich jewel-tone velvet deep burgundy or emerald, square neckline with pearl trim, puffed upper sleeves, fitted bodice`, headpiece:`jeweled snood hairnet with pearl trim, or elaborate braided updo`, accessories:`elaborate gemstone necklace, drop earrings, embroidered belt, handkerchief prop`, shoes:`pointed poulaine shoes in matching velvet`},
-    {name:'精靈仙女', garment:`flowing pastel chiffon gown with botanical leaf and flower embroidery, layered skirt with irregular petal hem, sheer overlay`, headpiece:`flower crown with trailing vines and dewdrop crystals`, accessories:`translucent iridescent fairy wings, wrist flower cuffs, holding glowing fairy wand`, shoes:`barefoot or glass slipper with vine wrap`},
-  ],
-  制服系: [
-    {name:'女僕裝', garment:`classic black mini dress with white apron overlay, frilled collar and cuffs, fitted silhouette`, headpiece:`frilly white lace headband maid cap`, accessories:`small serving tray prop, lace wrist cuffs, small bow at collar`, shoes:`black mary jane shoes with white lace socks`},
-    {name:'護士服', garment:`white nurse dress with red cross symbol on chest, fitted professional silhouette, short or mid-length`, headpiece:`white nurse cap with red cross detail`, accessories:`stethoscope prop, small clipboard or syringe prop, watch pin at chest`, shoes:`white flat nursing shoes or white sneakers`},
-    {name:'警察制服', garment:`navy or black police officer uniform jacket and trousers/skirt, badge on chest, utility belt`, headpiece:`police cap with badge insignia`, accessories:`utility belt with holster, handcuffs prop, official notebook`, shoes:`black leather official duty boots`},
-    {name:'廚師服', garment:`white double-breasted chef jacket, checked or plain trousers, white apron at front`, headpiece:`tall white chef toque hat`, accessories:`cooking utensil prop — whisk or spatula, oven mitt optional`, shoes:`white non-slip kitchen clogs`},
-    {name:'體育服', garment:`athletic track suit or gym uniform in school colors, fitted or relaxed sportswear top and shorts or skirt`, headpiece:`sports headband or ponytail holder`, accessories:`sports bag, water bottle prop, towel around neck optional`, shoes:`colorful athletic sneakers`},
-    {name:'魔法學院制服', garment:`school house robes in deep color with house crest emblem, collared shirt underneath, tie or cravat`, headpiece:`pointed wizard hat with house color ribbon`, accessories:`magic wand prop, spellbook or scroll, house crest badge`, shoes:`classic oxford shoes or boots`},
-  ],
-  JK系列: [
-    {name:'JK制服', garment:`Japanese JK high school sailor fuku, navy sailor collar with white stripe trim, pleated checkered skirt at knee length`, headpiece:`natural loose hair or simple ponytail, no elaborate accessory`, accessories:`school bag (randoseru or tote), ribbon necktie, knee-high socks`, shoes:`classic black leather loafers`},
-    {name:'JK夏季', garment:`light short-sleeve sailor top in white with navy collar, pleated skirt, summer-weight fabric`, headpiece:`simple hair clip or small ribbon, fresh natural style`, accessories:`small tote bag, simple ribbon at collar`, shoes:`white canvas shoes or loafers`},
-    {name:'JK冬季', garment:`blazer or cardigan layered over sailor uniform, scarf around neck, full winter school girl look`, headpiece:`earmuffs or wool beret optional, warm accessory`, accessories:`oversized school bag, gloves, winter scarf`, shoes:`warm leather loafers or ankle boots`},
-    {name:'JK改造版', garment:`modified school uniform elements mixed with streetwear — cropped blazer, shortened skirt, layered tops`, headpiece:`trendy hair clips, barrettes, or colorful hair accessories`, accessories:`small crossbody bag, layered chains over uniform, charm accessories`, shoes:`chunky platform shoes or colourful sneakers`},
-  ],
-  幻想系: [
-    {name:'天使', garment:`flowing pure white dress with golden trim at hem and cuffs, soft chiffon layers, modest elegant silhouette`, headpiece:`golden halo floating above head, light catching divine light`, accessories:`large white feather wings spread behind, golden staff or lily prop`, shoes:`white strappy sandals or barefoot on clouds`},
-    {name:'魅魔', garment:`dark fantasy fitted outfit in deep purple or black, corset detail at waist, dramatic cutout or lace elements`, headpiece:`curved devil horns in matching dark color, small`, accessories:`bat wings behind, long pointed tail, glowing eyes, small trident prop`, shoes:`thigh-high boots in black or dark purple`},
-    {name:'吸血鬼', garment:`dramatic black cape with crimson red lining, Victorian-style gothic clothing underneath, high collar`, headpiece:`slicked-back aristocratic hair, no hat`, accessories:`fangs, glowing red eyes, black gloves, wine glass or rose prop`, shoes:`black leather oxford shoes or boots`},
-    {name:'美少女戰士', garment:`sailor transformation outfit with color-coded sailor collar and skirt, fitted bodysuit underneath, dramatic bow at chest`, headpiece:`crystal tiara or star headpiece in character color`, accessories:`magical wand or scepter prop, star and heart motif accessories, transformation brooch`, shoes:`ankle strap heels in character color`},
-    {name:'機甲戰士', garment:`robotic mecha battle armor with mechanical joint details, energy core glowing on chest, sci-fi panel lines`, headpiece:`visor helmet with HUD display lines`, accessories:`arm-mounted weapon or shield, tech gauntlets, jetpack optional`, shoes:`heavy mech boots with thruster detail`},
-    {name:'海盜', garment:`worn leather coat over striped shirt, wide leather belt, dramatic coat with tattered hem`, headpiece:`tricorn hat with skull and crossbones, or bandana`, accessories:`eyepatch, cutlass sword prop, treasure map or compass, rum bottle optional`, shoes:`tall leather boots with buckle, turned-down top`},
-    {name:'精靈弓手', garment:`green forest tunic with leaf-pattern trim, fitted leggings, quiver of arrows strapped to back`, headpiece:`leaf crown woven from living vines and small flowers`, accessories:`elegant longbow prop, arrow quiver, arm guard bracer`, shoes:`soft leather pointed boots`},
-  ],
-  魔法世界: [
-    {name:'魔法少女', garment:`frilly magical girl transformation outfit with layered skirt, ribbon at chest, color-coded to character theme, sparkle fabric`, headpiece:`magical tiara or star hair ornament in theme color`, accessories:`glowing magic wand or staff prop, heart or star motif everywhere, transformation compact mirror prop`, shoes:`color-matched ankle strap heels or ballet flats`},
-    {name:'魔法導師', garment:`star-patterned wizard robe in deep navy or purple, wide sleeves, ancient runic embroidery throughout`, headpiece:`tall pointed hat with star and moon decoration`, accessories:`ancient leather-bound spellbook prop, floating magic circles effect, crystal ball`, shoes:`soft leather pointed wizard shoes`},
-    {name:'元素法師', garment:`flowing robes with elemental aura effects visible — flames, ice crystals, or lightning crackling around fabric edges`, headpiece:`elemental crystal crown — fire ruby, ice sapphire, or lightning topaz`, accessories:`elemental magic staff prop, summoned elemental spirit floating nearby`, shoes:`levitating or element-themed boots`},
-    {name:'聖騎士', garment:`holy light glowing ceremonial armor, white and gold color scheme, engraved divine symbols on breastplate`, headpiece:`paladin helmet with angel wing detail, or flowing hair with divine halo`, accessories:`magic circle shield prop, divine lance weapon, holy light radiating from body`, shoes:`white armored boots with gold trim`},
-  ],
-  貓娘系: [
-    {name:'貓咪娘', garment:`cute dress or outfit in soft color, cat-themed print or accessories throughout, comfortable casual style`, headpiece:`cat ears headband in matching color, ears with inner pink detail`, accessories:`paw-shaped gloves, long fluffy cat tail, whisker face markings, small bell collar`, shoes:`mary jane shoes or soft ankle boots`},
-    {name:'狐狸娘', garment:`traditional fox spirit robes in white or warm earth tones with flowing sleeves, mystical ethereal quality`, headpiece:`fluffy fox ears in orange or white with black tips`, accessories:`multiple beautiful fox tails — three to nine tails, cultivation aura glow, paper charm prop`, shoes:`traditional cloth shoes or barefoot on floating clouds`},
-    {name:'兔娘', garment:`poofy petticoat dress in white or pastel, sweet and adorable style, lots of frills`, headpiece:`white fluffy bunny ears headband, extra long and soft`, accessories:`fluffy cotton pom-pom tail, small basket of carrots prop, paw gloves`, shoes:`white or pastel mary jane shoes`},
-    {name:'龍娘', garment:`dramatic fantasy outfit with scale texture pattern, fierce yet elegant design, jewel tones`, headpiece:`elegant curved dragon horns on headband, in gemstone colors`, accessories:`scaled dragon tail with gradient colors, optional dragon wing accessories, claw-tipped gloves`, shoes:`dramatic thigh-high boots with scale texture`},
-  ],
-  現代潮流: [
-    {name:'街頭潮流', garment:`oversized graphic hoodie or tee with bold logo, baggy cargo pants or wide-leg jeans, layered tops`, headpiece:`baseball cap worn forward or backward, or beanie`, accessories:`crossbody bag or backpack, layered chain necklaces, wrist bands`, shoes:`chunky platform sneakers or high-top sneakers`},
-    {name:'Y2K風格', garment:`low-rise pants or mini skirt in metallic or bright fabric, crop halter top or butterfly print tee`, headpiece:`butterfly clips and small Y2K pins throughout hair, pigtails or space buns`, accessories:`tinted sunglasses, beaded accessories everywhere, tiny phone or flip phone prop`, shoes:`platform sandals or platform sneakers`},
-    {name:'辦公OL', garment:`tailored blazer in neutral tone, pencil skirt or wide trousers, fitted button-up blouse underneath`, headpiece:`sleek professional hair — low bun or straight blowout`, accessories:`structured leather tote or briefcase, simple pearl or gold jewelry, watch`, shoes:`block heel pumps or pointed-toe flats`},
-    {name:'運動休閒', garment:`high-waist athletic leggings or yoga pants, sports bra or fitted tank top, zip-up jacket optional`, headpiece:`sport headband or high ponytail, minimal`, accessories:`gym bag, water bottle prop, earbuds, fitness tracker watch`, shoes:`colorful athletic sneakers`},
-    {name:'Cafe文青', garment:`linen or cotton relaxed shirt or blouse, wide-leg trousers or midi skirt in earth tones`, headpiece:`effortless natural hair, loose waves or simple bun`, accessories:`large canvas tote bag, paperback book prop, coffee cup prop`, shoes:`loafers or simple white sneakers`},
-    {name:'派對盛裝', garment:`sequin or sparkle mini dress or jumpsuit, bold statement silhouette, glamorous evening wear`, headpiece:`glam waves or sleek updo, hair jewels`, accessories:`statement chandelier earrings, small clutch purse, bold ring`, shoes:`strappy high heels in metallic or matching color`},
-    {name:'韓系甜美', garment:`pastel oversized cardigan over fitted crop top or camisole, pleated mini skirt or shorts`, headpiece:`cute hair clips or barrettes in pastel colors, soft wavy hair`, accessories:`small shoulder bag or bucket bag, layered thin necklaces, hair clips collection`, shoes:`platform loafers or chunky Mary Janes`},
-    {name:'法式優雅', garment:`classic Breton stripe top or silk blouse, tailored wide trousers or midi skirt in neutral`, headpiece:`effortless undone chic hair, beret optional`, accessories:`simple gold hoop or stud earrings, structured leather bag, silk scarf tied at neck or bag`, shoes:`white sneakers, ballet flats, or simple loafers`},
-    {name:'賽博朋克', garment:`cyberpunk futuristic outfit, holographic or metallic bodysuit with LED panel details, neon-trim jacket, dark tech-fabric trousers`, headpiece:`visor glasses or tech headset, neon-lit hair accessories`, accessories:`circuit-board pattern accessories, glowing neon wrist cuffs, holographic bag prop`, shoes:`platform boots with LED edge lighting`},
-  ],
-  職業系: [
-    {name:'美髮師', garment:`chic casual professional outfit, fitted top or blouse, slim trousers, salon apron over clothes`, headpiece:`stylish practical hairstyle showcasing salon skill`, accessories:`scissors and comb tucked in apron pocket, hair dryer prop`, shoes:`comfortable flat shoes for long standing hours`},
-    {name:'甜點師', garment:`white chef jacket or fitted bakery top, apron with colorful icing or flour stains deliberately artistic`, headpiece:`chef toque hat or cute baker cap`, accessories:`holding whisk or piping bag prop, small cake or pastry prop`, shoes:`white non-slip kitchen shoes`},
-    {name:'花藝師', garment:`linen apron over casual relaxed outfit, natural fabric textures, earth tones`, headpiece:`loose natural hair with small flowers tucked in`, accessories:`surrounded by blooms and greenery, pruning shears prop, flower bouquet prop`, shoes:`comfortable flat shoes or sneakers`},
-    {name:'插畫家', garment:`paint-splattered smock or casual oversized shirt over slim jeans or trousers`, headpiece:`classic beret hat, casually worn`, accessories:`holding palette and brush prop, sketchbook, art supply bag`, shoes:`casual sneakers or loafers`},
-    {name:'咖啡師', garment:`stylish cafe apron over fitted tee or collared shirt, rolled sleeves`, headpiece:`casual hair up or back for hygiene, simple clip`, accessories:`holding latte art cup prop, small notebook for orders, coffee bean pouch`, shoes:`comfortable non-slip cafe shoes`},
-    {name:'護膚美容師', garment:`clean white or soft pink clinical uniform, fitted professional spa aesthetic`, headpiece:`neat hair in bun or ponytail, hygienic professional style`, accessories:`holding skincare product prop, jade roller, facial massage tool`, shoes:`white clinical flat shoes`},
-  ],
-  節慶特定: [
-    {name:'中秋嫦娥', garment:`flowing lunar robes in pale silver-blue and white, celestial fabric with moon and cloud motifs`, headpiece:`moon goddess crown with jade and pearl ornaments, crescent moon motif`, accessories:`jade rabbit companion prop, mooncake on tray prop, lotus lantern`, shoes:`cloud-stepping shoes or barefoot floating`},
-    {name:'農曆新年', garment:`vibrant red cheongsam qipao with gold lucky patterns — double happiness, peonies, and phoenixes`, headpiece:`festive hair ornament with gold coins and red tassels`, accessories:`red envelope (hongbao) prop, lucky gold ingot prop, festive fan`, shoes:`red embroidered flat shoes or heels`},
-    {name:'聖誕精靈', garment:`red and green festive elf outfit with white fur trim, short playful silhouette, jingling bells on collar`, headpiece:`Santa hat or reindeer antler headband with bells`, accessories:`candy cane props, small gift bag, jingle bell bracelet`, shoes:`curled elf shoes with pom-pom tip`},
-    {name:'萬聖魔女', garment:`mini black witch dress with purple cape or cloak, bat or spider web motif trim, spooky cute aesthetic`, headpiece:`mini black witch hat with buckle, crooked and charming`, accessories:`broomstick prop, jack-o-lantern bucket, black cat familiar companion prop`, shoes:`black platform boots or witch-pointed shoes`},
-    {name:'情人節', garment:`heart motif dress in red or pink, romantic evening or casual style, rose-patterned fabric`, headpiece:`small flower crown or rose hair pin`, accessories:`rose bouquet prop, love letter envelope prop, heart-shaped accessories`, shoes:`red or pink heels or cute flats`},
-    {name:'端午龍舟', garment:`traditional festive hanfu or ethnic dress in red green and yellow dragon boat colors`, headpiece:`simple festive hair ornament with mugwort or calamus plants`, accessories:`rice dumpling zongzi prop, dragon boat miniature prop, fragrant sachet pouch`, shoes:`simple cloth shoes`},
-  ],
-  異世界系: [
-    {name:'異世界冒險', garment:`leather armor vest over linen shirt and trousers, adventurer guild cloak in travel-worn fabric, practical fantasy RPG style`, headpiece:`simple leather headband or hood down from cloak`, accessories:`magic sword or staff prop, adventurer's satchel, adventurer guild badge`, shoes:`worn leather travel boots`},
-    {name:'異世界公主', garment:`luxurious fantasy ball gown with magical kingdom aesthetic, ethereal fabric that seems to glow, elaborate layered skirt`, headpiece:`princess crown tiara with magical gemstones`, accessories:`magical royal scepter prop, ethereal floating sparkles around`, shoes:`glass slipper or jeweled fantasy heels`},
-    {name:'異世界勇者', garment:`legendary chosen hero armor in silver and blue, holy symbol engraved on breastplate, flowing hero's cape`, headpiece:`hero headband or light helmet, divine blessing glow around`, accessories:`holy sword prop with glowing blade, divine shield, hero's crest emblem`, shoes:`sturdy armored boots with divine light trim`},
-    {name:'異世界魔王', garment:`dark gothic armor in black and deep crimson, dramatic black cape with tattered edges, dark fantasy villain silhouette`, headpiece:`dark crown or horned headpiece, menacing`, accessories:`dark power staff prop, dark aura emanating from body, sinister floating orbs`, shoes:`black armored greaves, imposing`},
-  ],
-  希臘神祇: [
-    {name:'希臘女神', garment:`flowing white chiton robes draped in classical Greek style, golden fibula pin at shoulder, himation cloak over one shoulder`, headpiece:`laurel wreath crown in gold or fresh leaves`, accessories:`golden sandal straps, simple gold torque bracelet, divine light aura`, shoes:`golden strappy sandals with ankle wrap`},
-    {name:'雅典娜', garment:`gleaming Athena armor — breastplate with gorgon aegis, structured warrior dress underneath`, headpiece:`Corinthian crested helmet pushed back on head`, accessories:`spear prop, round shield with owl emblem, olive branch, wise owl companion`, shoes:`warrior sandals with greave shin guard`},
-    {name:'阿芙羅黛蒂', garment:`elegant flowing pink or coral robes in gossamer fabric, gathered and draped in classical style, rose petal hem`, headpiece:`rose garland crown, roses woven in hair`, accessories:`heart and dove motifs, sea foam and shell accessories, golden apple prop`, shoes:`delicate gold sandals or barefoot on sea foam`},
-    {name:'阿提米絲', garment:`short hunting tunic for movement, knee-length chiton in silver or white, practical yet divine`, headpiece:`silver crescent moon headband, hair loosely tied back`, accessories:`bow and arrow prop, quiver on back, deer companion, hunting knife at belt`, shoes:`silver hunting sandals with cross-lace binding`},
-  ],
-  埃及神祇: [
-    {name:'埃及女法老', garment:`white linen royal sheath dress with elaborate gold collar pectoral piece (wesekh), formal pharaoh regalia`, headpiece:`golden nemes headdress with uraeus cobra at front`, accessories:`ankh scepter and flail prop, kohl-lined eye makeup, scarab beetle jewelry`, shoes:`gilded sandals with Egyptian hieroglyph sole`},
-    {name:'伊西斯女神', garment:`white linen robes with gold hieroglyph border, wrapped goddess style with golden belt`, headpiece:`throne hieroglyph headdress symbol on head, or sun disk and cow horns crown`, accessories:`magnificent feathered wings spread wide, ankh symbol prop, blue lotus flower`, shoes:`Egyptian leather sandals with gold toe piece`},
-    {name:'娜芙蒂蒂', garment:`elegant white or colorful linen dress with elaborate beaded collar, fitted Egyptian style`, headpiece:`iconic tall flat-top blue crown (khepresh style), the most recognizable crown`, accessories:`gold and faience jewelry set, elaborate gold collar, blue lotus prop`, shoes:`gilded leather Egyptian sandals`},
-    {name:'荷魯斯神', garment:`golden ceremonial armor or ceremonial kilt with gold patterning, divine warrior costume`, headpiece:`falcon head headdress or double crown with falcon wings`, accessories:`eye of Horus (wedjat) prop, solar disk above head, divine Egyptian warrior weapons`, shoes:`gilded warrior sandals`},
-  ],
-  各國風情: [
-    {name:'印度紗麗', garment:`colorful silk saree with intricate gold border, draped in traditional Indian style over fitted blouse (choli)`, headpiece:`bindi jewel on forehead, elaborate hair with maang tikka headpiece down center part`, accessories:`elaborate gold jewelry set — jhumka earrings, multilayer necklace, bangles stacked on wrists, henna pattern on hands`, shoes:`embroidered juttis flat shoes or strappy sandals`},
-    {name:'墨西哥風', garment:`colorful embroidered Tehuana style dress with floral embroidery, full skirt with ruffle hem`, headpiece:`flower crown (flor de tiaré) with tropical flowers`, accessories:`cross-body embroidered bag, Day of the Dead face painting implied, maracas or fan prop`, shoes:`traditional huarache sandals`},
-    {name:'俄羅斯民族', garment:`traditional Sarafan dress with colorful folk embroidery (khokhloma pattern), pinafore style over white blouse`, headpiece:`Kokoshnik headdress in matching embroidered fabric`, accessories:`fur trim at cuffs and hem, matryoshka doll prop, beaded necklace`, shoes:`valenki felt boots or embroidered flat shoes`},
-    {name:'印第安風情', garment:`colorful beaded dress or two-piece with fringe leather details, tribal pattern woven fabric`, headpiece:`feather headdress (war bonnet) or beaded headband`, accessories:`turquoise and silver jewelry set, dreamcatcher prop, moccasin bag`, shoes:`beaded moccasin shoes with fringe`},
-  ],
-  聊齋誌異: [
-    {name:'聊齋女鬼', garment:`flowing white ethereal robes in translucent or semi-transparent ghostly fabric, misty quality at hem`, headpiece:`simple traditional hair style with white paper flower or willow branch`, accessories:`ghostly translucent aura, old lantern prop, white paper fan`, shoes:`barefoot or no visible feet, floating above ground`},
-    {name:'聊齋狐仙', garment:`ancient Chinese fox fairy costume in warm earth tones or white, flowing traditional robes with subtle fox fur trim`, headpiece:`multiple beautiful fox ears visible in elaborate hair, traditional style`, accessories:`multiple fox tails — three to nine, mystical cultivation glow, paper talismans prop`, shoes:`traditional embroidered shoes or barefoot`},
-    {name:'聊齋花妖', garment:`robes made of living petals and vines in garden spirit style, flowers blooming from fabric edge`, headpiece:`floral crown with vines and living flowers, petals falling from hair`, accessories:`garden spirit haunting aura, pruning shears or watering can prop`, shoes:`barefoot with flower vine ankle wrap`},
-    {name:'聊齋判官', garment:`dark official robes of underworld judge, black or dark grey formal Qing-style robe with red trim`, headpiece:`official judge cap (烏紗帽) with judge insignia`, accessories:`vermillion stamp seal prop, ledger of life and death book prop, official authority aura`, shoes:`black official court shoes`},
-  ],
-  '補充造型': [
-    {name:'身披鎧甲的戰場造型', garment:`cute chibi battle armor, polished silver plate armor with rounded oversized shoulder guards, deep red heroic cape flowing behind, small gold trim, leather belt and tiny armored skirt panels, battlefield hero look but soft and adorable, no gore`, headpiece:`same cute face and hairstyle as reference person, hair partly tied back for action, small shiny knight headband or lightweight open helmet that does not cover the face`, accessories:`short toy-like sword or tiny spear, small round shield, glowing heroic platform, distant fantasy battlefield sparks and flags, brave cheerful expression`, shoes:`small silver armored boots with soft rounded shape, cute proportions, stable heroic stance`},
-    {name:'身處恐龍時代的原始人造型', garment:`cute chibi prehistoric cave person outfit, soft leopard-print or animal-hide tunic with uneven handmade hem, rope belt, tiny fur wristbands, playful primitive adventurer style, childlike and friendly`, headpiece:`same cute face and hairstyle as reference person, messy half-up hair tied with a small bone ornament, tiny face paint stripes, no scary expression`, accessories:`small wooden spear, stone necklace, friendly baby dinosaur companion beside the character, jungle ferns, volcanic glow in far background, prehistoric rock platform`, shoes:`barefoot or simple fur ankle wraps, rounded cute feet, adventure pose with bright curious smile`},
-  ],
-};
-
-let currentOutfitCat = null;
-
-function initOutfitGrid() {
-  const grid = document.getElementById('outfit-main-grid');
-  if (!grid) return;
-  grid.innerHTML = Object.keys(outfitData).map(cat =>
-    `<div class="c-item" id="outcat-${cat}" onclick="openOutfitCat('${cat}')"><div class="c-check">✓</div><div class="c-body"><div class="c-name">${cat}</div></div></div>`
-  ).join('');
-}
-
-function selectOutfitMode(mode) {
-  if (mode === 'ai') mode = 'manual';
-  state.outfitRef = mode === 'ref';
-  state.outfitAI  = mode === 'ai';
-  ['ref','manual-mode'].forEach(k => {
-    const el = document.getElementById('out-' + k);
-    if (el) el.classList.toggle('active',
-      (k === 'ref' && mode === 'ref') ||
-      (k === 'manual-mode' && mode === 'manual')
-    );
-  });
-  const manual = document.getElementById('outfit-manual');
-  if (manual) manual.style.display = mode === 'manual' ? 'block' : 'none';
-  if (mode === 'manual') renderOutfitTags();
-  updateDots();
-}
-// keep legacy stubs so randomizeAll doesn't break
-function toggleOutfitRef() { selectOutfitMode('ref'); }
-function toggleOutfitAI()  { selectOutfitMode('ai');  }
-
-function openOutfitCat(cat) {
-  if (currentOutfitCat === cat) { currentOutfitCat = null; document.getElementById('outfit-sub-wrap').style.display = 'none'; return; }
-  currentOutfitCat = cat;
-  document.getElementById('outfit-sub-label').textContent = cat + ' — 選擇細項（可複選）';
-  const grid = document.getElementById('outfit-sub-grid');
-  grid.innerHTML = outfitData[cat].map((item, i) => {
-    const sel = state.outfitSelections.some(s => s.name === item.name);
-    return `<div class="c-item${sel?' active':''}" id="outsub-${cat}-${i}" onclick="toggleOutfitItem('${cat}',${i})"><div class="c-check">✓</div><div class="c-body"><div class="c-name">${item.name}</div></div></div>`;
-  }).join('');
-  document.getElementById('outfit-sub-wrap').style.display = 'block';
-  updateOutfitCatMark();
-}
-
-function toggleOutfitItem(cat, i) {
-  const item = outfitData[cat][i];
-  const idx = state.outfitSelections.findIndex(s => s.name === item.name);
-  if (idx >= 0) state.outfitSelections.splice(idx, 1);
-  else state.outfitSelections.push({ cat, name: item.name, p: item.p, garment: item.garment, headpiece: item.headpiece, accessories: item.accessories, shoes: item.shoes });
-  openOutfitCat(cat); renderOutfitTags(); updateDots();
-  renderBatchOutputPanel();
-  persistWorkspace();
-}
-
-function updateOutfitCatMark() {
-  Object.keys(outfitData).forEach(cat => {
-    const el = document.getElementById('outcat-'+cat);
-    if (el) el.classList.toggle('active', state.outfitSelections.some(s => s.cat === cat));
-  });
-}
-
-function renderOutfitTags() {
-  const wrap = document.getElementById('outfit-selected-wrap');
-  const tags = document.getElementById('outfit-tags');
-  const display = document.getElementById('outfit-display');
-  const displayTags = document.getElementById('outfit-display-tags');
-
-  if (!state.outfitSelections.length) {
-    wrap.style.display = 'none';
-    if (display) display.style.display = 'none';
-    return;
-  }
-  wrap.style.display = 'block';
-  const html = state.outfitSelections.map((s, i) =>
-    `<div class="outfit-tag">${s.name} <span class="rm" onclick="removeOutfit(${i})">✕</span></div>`
-  ).join('');
-  tags.innerHTML = html;
-  // 同步顯示欄
-  if (display) {
-    display.style.display = 'block';
-    displayTags.innerHTML = html;
-  }
-}
-function removeOutfit(i) {
-  state.outfitSelections.splice(i, 1); renderOutfitTags(); updateOutfitCatMark();
-  if (currentOutfitCat) openOutfitCat(currentOutfitCat); updateDots();
-}
-
-// ── COLOR ──
-const presetColors = [
-  // ── 白／米／奶油
-  { name:'純白', hex:'#ffffff', border:'#ccc' },
-  { name:'雪白', hex:'#fffafa', border:'#ccc' },
-  { name:'象牙白', hex:'#fffff0', border:'#ccc' },
-  { name:'奶油', hex:'#fffdd0', border:'#ccc' },
-  { name:'珍珠', hex:'#f0ead6', border:'#ccc' },
-  { name:'米白', hex:'#f5f5dc', border:'#ccc' },
-  { name:'亞麻', hex:'#faf0e6', border:'#ccc' },
-  { name:'香檳', hex:'#f7e7ce', border:'#d4af37' },
-  { name:'蛋殼白', hex:'#f0ebe0', border:'#ccc' },
-  { name:'霧白', hex:'#e8e4de', border:'#ccc' },
-  // ── 粉紅系（由淺到深）
-  { name:'棉花糖', hex:'#ffd1dc', border:'#ffd1dc' },
-  { name:'嬰兒粉', hex:'#fce4ec', border:'#fce4ec' },
-  { name:'丁香粉', hex:'#f4c2c2', border:'#f4c2c2' },
-  { name:'粉', hex:'#ffb6c1', border:'#ffb6c1' },
-  { name:'櫻花粉', hex:'#ffaec9', border:'#ffaec9' },
-  { name:'水蜜桃粉', hex:'#ffccd5', border:'#ffccd5' },
-  { name:'莫蘭迪粉', hex:'#d4a5a5', border:'#d4a5a5' },
-  { name:'玫瑰粉', hex:'#f9a8b8', border:'#f9a8b8' },
-  { name:'桃紅', hex:'#ff69b4', border:'#ff69b4' },
-  { name:'玫瑰', hex:'#e8638c', border:'#e8638c' },
-  { name:'熱粉', hex:'#ff1493', border:'#ff1493' },
-  { name:'磚紅粉', hex:'#cb4154', border:'#cb4154' },
-  // ── 紅系（由淺到深）
-  { name:'珊瑚', hex:'#ff7f7f', border:'#ff7f7f' },
-  { name:'珊瑚紅', hex:'#ff6b6b', border:'#ff6b6b' },
-  { name:'番茄紅', hex:'#ff4500', border:'#ff4500' },
-  { name:'磚橘', hex:'#e2724a', border:'#e2724a' },
-  { name:'紅', hex:'#e02020', border:'#e02020' },
-  { name:'鮮紅', hex:'#ff0000', border:'#ff0000' },
-  { name:'玫瑰金', hex:'#b76e79', border:'#b76e79' },
-  { name:'暗玫瑰', hex:'#c0737a', border:'#c0737a' },
-  { name:'酒紅', hex:'#8b0000', border:'#8b0000' },
-  { name:'深酒紅', hex:'#6e0000', border:'#6e0000' },
-  // ── 橘系（由淺到深）
-  { name:'蜜桃', hex:'#ffcba4', border:'#ffcba4' },
-  { name:'杏色', hex:'#fbceb1', border:'#fbceb1' },
-  { name:'淺橘', hex:'#ffcc99', border:'#ffcc99' },
-  { name:'蜜橘', hex:'#ffb347', border:'#ffb347' },
-  { name:'南瓜橘', hex:'#ff7518', border:'#ff7518' },
-  { name:'橘', hex:'#ff8c00', border:'#ff8c00' },
-  { name:'深橘', hex:'#e65c00', border:'#e65c00' },
-  { name:'赤陶橘', hex:'#cc5500', border:'#cc5500' },
-  // ── 黃系（由淺到深）
-  { name:'奶黃', hex:'#fff8dc', border:'#ccc' },
-  { name:'檸檬黃', hex:'#fff44f', border:'#ccc' },
-  { name:'嫩黃', hex:'#ffff99', border:'#ccc' },
-  { name:'芥末黃', hex:'#ffdb58', border:'#ffdb58' },
-  { name:'向日葵黃', hex:'#ffc200', border:'#ffc200' },
-  { name:'金黃', hex:'#ffd700', border:'#ffd700' },
-  { name:'土黃', hex:'#c8a951', border:'#c8a951' },
-  { name:'薑黃', hex:'#d4a017', border:'#d4a017' },
-  // ── 金／棕／駝（由淺到深）
-  { name:'金', hex:'#d4af37', border:'#d4af37' },
-  { name:'淡金', hex:'#e8c97e', border:'#e8c97e' },
-  { name:'駝色', hex:'#c19a6b', border:'#c19a6b' },
-  { name:'焦糖', hex:'#c68642', border:'#c68642' },
-  { name:'銅棕', hex:'#996633', border:'#996633' },
-  { name:'古銅', hex:'#cd7f32', border:'#cd7f32' },
-  { name:'栗棕', hex:'#7b3f00', border:'#7b3f00' },
-  { name:'深棕', hex:'#5c3317', border:'#5c3317' },
-  // ── 綠系（由淺到深）
-  { name:'薄荷', hex:'#98ff98', border:'#aaa' },
-  { name:'嫩綠', hex:'#ccffcc', border:'#aaa' },
-  { name:'蘋果綠', hex:'#8db600', border:'#8db600' },
-  { name:'抹茶', hex:'#87a878', border:'#87a878' },
-  { name:'草綠', hex:'#7cfc00', border:'#7cfc00' },
-  { name:'碧綠', hex:'#3cb371', border:'#3cb371' },
-  { name:'苔綠', hex:'#8a9a5b', border:'#8a9a5b' },
-  { name:'橄欖綠', hex:'#808000', border:'#808000' },
-  { name:'綠', hex:'#228b22', border:'#228b22' },
-  { name:'森林綠', hex:'#2d5a27', border:'#2d5a27' },
-  { name:'墨綠', hex:'#2d4a22', border:'#2d4a22' },
-  { name:'深墨綠', hex:'#1a3a1a', border:'#1a3a1a' },
-  // ── 藍綠／青（由淺到深）
-  { name:'薄荷藍', hex:'#b5ead7', border:'#aaa' },
-  { name:'蒂芬妮藍', hex:'#81d8d0', border:'#81d8d0' },
-  { name:'水藍', hex:'#b0e0e6', border:'#b0e0e6' },
-  { name:'青綠', hex:'#00ced1', border:'#00ced1' },
-  { name:'孔雀藍', hex:'#00827f', border:'#00827f' },
-  { name:'孔雀綠', hex:'#00a693', border:'#00a693' },
-  { name:'湖水綠', hex:'#0e8075', border:'#0e8075' },
-  // ── 藍系（由淺到深）
-  { name:'嬰兒藍', hex:'#d6eaf8', border:'#aaa' },
-  { name:'粉藍', hex:'#aec6cf', border:'#aec6cf' },
-  { name:'霧灰藍', hex:'#8eafc2', border:'#8eafc2' },
-  { name:'天藍', hex:'#87ceeb', border:'#87ceeb' },
-  { name:'淺藍', hex:'#add8e6', border:'#add8e6' },
-  { name:'矢車菊藍', hex:'#6495ed', border:'#6495ed' },
-  { name:'鋼藍', hex:'#4682b4', border:'#4682b4' },
-  { name:'藍', hex:'#4169e1', border:'#4169e1' },
-  { name:'道奇藍', hex:'#1e90ff', border:'#1e90ff' },
-  { name:'寶藍', hex:'#0047ab', border:'#0047ab' },
-  { name:'靛藍', hex:'#4b0082', border:'#4b0082' },
-  { name:'午夜藍', hex:'#191970', border:'#191970' },
-  { name:'深海藍', hex:'#0d1b4b', border:'#0d1b4b' },
-  // ── 紫系（由淺到深）
-  { name:'薰衣草', hex:'#e6e6fa', border:'#aaa' },
-  { name:'淡紫', hex:'#d8b4fe', border:'#d8b4fe' },
-  { name:'丁香紫', hex:'#c8a2c8', border:'#c8a2c8' },
-  { name:'霧紫', hex:'#b39ddb', border:'#b39ddb' },
-  { name:'煙燻紫', hex:'#967bb6', border:'#967bb6' },
-  { name:'紫藤', hex:'#9b59b6', border:'#9b59b6' },
-  { name:'洋紅', hex:'#cc00cc', border:'#cc00cc' },
-  { name:'紫', hex:'#8b008b', border:'#8b008b' },
-  { name:'茄紫', hex:'#614051', border:'#614051' },
-  { name:'深紫', hex:'#4a0080', border:'#4a0080' },
-  // ── 灰系（由淺到深）
-  { name:'雲灰', hex:'#f0f0f0', border:'#ccc' },
-  { name:'淺灰', hex:'#d3d3d3', border:'#d3d3d3' },
-  { name:'銀灰', hex:'#c0c0c0', border:'#c0c0c0' },
-  { name:'霧灰', hex:'#a9a9a9', border:'#a9a9a9' },
-  { name:'中灰', hex:'#808080', border:'#808080' },
-  { name:'深灰', hex:'#555', border:'#555' },
-  { name:'炭灰', hex:'#36454f', border:'#36454f' },
-  { name:'鐵灰', hex:'#2c2c2c', border:'#2c2c2c' },
-  // ── 黑
-  { name:'黑', hex:'#1a1a1a', border:'#1a1a1a' },
-  // ── 補充特殊色
-  { name:'珊瑚橘', hex:'#ff6f61', border:'#ff6f61' },
-  { name:'胭脂紅', hex:'#c0392b', border:'#c0392b' },
-  { name:'磚棕', hex:'#a0522d', border:'#a0522d' },
-  { name:'杏黃', hex:'#f4d160', border:'#f4d160' },
-  { name:'萊姆綠', hex:'#32cd32', border:'#32cd32' },
-  { name:'祖母綠', hex:'#006400', border:'#006400' },
-  { name:'冰川藍', hex:'#99c5c4', border:'#99c5c4' },
-  { name:'波斯藍', hex:'#1c39bb', border:'#1c39bb' },
-  { name:'電藍', hex:'#0050ef', border:'#0050ef' },
-  { name:'李子紫', hex:'#843179', border:'#843179' },
-  { name:'葡萄紫', hex:'#5d3a7a', border:'#5d3a7a' },
-  { name:'鐵藍灰', hex:'#6c7a89', border:'#6c7a89' },
-  { name:'玄黑', hex:'#0a0a0a', border:'#0a0a0a' },
-  // ── 金屬色系
-  { name:'黃金', hex:'#FFD700', border:'#d4a000' },
-  { name:'淡金', hex:'#F0C040', border:'#c89e20' },
-  { name:'玫瑰金', hex:'#C9748A', border:'#a05060' },
-  { name:'白金', hex:'#E8E8E8', border:'#aaa' },
-  { name:'鉑金', hex:'#D0D0D0', border:'#999' },
-  { name:'銀', hex:'#C8C8C8', border:'#999' },
-  { name:'鋼鐵銀', hex:'#8C9198', border:'#6a7080' },
-  { name:'青銅', hex:'#CD7F32', border:'#a06020' },
-  { name:'紫金', hex:'#9B7EC8', border:'#7050a0' },
-  { name:'黑金', hex:'#2A2000', border:'#8B6914' },
-  { name:'玫金', hex:'#B87333', border:'#8B5010' },
-  { name:'香檳金', hex:'#F7E98E', border:'#c8b830' },
-  // ── 螢光色系
-  { name:'螢光黃', hex:'#FFFF00', border:'#cccc00' },
-  { name:'螢光綠', hex:'#39FF14', border:'#20cc00' },
-  { name:'螢光橘', hex:'#FF6600', border:'#cc4400' },
-  { name:'螢光粉', hex:'#FF1493', border:'#cc0070' },
-  { name:'螢光藍', hex:'#00FFFF', border:'#00cccc' },
-  { name:'螢光紫', hex:'#BF00FF', border:'#8B00cc' },
-  { name:'螢光紅', hex:'#FF073A', border:'#cc0020' },
-  { name:'螢光白', hex:'#F0F8FF', border:'#ccc' },
-  // ── 漸層主色（單色漸層描述用）
-  { name:'漸層·玫瑰→金', hex:'linear-gradient(135deg,#e8638c,#FFD700)', border:'#e8638c', gradient:true },
-  { name:'漸層·天藍→紫', hex:'linear-gradient(135deg,#87ceeb,#8b008b)', border:'#87ceeb', gradient:true },
-  { name:'漸層·金→白', hex:'linear-gradient(135deg,#FFD700,#ffffff)', border:'#d4a000', gradient:true },
-  { name:'漸層·粉→薰衣草', hex:'linear-gradient(135deg,#ffb6c1,#e6e6fa)', border:'#ffb6c1', gradient:true },
-  { name:'漸層·火焰', hex:'linear-gradient(135deg,#ff0000,#ff8c00,#FFD700)', border:'#ff4400', gradient:true },
-  { name:'漸層·極光', hex:'linear-gradient(135deg,#00ff87,#60efff,#0061ff)', border:'#00cc88', gradient:true },
-  { name:'漸層·日落', hex:'linear-gradient(135deg,#f97316,#ec4899,#8b5cf6)', border:'#ec4899', gradient:true },
-  { name:'漸層·海洋', hex:'linear-gradient(135deg,#0047ab,#00ced1,#87ceeb)', border:'#0047ab', gradient:true },
-  { name:'漸層·星夜', hex:'linear-gradient(135deg,#0a0a2a,#191970,#8b008b)', border:'#191970', gradient:true },
-  { name:'漸層·糖果', hex:'linear-gradient(135deg,#ff69b4,#ffcba4,#87ceeb)', border:'#ff69b4', gradient:true },
-  // ── 材質色（帶感覺的顏色）
-  { name:'珍珠白', hex:'#F5F0E8', border:'#ccc' },
-  { name:'象牙', hex:'#FFFFF0', border:'#ccc' },
-  { name:'瓷白', hex:'#F2EDE4', border:'#ccc' },
-  { name:'絲絨黑', hex:'#0D0D0D', border:'#333' },
-  { name:'天鵝絨紅', hex:'#7B1C2E', border:'#5a0f1e' },
-  { name:'緞面藍', hex:'#1B3A6B', border:'#0f2248' },
-  { name:'皮革棕', hex:'#8B5E3C', border:'#6a3e1e' },
-  { name:'丹寧藍', hex:'#3B5998', border:'#2a3f70' },
-  { name:'麂皮米', hex:'#C4A882', border:'#a08060' },
-  { name:'磨砂灰', hex:'#8A8A8A', border:'#666' },
-  // ── 寶石色
-  { name:'紅寶石', hex:'#9B111E', border:'#7a0010' },
-  { name:'祖母綠', hex:'#046307', border:'#023f04' },
-  { name:'藍寶石', hex:'#0F52BA', border:'#0a3a8a' },
-  { name:'紫水晶', hex:'#9966CC', border:'#7744aa' },
-  { name:'黃玉', hex:'#FFC200', border:'#cc9800' },
-  { name:'青金石', hex:'#26619C', border:'#1a4070' },
-  { name:'珊瑚寶石', hex:'#FF6F61', border:'#cc4a3a' },
-  { name:'黑曜石', hex:'#1A1A1A', border:'#333' },
-  { name:'月光石', hex:'#E8E4F0', border:'#ccc' },
-  { name:'翡翠綠', hex:'#00A86B', border:'#007a4e' },
-];
-
-function initColorSwatches() {
-  const wrap = document.getElementById('color-swatches');
-  if (!wrap) return;
-  wrap.innerHTML = presetColors.map((col, i) =>
-    `<div class="swatch" id="swatch-${i}" title="${col.name}" style="background:${col.hex}; border-color:${col.border}; ${col.gradient ? 'border-width:2px;' : ''}" onclick="toggleColor(${i})">
-      <div class="sticker">✓</div>
-    </div>`
-  ).join('');
-}
-
-function clearColors() {
-  state.colorSelections = []; state.customColors = [];
-  document.querySelectorAll('.swatch').forEach(el => el.classList.remove('active'));
-  renderColorTags();
-}
-
-function randomColors() {
-  // 清空現有
-  state.colorSelections = []; state.customColors = [];
-  document.querySelectorAll('.swatch').forEach(el => el.classList.remove('active'));
-  renderColorTags();
-  // 隨機選 2~4 個
-  const num = Math.floor(Math.random() * 3) + 2;
-  const picked = new Set();
-  while (picked.size < num) picked.add(Math.floor(Math.random() * presetColors.length));
-  picked.forEach(i => toggleColor(i));
-}
-
-function toggleColor(i) {
-  const c = presetColors[i];
-  const idx = state.colorSelections.findIndex(s => s.name === c.name);
-  if (idx >= 0) { state.colorSelections.splice(idx, 1); document.getElementById('swatch-'+i).classList.remove('active'); }
-  else { state.colorSelections.push(c); document.getElementById('swatch-'+i).classList.add('active'); }
-  renderColorTags();
-}
-// addCustomColor removed (UI element no longer exists)
-function removeColor(type, i) {
-  if (type === 'preset') {
-    const name = state.colorSelections[i].name;
-    const pi = presetColors.findIndex(c => c.name === name);
-    if (pi >= 0) document.getElementById('swatch-'+pi).classList.remove('active');
-    state.colorSelections.splice(i, 1);
-  } else {
-    state.customColors.splice(i, 1);
-  }
-  renderColorTags();
-}
-const lightHexes = ['#ffffff','#fffafa','#fffff0','#fffdd0','#faf0e6','#f0ead6','#f5f5dc','#f7e7ce','#f0ebe0','#e8e4de','#ffd1dc','#fce4ec','#f4c2c2','#ffb6c1','#ffaec9','#ffccd5','#ffcba4','#fbceb1','#ffcc99','#fff8dc','#fff44f','#ffff99','#ffdb58','#e8c97e','#ccffcc','#98ff98','#b5ead7','#d6eaf8','#aec6cf','#add8e6','#e6e6fa','#d8b4fe','#c8a2c8','#b39ddb','#f0f0f0','#d3d3d3','#c0c0c0','#81d8d0','#b0e0e6','#87ceeb','#F5F0E8','#FFFFF0','#F2EDE4','#E8E8E8','#D0D0D0','#C8C8C8','#F7E98E','#FFFF00','#F0F8FF','#E8E4F0','#F5F0E8'];function renderColorTags() {
-  const wrap = document.getElementById('color-tags');
-  const hint = document.getElementById('color-ai-hint');
-  const presetTags = state.colorSelections.map((clr, i) =>
-    `<div class="color-tag" style="background:${clr.hex}; color:${lightHexes.includes(clr.hex) ? '#333':'#fff'};">
-      ${clr.name} <span class="rm" onclick="removeColor('preset',${i})">✕</span>
-    </div>`
-  ).join('');
-  const customTags = state.customColors.map((clr, i) =>
-    `<div class="color-tag">${clr} <span class="rm" onclick="removeColor('custom',${i})">✕</span></div>`
-  ).join('');
-  wrap.innerHTML = presetTags + customTags;
-  const hasColor = state.colorSelections.length > 0 || state.customColors.length > 0;
-  if (hint) hint.style.display = hasColor ? 'none' : 'block';
-}
-
 // ── FONT ──
 const fontCats = ['可愛系','夢幻系','粉筆系','毛筆系','海報系','迷因系'];
 const fontList = [
@@ -3354,7 +2257,6 @@ function selectFont(key) {
     el.classList.toggle('active', name === key);
   });
   updateDots();
-  renderBatchOutputPanel();
   persistWorkspace();
 }
 
@@ -3373,7 +2275,6 @@ const layoutData = {
 function selectLayout(key) {
   ['random','A','B','C','D','E','F','G','H'].forEach(k => { const el = document.getElementById('layout-'+k); if(el) el.classList.toggle('active', k===key); });
   state.layoutStyle = key; updateDots();
-  renderBatchOutputPanel();
   persistWorkspace();
 }
 
@@ -3383,11 +2284,6 @@ const bgData = {
   white: `## BACKGROUND\nPure white (#FFFFFF) background.\nSolid white — no transparency, no alpha channel, no gray, no gradient, no texture, no scene, no environment.\nStudio white background only.\nDesigned for JPG export — white canvas, no transparent regions.\nEach sticker panel: 370 × 320 px (max). Full sheet (4×4): 1480 × 1280 px total.`,
   ai: `## BACKGROUND\nAI-generated contextual scene background matching each panel's mood and theme\nSubtle environment, soft atmosphere, thematic setting appropriate to sticker text and character emotion`
 };
-function selectBeauty(key) {
-  state.beautyFilter = key === 'on';
-  ['on','off'].forEach(k => { const el = document.getElementById('beauty-'+k); if (el) el.classList.toggle('active', k===key); });
-  persistWorkspace();
-}
 function selectBg(key) {
   ['white','ai','green'].forEach(k => { const el = document.getElementById('bg-'+k); if (el) el.classList.toggle('active', k===key); });
   state.bgStyle = key; updateDots();
@@ -3648,6 +2544,11 @@ function getVisibleScriptItems() {
     return hotFirst([...new Set(group.cats.flatMap(cat => scriptSubData[cat] || []))]);
   }
   return [...(scriptSubData[state.currentCat] || [])];
+}
+function getRandomFillPool() {
+  if (state.creationMode === 'emotion') return EMOTION_CARDS.map(c => `[情緒] ${c.name}`);
+  const items = getVisibleScriptItems();
+  return state.creationMode === 'text' ? items.map(t => `[文字] ${t}`) : items;
 }
 function scriptCatsForText(text) {
   return Object.entries(scriptData).filter(([, items]) => items?.includes(text)).map(([cat]) => cat);
@@ -3911,139 +2812,10 @@ function getFixSuggestions() {
   return suggestions;
 }
 
-function buildBatchOutputs() {
-  const full = buildPromptFromFormat('full');
-  const compact = buildPromptFromFormat('compact');
-  const json = buildPromptFromFormat('json');
-  return { full, compact, json };
-}
-
-function buildPromptFromFormat(format) {
-  if (format === 'compact') {
-    const lines = getAllScriptLines();
-    const colors = [...state.colorSelections.map(cl => cl.name), ...state.customColors].join('、') || 'AI 自動配色';
-    const charDesc = state.charTab === 'img'
-      ? '使用上傳人物圖片作為角色基礎'
-      : (document.getElementById('char-input')?.value.trim() || '角色描述待補');
-    return [
-      `貼圖數量：固定 16 格`,
-      `角色：${charDesc}`,
-      `比例 / 畫風：${state.bodyRatio} / ${state.bodyStyle}`,
-      `服裝模式：${state.outfitRef ? '沿用參考造型' : state.outfitAI ? 'AI 自動服裝' : '手動服裝模板'}`,
-      `色系：${colors}`,
-      `字體：${state.fontStyle}`,
-      `構圖：${state.layoutStyle}`,
-      `背景：${state.bgStyle}`,
-      `腳本：${lines.join(' / ')}`
-    ].join('\n');
-  }
-  if (format === 'json') {
-    const template = characterTemplates.find(item => item.id === state.currentTemplateId);
-    const payload = {
-      qty: state.qty,
-      source: state.charTab === 'img' ? 'image' : 'text',
-      mode: state.batchMode,
-      format: 'json',
-      character: state.charTab === 'img' ? (template?.character || '使用上傳人物圖') : (document.getElementById('char-input')?.value.trim() || ''),
-      outfit: state.outfitSelections.map(item => item.name).join('、') || (template?.outfit || ''),
-      imageNotes: template?.imageNotes || '',
-      styleSettings: {
-        bodyRatio: state.bodyRatio,
-        bodyStyle: state.bodyStyle,
-        colors: [...state.colorSelections.map(cl => cl.name), ...state.customColors],
-        fontStyle: state.fontStyle,
-        layoutStyle: state.layoutStyle,
-        background: state.bgStyle,
-        beautyFilter: state.beautyFilter
-      },
-      lines: getAllScriptLines()
-    };
-    return JSON.stringify(payload, null, 2);
-  }
-  return buildFullPromptText();
-}
-
-function buildFullPromptText() {
-  return combineAll(true) || '';
-}
-
-function renderWorkspaceSummary() {
-  const report = getScriptHealthReport();
-  const currentGroup = templateGroups.find(group => group.templateIds.includes(state.currentTemplateId));
-  const cards = [
-    {
-      value: currentGroup?.name || '未指定',
-      label: '目前模板群組',
-      note: characterTemplates.find(item => item.id === state.currentTemplateId)?.name || '尚未套用角色卡模板'
-    },
-    {
-      value: state.batchMode === 'all' ? '3 種' : '1 種',
-      label: '輸出包數量',
-      note: state.batchMode === 'all' ? '完整 / 精簡 / JSON 同步可用' : `目前輸出：${BATCH_OUTPUT_FORMATS.find(item => item.id === state.outputFormat)?.name || '完整 Prompt'}`
-    },
-    {
-      value: `${Math.max(0, 100 - getFixSuggestions().filter(item => item.severity !== '穩定').length * 15)} 分`,
-      label: '腳本健康度',
-      note: `${report.lines.length}/${state.qty} 句，場景類型 ${report.sceneTypes || 1} 種`
-    }
-  ];
-  const wrap = document.getElementById('workspaceSummary');
-  if (!wrap) return;
-  wrap.innerHTML = cards.map(card => `
-    <div class="summary-kpi">
-      <b>${card.value}</b>
-      <span>${card.label}</span>
-      <span class="mini-note">${card.note}</span>
-    </div>
-  `).join('');
-}
-
-function renderTemplateGroupSummary() {
-  const wrap = document.getElementById('templateGroupSummary');
-  if (!wrap) return;
-  wrap.innerHTML = templateGroups.map(group => `
-    <div class="group-card">
-      <strong>${group.name}</strong>
-      <small>${group.summary}</small>
-      <small>${group.recommendation}</small>
-    </div>
-  `).join('');
-}
-
-function renderTemplateGroupPanel() {
-  const wrap = document.getElementById('templateGroupPanel');
-  if (!wrap) return;
-  wrap.innerHTML = templateGroups.map(group => {
-    const templates = group.templateIds.map(id => characterTemplates.find(item => item.id === id)).filter(Boolean);
-    return `
-      <div class="template-card">
-        <strong>${group.name}</strong>
-        <small>${group.summary}</small>
-        <div class="template-meta">
-          <span class="meta-tag">${templates.length} 個模板</span>
-          <span class="meta-tag">${group.recommendation}</span>
-        </div>
-        <div class="template-actions">
-          ${templates.map(template => `<button onclick="applyCharacterTemplate('${template.id}')">${template.name}</button>`).join('')}
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function renderOutputFormatToolbar() {
-  const wrap = document.getElementById('outputFormatToolbar');
-  if (!wrap) return;
-  wrap.innerHTML = BATCH_OUTPUT_FORMATS.map(item => `
-    <button class="pill-btn${state.outputFormat === item.id ? ' active' : ''}" onclick="setOutputFormat('${item.id}')">${item.name}</button>
-  `).join('');
-}
-
 function guessPresetForTemplate(template) {
   if (!template) return null;
   const rules = [
     { ids: ['daily-red','daily-cafe','daily-campus'], presetIds: ['korean','flower','lolita'] },
-    { ids: ['daily-ink-doodle'], presetIds: ['ink-doodle-daily-girl'] },
     { ids: ['office-lead','office-support','office-creator'], presetIds: ['office'] },
     { ids: ['healing-soft','healing-bedtime','healing-pet'], presetIds: ['nurse','flower','korean'] },
     { ids: ['festival-lucky','festival-newyear','festival-party'], presetIds: ['halloween','dragon-boat'] },
@@ -4061,7 +2833,6 @@ function guessComboForTemplate(template) {
     item.name.includes(quickSet.slice(0, 2)) ||
     quickSet.includes(item.name.slice(0, 2))
   ) || scriptQuickCombos.find(item => {
-    if (template.id === 'daily-ink-doodle') return item.id === 'ink-doodle-daily';
     if (template.group === 'daily') return item.id === 'daily-balance';
     if (template.group === 'office') return item.id === 'office-rush';
     if (template.group === 'healing') return item.id === 'healing-mix';
@@ -4089,7 +2860,13 @@ function renderFixSuggestionPanel() {
 function renderScriptComboPanel() {
   const wrap = document.getElementById('scriptComboPanel');
   if (!wrap) return;
-  wrap.innerHTML = scriptQuickCombos.map(combo => `
+  const combos = scriptQuickCombos.filter(combo => comboCreationMode(combo) === state.creationMode);
+  if (!combos.length) {
+    const modeNames = { character: '人物＋文字', emotion: '人物＋情緒特效', text: '純文字主體' };
+    wrap.innerHTML = `<div style="padding:10px 4px;font-size:12px;color:var(--text-hint);">目前「${modeNames[state.creationMode] || ''}」模式還沒有快速組合包，可以從下方句庫自己挑。</div>`;
+    return;
+  }
+  wrap.innerHTML = combos.map(combo => `
     <div class="combo-card">
       <strong>${combo.name}</strong>
       <small>${combo.description}</small>
@@ -4102,98 +2879,6 @@ function renderScriptComboPanel() {
   `).join('');
 }
 
-function renderBatchOutputPanel() {
-  const wrap = document.getElementById('batchOutputPanel');
-  if (!wrap) return;
-  const outputs = buildBatchOutputs();
-  const formats = state.batchMode === 'all'
-    ? BATCH_OUTPUT_FORMATS
-    : BATCH_OUTPUT_FORMATS.filter(item => item.id === state.outputFormat);
-  wrap.innerHTML = formats.map(item => `
-    <div class="batch-card">
-      <strong>${item.name}</strong>
-      <small>${item.purpose}</small>
-      <small>${item.description}</small>
-      <div class="batch-meta">
-        <span class="meta-tag">用途：${item.purpose}</span>
-        <span class="meta-tag">格式：${item.id}</span>
-      </div>
-      <div class="preview-snippet">${escapeBatchPreview(outputs[item.id])}</div>
-      <div class="batch-actions">
-        <button onclick="previewBatchOutput('${item.id}')">預覽</button>
-        <button onclick="copyBatchOutput('${item.id}')">複製</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-function escapeBatchPreview(text) {
-  return text.length > 320 ? `${text.slice(0, 320)}...` : text;
-}
-
-function setOutputFormat(format) {
-  state.outputFormat = format;
-  state.batchPreviewFormat = format;
-  renderOutputFormatToolbar();
-  renderBatchOutputPanel();
-  renderWorkspaceSummary();
-  persistWorkspace();
-}
-
-function setBatchMode(mode) {
-  state.batchMode = mode;
-  document.getElementById('singleOutputModeBtn')?.classList.toggle('active', mode === 'single');
-  document.getElementById('allOutputModeBtn')?.classList.toggle('active', mode === 'all');
-  renderBatchOutputPanel();
-  renderWorkspaceSummary();
-  persistWorkspace();
-}
-
-function previewBatchOutput(format) {
-  state.outputFormat = format;
-  renderOutputFormatToolbar();
-  const text = buildPromptFromFormat(format);
-  document.getElementById('combined-box').textContent = text;
-  document.getElementById('combined-out').style.display = 'block';
-  renderBatchOutputPanel();
-  renderWorkspaceSummary();
-  persistWorkspace();
-}
-
-function copyBatchOutput(format) {
-  copyToClipboard(buildPromptFromFormat(format));
-}
-
-function previewAllBatchOutputs() {
-  setBatchMode('all');
-  const outputs = buildBatchOutputs();
-  document.getElementById('combined-box').textContent = [
-    '【完整 Prompt】',
-    outputs.full,
-    '',
-    '【精簡 Prompt】',
-    outputs.compact,
-    '',
-    '【JSON】',
-    outputs.json
-  ].join('\n');
-  document.getElementById('combined-out').style.display = 'block';
-}
-
-function copyAllBatchOutputs() {
-  const outputs = buildBatchOutputs();
-  copyToClipboard([
-    '【完整 Prompt】',
-    outputs.full,
-    '',
-    '【精簡 Prompt】',
-    outputs.compact,
-    '',
-    '【JSON】',
-    outputs.json
-  ].join('\n'));
-}
-
 function applyCharacterTemplate(templateId) {
   const template = characterTemplates.find(item => item.id === templateId);
   if (!template) return;
@@ -4201,37 +2886,11 @@ function applyCharacterTemplate(templateId) {
   switchCharTab('text');
   const charInput = document.getElementById('char-input');
   if (charInput) charInput.value = template.character;
-  clearColors();
   const matchedPreset = guessPresetForTemplate(template) || presets.find(item => item.name.includes(template.name.slice(0, 2)) || item.outfitName === template.outfit);
   if (matchedPreset) {
     selectBody(matchedPreset.body);
     selectFont(matchedPreset.font);
     selectLayout(matchedPreset.layout);
-    matchedPreset.colors.forEach(color => {
-      const idx = presetColors.findIndex(item => item.name === color);
-      if (idx >= 0) toggleColor(idx);
-    });
-  }
-  if (template.id === 'daily-ink-doodle') {
-    state.bodyRatio = 'manga6';
-    state.bgStyle = 'white';
-    state.beautyFilter = true;
-    state.outfitRef = true;
-    state.outfitAI = false;
-    state.outfitSelections = [];
-    selectBody('inkdoodle');
-    selectFont('水墨手寫');
-    selectLayout('F');
-    selectBeauty('on');
-    ['q15','q2','q25','q3','q4','mascot','fashion','manga6','korean75','real8'].forEach(k => {
-      document.getElementById('ratio-'+k)?.classList.toggle('active', k === 'manga6');
-    });
-    ['white','ai'].forEach(k => document.getElementById('bg-'+k)?.classList.toggle('active', k === 'white'));
-    document.getElementById('out-img-mode')?.classList.add('active');
-    document.getElementById('out-manual-mode')?.classList.remove('active');
-    document.getElementById('out-ai-mode')?.classList.remove('active');
-    document.getElementById('outfit-manual') && (document.getElementById('outfit-manual').style.display = 'none');
-    document.getElementById('outfit-display') && (document.getElementById('outfit-display').style.display = 'none');
   }
   const combo = guessComboForTemplate(template);
   if (combo) {
@@ -4239,25 +2898,28 @@ function applyCharacterTemplate(templateId) {
     state.customItems = combo.lines.slice(0, state.qty);
     renderSelectedTags();
   }
-  updatePresetStatus(`模板：${template.name}`);
   renderCharTemplateGrid();
   renderFixSuggestionPanel();
-  renderBatchOutputPanel();
   updateDots();
   persistWorkspace();
 }
 
+function comboCreationMode(combo) {
+  if (combo.lines.every(line => line.startsWith('[情緒] '))) return 'emotion';
+  if (combo.lines.every(line => line.startsWith('[文字] '))) return 'text';
+  return 'character';
+}
 function applyScriptCombo(comboId) {
   const combo = scriptQuickCombos.find(item => item.id === comboId);
   if (!combo) return;
   state.scriptSelected = [];
   state.customItems = combo.lines.slice(0, state.qty);
+  const mode = comboCreationMode(combo);
+  if (mode !== state.creationMode) selectCreationMode(mode);
   renderSelectedTags();
   filterScripts();
   updateCounter();
   renderFixSuggestionPanel();
-  renderWorkspaceSummary();
-  renderBatchOutputPanel();
   persistWorkspace();
 }
 
@@ -4271,8 +2933,6 @@ function appendScriptCombo(comboId) {
   filterScripts();
   updateCounter();
   renderFixSuggestionPanel();
-  renderWorkspaceSummary();
-  renderBatchOutputPanel();
   persistWorkspace();
 }
 
@@ -4291,7 +2951,6 @@ function blendToneScriptEditor() {
   filterScripts();
   updateCounter();
   renderFixSuggestionPanel();
-  renderWorkspaceSummary();
   persistWorkspace();
 }
 
@@ -4321,8 +2980,6 @@ function rebuildBalancedPack() {
   filterScripts();
   updateCounter();
   renderFixSuggestionPanel();
-  renderWorkspaceSummary();
-  renderBatchOutputPanel();
   persistWorkspace();
 }
 
@@ -4332,27 +2989,19 @@ function persistWorkspace() {
       qty: state.qty,
       charTab: state.charTab,
       currentTemplateId: state.currentTemplateId,
-      outputFormat: state.outputFormat,
-      batchMode: state.batchMode,
       bodyStyle: state.bodyStyle,
       bodyRatio: state.bodyRatio,
       fontStyle: state.fontStyle,
       layoutStyle: state.layoutStyle,
       bgStyle: state.bgStyle,
-      beautyFilter: state.beautyFilter,
       outfitRef: state.outfitRef,
       outfitAI: state.outfitAI,
-      outfitSelections: state.outfitSelections,
-      colorSelections: state.colorSelections,
-      customColors: state.customColors,
       scriptSelected: state.scriptSelected,
       customItems: state.customItems,
       currentCat: state.currentCat,
       creationMode: state.creationMode,
       charInput: document.getElementById('char-input')?.value || '',
-      scriptEditor: document.getElementById('script-edit-area')?.value || '',
-      workspaceMode: state.workspaceMode,
-      advancedSettingsVisible: state.advancedSettingsVisible
+      charImgNote: document.getElementById('char-img-note')?.value || ''
     };
     localStorage.setItem(WORKSPACE_STORAGE_KEY, JSON.stringify(payload));
   } catch (error) {
@@ -4368,30 +3017,24 @@ function restoreWorkspace() {
     if (!payload || typeof payload !== 'object') return;
     state.qty = 16;
     state.currentTemplateId = payload.currentTemplateId || state.currentTemplateId;
-    state.outputFormat = payload.outputFormat || state.outputFormat;
-    state.batchMode = payload.batchMode || state.batchMode;
     state.bodyStyle = payload.bodyStyle || state.bodyStyle;
     state.bodyRatio = payload.bodyRatio || state.bodyRatio;
     state.fontStyle = payload.fontStyle || state.fontStyle;
     state.layoutStyle = payload.layoutStyle || state.layoutStyle;
     state.bgStyle = payload.bgStyle || state.bgStyle;
     state.borderStyle = payload.borderStyle || state.borderStyle;
-    state.beautyFilter = typeof payload.beautyFilter === 'boolean' ? payload.beautyFilter : state.beautyFilter;
     state.outfitRef = typeof payload.outfitRef === 'boolean' ? payload.outfitRef : state.outfitRef;
     state.outfitAI = typeof payload.outfitAI === 'boolean' ? payload.outfitAI : state.outfitAI;
-    state.outfitSelections = Array.isArray(payload.outfitSelections) ? payload.outfitSelections : state.outfitSelections;
-    state.colorSelections = Array.isArray(payload.colorSelections) ? payload.colorSelections : state.colorSelections;
-    state.customColors = Array.isArray(payload.customColors) ? payload.customColors : state.customColors;
     state.scriptSelected = Array.isArray(payload.scriptSelected) ? payload.scriptSelected : state.scriptSelected;
     state.customItems = Array.isArray(payload.customItems) ? payload.customItems : state.customItems;
     const restoredCat = payload.currentCat;
     if (restoredCat) state.currentCat = scriptSubData[restoredCat] ? restoredCat : (oldCatToSub[restoredCat] || '熱門100');
     state.creationMode = ['character','emotion','text'].includes(payload.creationMode) ? payload.creationMode : state.creationMode;
-    state.workspaceMode = payload.workspaceMode || state.workspaceMode;
-    state.advancedSettingsVisible = typeof payload.advancedSettingsVisible === 'boolean' ? payload.advancedSettingsVisible : state.advancedSettingsVisible;
-    if (payload.charTab === 'text') switchCharTab('text');
+    if (payload.charTab === 'img') switchCharTab('img');
+    else if (payload.charTab === 'template') switchCharTab('template');
+    else switchCharTab('text');
     if (document.getElementById('char-input')) document.getElementById('char-input').value = payload.charInput || '';
-    if (document.getElementById('script-edit-area')) document.getElementById('script-edit-area').value = payload.scriptEditor || '';
+    if (document.getElementById('char-img-note')) document.getElementById('char-img-note').value = payload.charImgNote || '';
   } catch (error) {
     console.warn('workspace restore failed', error);
   }
@@ -4423,7 +3066,7 @@ function selectAllCurrentGroup() {
 }
 function renderScriptCats() {
   if (state.creationMode === 'emotion') {
-    document.getElementById('script-cats').innerHTML = `<div style="font-size:12px;color:var(--text-hint);padding:4px 0;">👤✨ 從下方情緒卡挑選，角色表情＋背景特效自動搭配，文字可留空</div>`;
+    document.getElementById('script-cats').innerHTML = `<div style="font-size:12px;color:var(--text-hint);padding:4px 0;">👤✨ 從下方情緒卡挑選，角色表情＋背景特效自動搭配，不放文字</div>`;
     return;
   }
   const group = getScriptGroup();
@@ -4486,15 +3129,16 @@ function selectCreationMode(mode) {
   state.creationMode = mode;
   document.querySelectorAll('#creation-mode-switch .mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
   const hints = {
-    character: '角色搭配常用文字，維持角色一致性；適合快速做主題包。',
-    emotion: '角色表情＋背景特效演出情緒，文字可留空；適合想要更有畫面感、更吸睛的貼圖包。',
-    text: '大字藝術字當主角，角色可有可無；生成最快最穩，適合快速量產測水溫。記得到「④ 字體」挑一個風格。'
+    character: '人物與文字各佔約 50%，兩者同樣醒目；維持角色一致性，適合快速做主題包。',
+    emotion: '角色表情誇張演出＋漫畫式特效（石化、雷劈、崩潰等），完全不放文字，走反應圖/迷因梗圖風格。適合想要更有畫面感、更吸睛的貼圖包。',
+    text: '純文字排版，不出現角色，走美術字/海報排版風格發揮；生成最快最穩，適合快速量產測水溫。記得到「④ 字體」挑一個風格。'
   };
   const hintEl = document.getElementById('creation-mode-hint');
   if (hintEl) hintEl.textContent = hints[mode] || '';
   clearScriptSearch();
   renderScriptCats();
   filterScripts();
+  renderScriptComboPanel();
   persistWorkspace();
 }
 function filterScripts() {
@@ -4559,7 +3203,7 @@ function renderSelectedTags() {
   updateCounter();
 }
 function randomCurrentCatScripts() {
-  const items = getVisibleScriptItems();
+  const items = getRandomFillPool();
   if (!items.length) return;
   const picked = items.slice().sort(() => Math.random() - 0.5).slice(0, state.qty);
   state.scriptSelected = picked;
@@ -4580,8 +3224,6 @@ function syncScriptFromTextarea() {
   state.customItems = lines;
   filterScripts(); updateCounter(); updateDots();
   renderFixSuggestionPanel();
-  renderWorkspaceSummary();
-  renderBatchOutputPanel();
   persistWorkspace();
 }
 function removeSelected(type, i) {
@@ -4613,29 +3255,22 @@ function updateCounter() {
 }
 
 // ── STATUS DOTS ──
-const dotLabels = ['角色描述','貼圖數量','比例風格','服裝風格','色系','字體','構圖','背景','美顏','腳本'];
+const dotLabels = ['角色描述','貼圖數量','比例風格','字體','背景','腳本'];
 function updateDots() {
   const done = [
-    state.charTab==='img' ? true : !!document.getElementById('char-input')?.value.trim(),
+    state.charTab === 'img' ? true : !!document.getElementById('char-input')?.value.trim(),
     true, !!state.bodyStyle,
-    state.outfitRef || state.outfitAI || state.outfitSelections.length > 0,
-    true, !!state.fontStyle, !!state.layoutStyle, !!state.bgStyle,
-    true,
+    !!state.fontStyle, !!state.bgStyle,
     (state.scriptSelected.length + state.customItems.length) > 0
   ];
   document.getElementById('status-dots').innerHTML = dotLabels.map((l,i) =>
     `<div class="dot ${done[i]?'done':''}">${done[i]?'✓ ':''}${l}</div>`
   ).join('');
   renderFixSuggestionPanel();
-  renderWorkspaceSummary();
 }
 
 // ── COMBINE ──
 function combineAll(skipAutoRender = false) {
-  if (!skipAutoRender && state.batchMode === 'all') {
-    previewAllBatchOutputs();
-    return document.getElementById('combined-box')?.textContent || '';
-  }
   // 先同步 textarea 內容
   const ta = document.getElementById('script-edit-area');
   if (ta && ta.value.trim()) {
@@ -4646,78 +3281,34 @@ function combineAll(skipAutoRender = false) {
   const parts = [];
   const qtyMap = {16:'4×4 (16 panels)'};
 
-  parts.push(`## STICKER SHEET SIZE\n${qtyMap[state.qty]}\nEach panel: 370 × 320 px (max per LINE spec)\nFull sheet: 1480 × 1280 px total canvas\nCharacter occupies approximately 65–75% of each panel.\nOutput format: JPG, solid white background (#FFFFFF), no transparency.\n\n## PANEL SPACING — CRITICAL\nEach sticker panel must have clear padding and separation.\nNO overlapping between stickers.\nNO content touching panel borders.\nMaintain consistent gutters between all panels.\nEach panel is a fully independent composition.\n\nMAXIMUM PANEL SEPARATION — PRIORITY\nLeave EXTRA LARGE white gutters between all panels.\nPrioritize separation over character size.\nSmaller characters are acceptable.\nPanel contamination is NEVER acceptable.\n\nANTI-CONTAMINATION SYSTEM — ABSOLUTE RULE\nNothing may cross panel boundaries.\nNo crossing hair.\nNo crossing hands.\nNo crossing feet.\nNo crossing accessories.\nNo crossing shadows.\nNo crossing glow effects.\nNo crossing speech bubbles.\nNo crossing text.\nNo crossing outlines.\nNo visual contamination of any kind.\nEach sticker must stay entirely inside its own panel.\n\nSAFE AREA\nNo cropped body parts.\nNo cropped hair.\nNo cropped accessories.\nNo cropped feet.\nNo cropped hands.\nNo cropped ears.\nNo cropped outline.\nCharacter fully visible inside panel.\nLarge safe margins on all sides.`);
+  parts.push(`## STICKER SHEET SIZE\n${qtyMap[state.qty]}\nEach panel: 370 × 320 px (max per LINE spec)\nFull sheet: 1480 × 1280 px total canvas\nCharacter occupies approximately 65–75% of each panel.\nOutput format: JPG. Background per the BACKGROUND section below — do not override it here.\n\n## PANEL SPACING & SEPARATION — CRITICAL\nEach panel is a fully independent composition with clear, consistent, EXTRA LARGE white gutters — no overlapping, no content touching panel borders. Prioritize separation over character size (smaller characters are fine); panel contamination is NEVER acceptable.\n\n## ANTI-CONTAMINATION — ABSOLUTE RULE\nNothing may cross panel boundaries — no crossing hair, hands, feet, accessories, shadows, glow effects, speech bubbles, text, or outlines. Each sticker stays entirely inside its own panel.\n\n## SAFE AREA\nNo cropped body parts, hair, accessories, feet, hands, ears, or outline. Character fully visible with large safe margins on all sides.`);
 
   // character
-  parts.push('## CHARACTER DESCRIPTION');
   if (state.charTab === 'img') {
-    const descExtra = state.imgDesc ? `\n\nReference feature notes (supplementary):\n${state.imgDesc}` : '';
+    const note = document.getElementById('char-img-note')?.value.trim();
+    const noteExtra = note ? `\n\nSupplementary feature notes from the user: ${note}` : '';
     parts.push(`## ABSOLUTE PRIORITY
-The character must remain the same person as the uploaded photo.
-Do not replace identity.
-Do not generate a different face.
-Do not generate a generic AI beauty face.
-Do not generate a different hairstyle.
-Do not generate a different costume.
-Do not generate a different accessory set.
+The user will attach a reference photo directly in this ChatGPT conversation together with this prompt. The character must remain the same person as that photo — do not replace identity, generate a different face, a generic AI beauty face, or a different hairstyle, costume, or accessory set.
 
-BASE CHARACTER: Use the person in the uploaded reference image as the character.
-Design this sticker character to look like the uploaded person.
-Faithfully recreate their overall appearance —
-facial features (face shape, eye shape, eyebrow style, nose, lips, skin tone),
-hairstyle and hair color,
-clothing and outfit style,
-accessories and decorative details,
-and overall visual styling shown in the uploaded image.${descExtra}
+BASE CHARACTER: Use the person in the attached photo as the character. Faithfully recreate their facial features (face shape, eye shape, eyebrow style, nose, lips, skin tone), hairstyle and hair color, clothing and outfit style, accessories and decorative details, and overall visual styling shown in the photo.${noteExtra}
 
 ## IDENTITY LOCK — CRITICAL
-Preserve original face identity.
-Preserve original face shape.
-Preserve original eye shape.
-Preserve original eyebrow shape.
-Preserve original nose shape.
-Preserve original mouth shape.
-Preserve original jawline.
-Preserve original facial proportions.
-Preserve original facial characteristics.
-Preserve original expression feeling.
-Preserve natural facial asymmetry.
-Preserve recognizable features.
-The character must clearly look like the same person.
-Keep ethnicity unchanged.
-Keep age appearance unchanged.
-DO NOT alter, distort, or generalize the facial features.
-Facial identity must remain stable and recognizable in every single sticker panel.
+Preserve original face identity, face shape, eye shape, eyebrow shape, nose shape, mouth shape, jawline, facial proportions, facial characteristics, expression feeling, and natural facial asymmetry — the character must clearly look like the same, recognizable person. Keep ethnicity and age appearance unchanged. DO NOT alter, distort, or generalize the facial features; identity must remain stable and recognizable in every single sticker panel.
 
 ## HAIR LOCK
-Keep original hairstyle.
-Keep original hairline.
-Keep original hair color.
-Keep original hair volume.
-Keep original bangs.
-Keep original hair silhouette.`);
+Keep original hairstyle, hairline, hair color, hair volume, bangs, and hair silhouette.`);
   } else {
-    const charText = document.getElementById('char-input').value.trim() || '（未填寫）';
+    const charText = document.getElementById('char-input').value.trim() || '可愛的 Q 版風格年輕角色，圓潤五官、清楚髮型與穿著，表情生動易讀（使用者未填寫角色描述，套用預設角色設定）。';
     parts.push(`## CHARACTER DESCRIPTION\n${charText}
 
 ## CHARACTER CONSISTENCY — CRITICAL
-All 16 stickers must show the same character.
-Same face structure and facial features in every panel.
-Same hairstyle and hair color in every panel.
-Same costume and outfit in every panel.
-Same accessories and color palette in every panel.
-Only expression, pose, and gesture may change between panels.
-DO NOT generate a different face in any panel.
-DO NOT change hairstyle between panels.
-DO NOT change costume between panels.
-Maintain recognizable identity throughout the entire sheet.`);
+All 16 stickers must show the same character — same face structure and facial features, same hairstyle and hair color, same costume and outfit, same accessories and color palette in every panel. Only expression, pose, and gesture may change between panels. DO NOT generate a different face, hairstyle, or costume in any panel; maintain recognizable identity throughout the entire sheet.`);
   }
-  parts.push(`## STYLE LOCK\nMaintain consistent character identity across all panels.\nSame face, same hairstyle, same outfit, same color palette in every sticker.\nNo identity drift, no costume change, no face inconsistency.`);
 
   // Quality base — always included
   // 根據風格分流：Q版 or 寫實
   const isReal = realStyleKeys.includes(state.bodyStyle) || ['manga6','korean75','real8'].includes(state.bodyRatio);
-  const isInkDoodleExample = state.bodyStyle === 'inkdoodle' || state.currentTemplateId === 'daily-ink-doodle';
+  const isInkDoodleStyle = state.bodyStyle === 'inkdoodle';
 
   if (isReal) {
     parts.push(`## RENDER QUALITY — REALISTIC / SEMI-REALISTIC BASE
@@ -4760,10 +3351,9 @@ NOT low-detail mascot style,
 NOT toddler-like proportions`);
   }
 
-  if (isInkDoodleExample) {
-    parts.push(`## REFERENCE STYLE LOCK — INK DOODLE DAILY STICKER EXAMPLE
-Create one 4x4 LINE sticker illustration sheet inspired by the uploaded example.
-The main character should keep about 80% facial similarity to the uploaded reference image.
+  if (isInkDoodleStyle) {
+    parts.push(`## INK DOODLE STYLE LOCK
+Create one 4x4 LINE sticker illustration sheet in this style.
 Use Japanese hand-drawn illustration style with vivid character features, natural facial expressions, expressive eyes, and mouth shapes matching each daily phrase.
 Use cute dynamic half-body compositions: shoulders, hands, and upper body gestures must be visible and emotionally readable in every panel.
 Art style: hand-drawn doodle style, ink splash brush strokes, loose sketch lines, pastel color washes mixed with black ink tones, manga draft texture, clean minimal white background.
@@ -4778,57 +3368,10 @@ Keep the character dominant, high detail, high quality, refined hair, face, outf
 
   // outfit
   if (state.outfitRef) {
-    parts.push(`## COSTUME LOCK — Reference Upload
-Keep original costume.
-Keep original clothing style.
-Keep original clothing colors.
-Keep original accessories.
-Keep original jewelry.
-Keep original glasses if present in the photo.
-Keep original handbag if present in the photo.
-Keep original color palette.
-Base the outfit, costume, accessories, and decorative details DIRECTLY on the uploaded reference image.
-Faithfully reproduce the clothing style, colors, patterns, and accessories shown in the reference.
-DO NOT replace or substitute the outfit — maintain the same garment design as uploaded.
-You may enhance details for sticker quality, but the core outfit must match the reference.`);
-  } else if (state.outfitAI) {
-    parts.push(`## OUTFIT STYLE\nAI freely selects the most suitable outfit style for this character and sticker theme`);
-  } else if (!state.outfitRef && !state.outfitAI) {
-    // B 自選模式：若沒選細項則隨機補一個
-    let selections = state.outfitSelections;
-    if (!selections.length) {
-      const allItems = Object.values(outfitData).flat();
-      const rand = allItems[Math.floor(Math.random() * allItems.length)];
-      selections = [{ name: rand.name, p: rand.p, garment: rand.garment, headpiece: rand.headpiece, accessories: rand.accessories, shoes: rand.shoes }];
-      // 同步顯示
-      state.outfitSelections = selections;
-      renderOutfitTags();
-    }
-    const n = selections.length;
-    const base = Math.floor(state.qty / n);
-    const rem = state.qty % n;
-    const lines = ['## OUTFIT STYLE — Selected'];
-    selections.forEach((s, i) => {
-      const panels = base + (i < rem ? 1 : 0);
-      lines.push(`\n[${s.name} — ${panels} panels]`);
-      if (s.garment) {
-        lines.push(`Garment: ${s.garment}`);
-        lines.push(`Headpiece: ${s.headpiece}`);
-        lines.push(`Accessories: ${s.accessories}`);
-        lines.push(`Shoes: ${s.shoes}`);
-      } else {
-        lines.push(s.p);
-      }
-    });
-    parts.push(lines.join('\n'));
-  }
-
-  // color
-  const allColors = [...state.colorSelections.map(cl => cl.name), ...state.customColors];
-  if (allColors.length > 0) {
-    parts.push(`## OUTFIT COLOR PALETTE\nPrimary and accent colors for the outfit: ${allColors.join('、')}\nApply these colors as the dominant color scheme across the costume, accessories, and decorative elements.`);
+    parts.push(`## COSTUME LOCK — Reference Photo
+Keep original costume, clothing style and colors, accessories, jewelry, color palette, and (if present in the photo) glasses or handbag. Base the outfit DIRECTLY on the photo attached in this conversation — faithfully reproduce its clothing style, colors, patterns, and accessories. DO NOT replace or substitute the outfit; you may enhance details for sticker quality, but the core garment design must match the reference.`);
   } else {
-    parts.push(`## OUTFIT COLOR PALETTE\nNo specific color selected — AI freely determines the most suitable and beautiful color palette for the outfit and overall composition.`);
+    parts.push(`## OUTFIT STYLE\nAI freely selects the most suitable outfit style for this character and sticker theme`);
   }
 
   // font
@@ -4845,42 +3388,20 @@ You may enhance details for sticker quality, but the core outfit must match the 
     parts.push(`## STICKER BORDER STYLE — OUTLINED\nEach character must have a clean white border outline around the entire figure.\nOutline width: 3-5px consistent stroke around the character silhouette.\nThis is the traditional LINE sticker outlined style.\nThe white border must be clearly visible against any background.\nDO NOT let the border break or become irregular around complex details like hair strands.`);
   }
 
-  // beauty filter
-  if (state.beautyFilter) {
-    parts.push(`## FACE BEAUTY FILTER — ENABLED
-Apply facial refinement to all panels:
-slim and define the jawline — reduce baby fat / chubby cheeks
-sharpen and sculpt facial bone structure — more defined cheekbones and chin
-slightly elongate the face proportions for a more mature elegant look
-enhance eye depth and brightness — more dimensional, sparkling, expressive
-refine nose bridge — slimmer and more defined
-apply refined makeup look — subtle eye liner, soft eye shadow, defined brows, rosy tinted lips
-skin texture: dewy peach-glow luminous skin, soft light reflection, porcelain-smooth complexion
-rosy blush on cheeks — natural flush, healthy and radiant
-lips: moisturized petal-pink lip color, soft gradient lip effect
-overall: polished 2.5D semi-realistic beautiful face, magazine beauty quality
-maintain the character's core identity — DO NOT change to a different person
-NOT over-filtered or uncanny — naturally beautiful and attractive refinement only`);
-  }
-
   // script
-  let usesTextHero = false, usesEmotion = false;
+  let usesTextHero = false;
   const allSelected = [...state.scriptSelected, ...state.customItems];
   if (allSelected.length > 0) {
     const lines = [`## STICKER SCRIPT (${allSelected.length} / ${state.qty} panels)`, ''];
     allSelected.forEach((raw, i) => {
       const { mode, text: v } = parseModeTag(raw);
       if (mode === 'emotion') {
-        usesEmotion = true;
         const card = EMOTION_MAP.get(v);
-        if (card) {
-          lines.push(`Panel ${i+1}: EMOTION+FX PANEL. Character expression: ${card.face}. Background effect (small floating FX elements around character, NOT a full-frame fill — area beyond character and FX stays on the selected background style): ${card.bgFx}. NO TEXT in this panel unless it fits naturally as a tiny accent — pure visual performance is the priority.`);
-        } else {
-          lines.push(`Panel ${i+1}: EMOTION+FX PANEL. Visual emotion: 「${v}」. NO TEXT in this panel — pure visual performance with matching background effect elements.`);
-        }
+        const emotionName = card ? card.name : v;
+        lines.push(`Panel ${i+1}: Character reacts with an exaggerated 「${emotionName}」-style expression and matching background effect, manga/meme reaction-panel style. No text. Use your own judgment for the exact pose and effect details.`);
       } else if (mode === 'text') {
         usesTextHero = true;
-        lines.push(`Panel ${i+1}: TEXT-HERO PANEL. Large stylized text 「${v}」 is the dominant visual element, occupying 55-70% of panel. Character (if present in this sheet) appears small/secondary in a corner, NOT dominant — this overrides the usual character-dominant rule for this panel only. Apply the selected FONT STYLE decoration heavily here.`);
+        lines.push(`Panel ${i+1}: Large stylized text 「${v}」 is the entire content of this panel, artistic typography/poster-style layout. No character. Use your own judgment for the exact layout and decoration.`);
       } else {
         const isSilent = isNoTextScript(v);
         const detail = scriptDetail(v);
@@ -4897,123 +3418,38 @@ NOT over-filtered or uncanny — naturally beautiful and attractive refinement o
     lines.push('Every panel must have a DIFFERENT pose, expression, and gesture — NO repeated poses.');
     lines.push('Text: Traditional Chinese only (繁體中文) — stroke-perfect, immediately readable.');
     lines.push('Place each phrase inside its own panel only; text must never spill into another panel.');
-    if (usesTextHero) lines.push('For TEXT-HERO panels specifically: text size rule is INVERTED — text is the dominant element (55-70%), character is secondary/small if present at all. Do not apply the usual 40%-text-cap rule to these panels.');
-    else lines.push('Text occupies max 35% panel area and must not cover the face, hands, or key gesture — character remains dominant visual element.');
-    if (usesEmotion) lines.push('For EMOTION+FX panels: background effect elements are small floating accents around the character (lightning bolt shape, spark burst, cloud shape, heart particles, etc.) — NOT a full opaque background fill.');
+    if (usesTextHero) lines.push('Text-only panels (no character) are exempt from the 50/50 text/character balance rule below.');
+    else lines.push('Text occupies roughly 45-50% of panel area, sharing visual weight evenly with the character (~50/50) — must not cover the face, hands, or key gesture.');
     parts.push(lines.join('\n'));
   }
 
   // Text quality + negative prompt — always included
-  parts.push(`${usesTextHero ? 'NOTE: The default text-size ratio below applies ONLY to panels NOT marked TEXT-HERO PANEL above — those panels intentionally invert this rule.\n\n' : ''}## TEXT QUALITY RULES — ABSOLUTE PRIORITY
-FONT SIZE — CRITICAL BALANCE RULE:
-text must be MEDIUM sized — NOT oversized, NOT tiny,
-text occupies maximum 40% of panel width OR 40% of panel height,
-character must remain the DOMINANT visual element occupying at least 50% of the panel,
-text is a SUPPORTING element — complement the character, NOT overpower or hide it,
-reduce font size by 4 levels compared to default — smaller, more refined, more balanced,
-DO NOT let text cover or crowd the character,
-DO NOT place text over the face, eyes, mouth, hands, or main gesture,
-each panel text must stay inside that panel only, with clear padding from borders and gutters,
-DO NOT make text the dominant element,
-ideal ratio: character 55% visual weight, text 35% visual weight, decoration 10%
-
-⚠️ TRADITIONAL CHINESE TEXT — ABSOLUTE TOP PRIORITY ⚠️
-Language: Traditional Chinese (繁體中文) ONLY — NOT Simplified Chinese (简体字)
-Every single character must be 100% correctly formed, stroke-perfect, immediately recognizable
-ALL Traditional Chinese text must meet MANUAL TYPESETTING quality standard
-NO AI-generated fake glyphs, NO hallucinated characters, NO invented stroke combinations
-every Chinese character must be FULLY READABLE by a native speaker at a glance
-COMMERCIAL TYPOGRAPHY QUALITY — as if set by a professional graphic designer
-render the correct Unicode glyph first, THEN apply decorative effects on top
-decorative style (color / glow / texture / shadow) goes ON TOP of correct characters — never distorts the shape underneath
-
-STRICTLY FORBIDDEN:
-❌ mutated or invented strokes that don't exist in the character
-❌ mirrored, flipped, or rotated stroke components
-❌ merging two different characters into one wrong shape
-❌ simplified Chinese substitutions (e.g. 爱 instead of 愛, 来 instead of 來)
-❌ broken characters with missing strokes or components
-❌ illegible glyphs that cannot be read by a native Chinese speaker
-❌ warping or distorting character structure to fit a decorative style
-❌ any invented glyph that looks like Chinese but is not real
-❌ partial characters or characters missing radicals
-❌ characters fused together when they should be separate
-
-REQUIRED:
-✅ stroke count and stroke order must match correct Traditional Chinese standard
-✅ character components (radicals) must be in correct position and proportion
-✅ if a character has complex strokes, simplify the STYLE not the STRUCTURE
-✅ when in doubt, prioritize legibility over decoration
-✅ native Traditional Chinese speaker must be able to read every character instantly
-✅ text quality must look like professional commercial print`);
+  parts.push(`${usesTextHero ? 'NOTE: The text/character balance rule below applies only to panels with a character — text-only panels are exempt.\n\n' : ''}## TEXT QUALITY RULES
+Text is medium-large and clearly readable, sharing the panel evenly with the character (~50/50 visual weight) — do not cover the face, eyes, mouth, hands, or main gesture; keep each panel's text inside its own panel with clear padding from borders.
+Traditional Chinese (繁體中文) ONLY — NOT Simplified Chinese (简体字). Every character must be correctly formed, stroke-perfect, and instantly readable by a native speaker — no invented, mutated, mirrored, or simplified-substitute glyphs (e.g. not 爱/来 instead of 愛/來).`);
 
   parts.push(`## COMPOSITION & DYNAMIC RULES
-every panel MUST have different: pose, expression, gesture, body movement
-NO repeated poses, NO repeated emotions, NO mirrored duplication
-dynamic storytelling in every panel — each sticker feels alive and expressive
-AI may freely add props matching the theme: cute accessories, thematic objects, floating decorative elements
-subtle atmosphere matching each panel mood
-each panel should feel unique in timing and action
-ultra high resolution, sharp edges, professional LINE sticker quality
-character must be CLEARLY RENDERED with sharp clean outlines
-NO blurry character, NO muddy textures, NO unclear face details
-character face must be sharp and distinct in every panel
-consistent lighting across all panels, consistent rendering quality
-LINE sticker ready, commercial sticker quality, premium collectible appearance`);
+every panel MUST have a different pose, expression, gesture, and body movement — NO repeated poses/emotions, NO mirrored duplication, each panel feels alive and unique in timing and action.
+AI may freely add props matching the theme (cute accessories, thematic objects, floating decorative elements) and subtle atmosphere matching each panel's mood.
+Ultra high resolution, sharp clean outlines, no blurry character, no muddy textures, no unclear face details — character face stays sharp and distinct in every panel with consistent lighting and rendering quality. LINE sticker ready, commercial sticker quality, premium collectible appearance.`);
 
-  if (isReal) {
-    parts.push(`## NEGATIVE PROMPT — STRICTLY FORBIDDEN
-no blurry face, no low resolution, no over-retouched uncanny valley face
-no unreadable text, no incorrect Chinese characters, no simplified Chinese
-no distorted text, no warped characters, no invented glyphs
-no duplicated poses, no repeated composition
-no outfit changes between panels, no identity drift, no face inconsistency
-no extra limbs, no extra fingers, no distorted anatomy, no broken hands
-no chibi proportions, no big head small body, no Q-version deformation
-no flat cartoon style, no anime over-simplification
-${isInkDoodleExample ? 'no full-body requirement for this ink doodle example, half-body framing is allowed and preferred' : 'no cropped character, no incomplete body, no floating body parts'}
-${isInkDoodleExample ? 'no tiny full-body character, no stiff passport portrait, no emotionless bust-only headshot' : 'no portrait framing, no waist-up crop, no cut-off legs, no missing feet, no bust-only shot'}
-no watermark, no signature, no copyright logo
-no dark dirty background outside panels
-no inconsistent rendering quality between panels
-no characters or text bleeding into adjacent panels
-no content touching panel borders or separation lines
-no missing gaps between panels`);
-  } else {
-    parts.push(`## NEGATIVE PROMPT — STRICTLY FORBIDDEN
-no blurry face, no low resolution
-no unreadable text, no incorrect Chinese characters, no simplified Chinese
-no distorted text, no warped characters, no invented glyphs
-no duplicated poses, no repeated composition
-no outfit changes between panels, no identity drift, no face inconsistency
-no extra limbs, no extra fingers, no distorted anatomy, no broken hands
-no toddler face, no chubby baby face, no flat cheap cartoon style
-${isInkDoodleExample ? 'no full-body requirement for this ink doodle example, half-body framing is allowed and preferred' : 'no cropped character, no incomplete body, no floating body parts'}
-${isInkDoodleExample ? 'no tiny full-body character, no stiff passport portrait, no emotionless bust-only headshot' : 'no portrait framing, no waist-up crop, no cut-off legs, no missing feet, no bust-only shot'}
-no watermark, no signature, no copyright logo
-no dark dirty background outside panels
-no inconsistent rendering quality between panels
-no characters or text bleeding into adjacent panels
-no content touching panel borders or separation lines
-no missing gaps between panels`);
-  }
+  parts.push(`## NEGATIVE PROMPT — STRICTLY FORBIDDEN
+no blurry or low-resolution face, no incorrect/simplified/distorted/warped Chinese characters, no unreadable text
+no duplicated poses across panels, no outfit changes or identity drift between panels
+no extra limbs, extra fingers, or distorted anatomy
+${isReal ? 'no chibi proportions or Q-version deformation, no flat cartoon style' : 'no toddler or chubby baby face, no flat cheap cartoon style'}
+${isInkDoodleStyle ? 'no full-body requirement for this ink doodle style, half-body framing is allowed and preferred' : 'no cropped character, no incomplete body, no floating body parts, no portrait/waist-up framing'}
+no watermark, signature, or copyright logo
+no content bleeding across panels, no missing gutters between panels`);
 
-  const final = skipAutoRender
-    ? parts.join('\n\n')
-    : state.outputFormat === 'compact'
-      ? buildPromptFromFormat('compact')
-      : state.outputFormat === 'json'
-        ? buildPromptFromFormat('json')
-        : parts.join('\n\n');
+  const final = parts.join('\n\n');
   if (skipAutoRender) {
     return final;
   }
   document.getElementById('combined-box').textContent = final;
   document.getElementById('combined-out').style.display = 'block';
   copyToClipboard(final, document.getElementById('final-copy-btn'));
-  renderBatchOutputPanel();
   renderFixSuggestionPanel();
-  renderWorkspaceSummary();
   persistWorkspace();
   document.getElementById('combined-out').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -5022,31 +3458,6 @@ function copyFinal() {
   [document.getElementById('final-copy-btn'), document.getElementById('final-copy-btn-top')].forEach(btn => {
     if (btn) copyToClipboard(text, btn);
   });
-}
-function buildCoverPrompt(kind) {
-  const first = [...state.scriptSelected, ...state.customItems][0];
-  const heroText = first ? parseModeTag(first).text : '';
-  const sizeSpec = kind === 'main'
-    ? 'CANVAS SIZE: exactly 240 × 240 px, PNG.\nThis is the MAIN THUMBNAIL image representing the whole sticker set in the LINE store listing.\nShow the character in its most representative, appealing pose/expression — this is the cover image buyers see first.'
-    : 'CANVAS SIZE: exactly 96 × 74 px, PNG, transparent background.\nThis is the TAB ICON shown in a tiny tab strip inside LINE chat — must be extremely simple and instantly recognizable even at this tiny size.\nUse a close-up of just the character face/head, minimal detail, bold clear silhouette, no text.';
-  const parts = [
-    `## LINE STICKER ${kind === 'main' ? 'MAIN IMAGE' : 'TAB ICON'}`,
-    sizeSpec,
-    '',
-    '## CHARACTER',
-    'Use the exact same character identity, face, hairstyle, and outfit as the uploaded reference / description used for the sticker sheet — this image must visually match the sticker set character 100%.',
-    state.charTab === 'img' ? '(Character reference: uploaded photo — recreate faithfully.)' : `(Character description: ${document.getElementById('char-input')?.value.trim() || '未填寫'})`,
-    '',
-    '## BACKGROUND',
-    bgData[state.bgStyle] || bgData.green,
-    '',
-    kind === 'main' && heroText ? `## OPTIONAL ACCENT\nMay include the phrase 「${heroText}」 as a small accent if it fits naturally, but the character illustration is the main focus — text is not required.` : ''
-  ].filter(Boolean);
-  return parts.join('\n');
-}
-function copyCoverPrompt(kind) {
-  const text = buildCoverPrompt(kind);
-  copyToClipboard(text, document.getElementById(kind === 'main' ? 'cover-main-btn' : 'cover-tab-btn'));
 }
 async function copyToClipboard(text, btn) {
   let success = false;
@@ -5073,69 +3484,9 @@ async function copyToClipboard(text, btn) {
   }
 }
 
-// ── RANDOMIZE ALL ──
-function randomizeAll() {
-  // 角色描述 — 隨機文字
-  switchCharTab('text');
-  randomCharDesc();
-
-  // 貼圖數量 — 隨機
-  selectQty(16);
-
-  // 比例風格 — 隨機（含AI）
-  const allBodies = [...bodyList.map(b=>b.key), 'ai'];
-  selectBody(allBodies[Math.floor(Math.random() * allBodies.length)]);
-  selectBodyRatio(bodyRatioList[Math.floor(Math.random() * bodyRatioList.length)].key);
-  filterBody(currentBodyCat);
-
-  // 服裝風格 — AI隨機
-  selectOutfitMode('manual');
-
-  // 色系 — 隨機選 1~3 個色票
-  // 先清空
-  state.colorSelections = []; state.customColors = [];
-  document.querySelectorAll('.swatch').forEach(el => el.classList.remove('active'));
-  renderColorTags();
-  const numColors = Math.floor(Math.random() * 3) + 1;
-  const picked = [];
-  while (picked.length < numColors) {
-    const idx = Math.floor(Math.random() * presetColors.length);
-    if (!picked.includes(idx)) { picked.push(idx); toggleColor(idx); }
-  }
-
-  // 字體 — 隨機（含AI）
-  const allFonts = [...fontList.map(f=>f.n), 'ai'];
-  selectFont(allFonts[Math.floor(Math.random() * allFonts.length)]);
-
-  // 構圖 — 隨機（含random）
-  const layouts = ['random','A','B','C','D','E','F','G','H'];
-  selectLayout(layouts[Math.floor(Math.random() * layouts.length)]);
-
-  // 背景 — 隨機
-  selectBg(['green','white','ai'][Math.floor(Math.random() * 3)]);
-
-  // 腳本 — 隨機選滿格數
-  state.scriptSelected = []; state.customItems = [];
-  const randomGroup = scriptGroups[Math.floor(Math.random() * scriptGroups.length)];
-  currentScriptGroup = randomGroup.name;
-  state.currentCat = randomGroup.cats[0];
-  currentScriptScope = 'group';
-  renderScriptCats();
-  const allScripts = [...new Set(randomGroup.cats.flatMap(cat => scriptSubData[cat] || []))];
-  const shuffled = allScripts.sort(() => Math.random() - 0.5);
-  state.scriptSelected = shuffled.slice(0, state.qty);
-  filterScripts(); renderSelectedTags(); updateCounter();
-
-  updatePresetStatus('隨機套用全部模組');
-  updateDots();
-
-  // 滾到頂部
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
 // ── RANDOM SCRIPT ──
 function randomScript() {
-  const all = getVisibleScriptItems();
+  const all = getRandomFillPool();
   const shuffled = all.sort(() => Math.random() - 0.5);
   const picked = shuffled.slice(0, state.qty);
   state.scriptSelected = picked;
@@ -5143,7 +3494,6 @@ function randomScript() {
   const ta = document.getElementById('script-edit-area');
   if (ta) ta.value = picked.join('\n');
   filterScripts(); updateCounter(); updateDots();
-  renderBatchOutputPanel();
   persistWorkspace();
 }
 
@@ -5161,7 +3511,6 @@ function clearScriptEditor() {
   filterScripts();
   updateCounter();
   updateDots();
-  renderBatchOutputPanel();
   persistWorkspace();
 }
 
@@ -5175,7 +3524,7 @@ function fillScriptToSlots() {
   const total = state.qty;
   const current = [...state.scriptSelected, ...state.customItems];
   const used = new Set(current);
-  const pool = getVisibleScriptItems().filter(item => !used.has(item));
+  const pool = getRandomFillPool().filter(item => !used.has(item));
   const next = [...current];
   while (next.length < total && pool.length) {
     next.push(pool.shift());
@@ -5186,7 +3535,6 @@ function fillScriptToSlots() {
   filterScripts();
   updateCounter();
   updateDots();
-  renderBatchOutputPanel();
   persistWorkspace();
 }
 
@@ -5198,8 +3546,6 @@ function dedupeScriptEditor() {
   ta.value = deduped.join('\n');
   syncScriptFromTextarea();
   renderFixSuggestionPanel();
-  renderWorkspaceSummary();
-  renderBatchOutputPanel();
   persistWorkspace();
 }
 
@@ -5212,8 +3558,6 @@ function sortScriptEditor() {
   ta.value = lines.join('\n');
   syncScriptFromTextarea();
   renderFixSuggestionPanel();
-  renderWorkspaceSummary();
-  renderBatchOutputPanel();
   persistWorkspace();
 }
 
@@ -5235,6 +3579,10 @@ if (state.customItems.length === 0 && state.scriptSelected.length === 0) {
     state.customItems = defaultCombo.lines.slice(0, state.qty);
   }
 }
+renderScriptComboPanel();
+renderSelectedTags();
+filterScripts();
+renderFixSuggestionPanel();
 selectFont(state.fontStyle || 'ai');
 selectBg(state.bgStyle || 'green');
 selectBorder(state.borderStyle || 'none');
@@ -5247,304 +3595,6 @@ updateCounter();
 updateDots();
 persistWorkspace();
 
-function getAdvancedSections() { return []; }
-
-function getTemplateRecommendation() {
-  const report = getScriptHealthReport();
-  if ((state.bodyStyle || '').includes('photo') || (state.bodyStyle || '').includes('beauty') || state.bodyRatio === 'real8') {
-    return characterTemplates.find(item => item.group === 'office') || characterTemplates[0];
-  }
-  if (report.dominantToneCount >= 6) {
-    return characterTemplates.find(item => item.group === 'healing') || characterTemplates[0];
-  }
-  if (report.sceneTypes <= 2 && report.lines.length >= 8) {
-    return characterTemplates.find(item => item.group === 'daily') || characterTemplates[0];
-  }
-  return characterTemplates.find(item => item.id === state.currentTemplateId) || characterTemplates[0];
-}
-
-function renderSmartRecommendations() {
-  const template = getTemplateRecommendation();
-  const templateNode = document.getElementById('smartTemplateRecommendation');
-  const messageNode = document.getElementById('smartFillMessage');
-  if (templateNode && template) {
-    templateNode.textContent = `推薦模板：${template.name}，建議搭配 ${template.suggestedQuickSet || '16 句快速組合'}。`;
-  }
-  if (messageNode) {
-    const missing = Math.max(0, state.qty - getAllScriptLines().length);
-    messageNode.textContent = missing > 0
-      ? `目前還缺 ${missing} 句腳本，建議先智能補滿再輸出。`
-      : `目前工作台已可直接輸出，建議用 ${state.batchMode === 'all' ? '全部都要' : '單一輸出'} 模式。`;
-  }
-}
-
-function renderAdvancedSummary() {
-  const wrap = document.getElementById('advancedSummaryBar');
-  const note = document.getElementById('advancedSummaryNote');
-  if (!wrap) return;
-  const pills = [
-    `比例 ${state.bodyRatio}`,
-    `畫風 ${state.bodyStyle}`,
-    `字體 ${state.fontStyle}`,
-    `構圖 ${state.layoutStyle}`,
-    `背景 ${state.bgStyle}`,
-    `美顏 ${state.beautyFilter ? '開' : '關'}`
-  ];
-  wrap.innerHTML = pills.map(item => `<span class="advanced-pill">${item}</span>`).join('');
-  if (note) {
-    note.textContent = state.advancedSettingsVisible ? '進階設定目前已展開。' : '進階設定目前已收合，只保留常用操作。';
-  }
-}
-
-function syncAdvancedSettingsVisibility() {
-  const btn = document.getElementById('advancedToggleBtn');
-  const shouldShow = state.workspaceMode === 'advanced' || state.advancedSettingsVisible;
-  getAdvancedSections().forEach(section => {
-    section.classList.toggle('is-hidden', !shouldShow);
-    section.style.display = shouldShow ? '' : 'none';
-  });
-  if (btn) btn.textContent = shouldShow ? '收合進階設定' : '展開進階設定';
-  renderAdvancedSummary();
-}
-
-function setWorkspaceMode(mode) {
-  state.workspaceMode = mode;
-  const page = document.querySelector('.page');
-  if (page) page.setAttribute('data-workspace-mode', mode);
-  document.getElementById('focusModeBtn')?.classList.toggle('active', mode === 'focus');
-  document.getElementById('advancedModeBtn')?.classList.toggle('active', mode === 'advanced');
-  if (mode === 'advanced') state.advancedSettingsVisible = true;
-  syncAdvancedSettingsVisibility();
-  persistWorkspace();
-}
-
-function toggleAdvancedSettings(forceValue) {
-  state.advancedSettingsVisible = typeof forceValue === 'boolean' ? forceValue : !state.advancedSettingsVisible;
-  syncAdvancedSettingsVisibility();
-  persistWorkspace();
-}
-
-function smartFillWorkspace() {
-  const template = getTemplateRecommendation();
-  if (template) applyCharacterTemplate(template.id);
-  if (!state.fontStyle || state.fontStyle === 'ai') selectFont('ai');
-  if (!state.layoutStyle || state.layoutStyle === 'random') selectLayout('random');
-  if (!state.bgStyle) selectBg('green');
-  if (getAllScriptLines().length < state.qty) fillScriptToSlots();
-  if (getFixSuggestions().some(item => item.severity !== '穩定')) blendToneScriptEditor();
-  setBatchMode('all');
-  renderSmartRecommendations();
-  renderAdvancedSummary();
-  persistWorkspace();
-}
-
-function autoBalanceScriptPack() {
-  rebuildBalancedPack();
-  blendToneScriptEditor();
-  renderSmartRecommendations();
-}
-
-function applyRecommendedTemplate() {
-  const template = getTemplateRecommendation();
-  if (!template) return;
-  applyCharacterTemplate(template.id);
-  renderSmartRecommendations();
-}
-
-// ── EXISTING IMAGE UPLOAD HELPERS ──
-function applyImgDescToInput() {
-  if (!state.imgDesc) return;
-  switchCharTab('text');
-  const inp = document.getElementById('char-input');
-  if (inp) { inp.value = state.imgDesc; updateDots(); }
-}
-
-// ── AI IMAGE WORKFLOW ──
-const AI_HISTORY_KEY = 'line4x4-ai-image-history';
-const aiImg = { base64: null, type: null, desc: '', mode: 'feature', historyIdx: null };
-
-function getAIHistory() {
-  try { return JSON.parse(localStorage.getItem(AI_HISTORY_KEY) || '[]'); } catch { return []; }
-}
-function saveAIHistory(h) {
-  try { localStorage.setItem(AI_HISTORY_KEY, JSON.stringify(h.slice(-20))); } catch {}
-}
-function addToAIHistory(b64, mime, desc) {
-  const h = getAIHistory();
-  h.push({ base64: b64, type: mime, desc, ts: Date.now() });
-  saveAIHistory(h);
-  renderAIHistory();
-}
-
-function renderAIHistory() {
-  const grid = document.getElementById('ai-history-grid');
-  const empty = document.getElementById('ai-history-empty');
-  if (!grid) return;
-  grid.querySelectorAll('.ai-history-thumb').forEach(el => el.remove());
-  const h = getAIHistory();
-  if (!h.length) { if (empty) empty.style.display = ''; return; }
-  if (empty) empty.style.display = 'none';
-  h.slice().reverse().forEach((item, ri) => {
-    const idx = h.length - 1 - ri;
-    const d = document.createElement('div');
-    d.className = 'ai-history-thumb' + (aiImg.historyIdx === idx ? ' active' : '');
-    d.title = item.desc ? item.desc.slice(0, 60) + '...' : '（無描述）';
-    d.innerHTML = `<img src="data:${item.type};base64,${item.base64}" loading="lazy" alt=""><span class="thumb-rm" title="刪除">✕</span>`;
-    d.querySelector('.thumb-rm').onclick = ev => { ev.stopPropagation(); removeAIHistory(idx); };
-    d.onclick = () => loadAIHistoryItem(idx);
-    grid.insertBefore(d, empty);
-  });
-}
-
-function removeAIHistory(idx) {
-  const h = getAIHistory(); h.splice(idx, 1); saveAIHistory(h);
-  if (aiImg.historyIdx === idx) aiImg.historyIdx = null;
-  renderAIHistory();
-}
-
-function loadAIHistoryItem(idx) {
-  const item = getAIHistory()[idx]; if (!item) return;
-  aiImg.base64 = item.base64; aiImg.type = item.type;
-  aiImg.desc = item.desc; aiImg.historyIdx = idx;
-  const img = document.getElementById('ai-preview-img');
-  if (img) img.src = `data:${item.type};base64,${item.base64}`;
-  document.getElementById('ai-dropzone').style.display = 'none';
-  document.getElementById('ai-preview-wrap').style.display = 'block';
-  const res = document.getElementById('ai-prompt-result');
-  if (res) res.textContent = item.desc || '（此紀錄無分析結果）';
-  setAIStatus('done', '已載入歷史圖片');
-  renderAIHistory();
-}
-
-function handleAIImageDrop(e) {
-  e.preventDefault();
-  const f = e.dataTransfer.files[0];
-  if (f && f.type.startsWith('image/')) handleAIFile(f);
-}
-
-function handleAIFile(file) {
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const result = ev.target.result;
-    aiImg.base64 = result.split(',')[1];
-    aiImg.type = file.type;
-    aiImg.desc = '';
-    aiImg.historyIdx = null;
-    const img = document.getElementById('ai-preview-img');
-    if (img) img.src = result;
-    document.getElementById('ai-dropzone').style.display = 'none';
-    document.getElementById('ai-preview-wrap').style.display = 'block';
-    document.getElementById('ai-prompt-result').textContent = '圖片已上傳，點擊「AI 分析生成」開始分析...';
-    setAIStatus('idle', '圖片已載入');
-  };
-  reader.readAsDataURL(file);
-}
-
-function clearAIImage() {
-  aiImg.base64 = null; aiImg.type = null; aiImg.desc = ''; aiImg.historyIdx = null;
-  document.getElementById('ai-dropzone').style.display = '';
-  document.getElementById('ai-preview-wrap').style.display = 'none';
-  document.getElementById('ai-file-in').value = '';
-  document.getElementById('ai-prompt-result').textContent = '等待圖片上傳與分析...';
-  setAIStatus('idle', '');
-  renderAIHistory();
-}
-
-function setAIStatus(type, text) {
-  const icon = document.getElementById('ai-status-icon');
-  const textEl = document.getElementById('ai-status-text');
-  if (!icon || !textEl) return;
-  icon.innerHTML = type === 'loading' ? '<div class="ai-spinner"></div>' : type === 'done' ? '<div class="ai-status-dot"></div>' : '';
-  textEl.textContent = text;
-}
-
-function setAIMode(mode) {
-  aiImg.mode = mode;
-  ['feature','style','sticker'].forEach(m => {
-    const el = document.getElementById(`ai-mode-${m}`);
-    if (el) el.classList.toggle('active-ai', m === mode);
-  });
-}
-
-async function generateAIImagePrompt() {
-  if (!aiImg.base64) { alert('請先上傳圖片'); return; }
-  const _apiKey2 = getApiKey();
-  if (!_apiKey2) {
-    document.getElementById('ai-prompt-result').textContent = '請先在設定輸入 Anthropic API Key 才能使用 AI 分析。';
-    return;
-  }
-  const prompts = {
-    feature: '你是 LINE 貼圖咒語師。仔細觀察圖片角色，用繁體中文條列描述外觀特徵：臉型、眼睛、眉毛、嘴唇、髮型、髮色、膚色、服裝樣式、配件細節。純粹特徵，逗號分隔，不要說明文字與標題。',
-    style: '你是動漫風格轉換專家。分析圖片角色的視覺風格，輸出適合 LINE 貼圖的畫風設定：線條粗細、色彩傾向、陰影類型、圓潤度、整體氛圍。繁體中文，逗號分隔。',
-    sticker: '你是 LINE 貼圖設計師。根據圖片角色，輸出完整貼圖設計描述，包含：角色外觀摘要、個性特質、適合的貼圖情境（問候/工作/情緒）、推薦表情動作（共 8 種），用繁體中文清楚列出。'
-  };
-  setAIStatus('loading', 'AI 分析中，請稍候...');
-  document.getElementById('ai-prompt-result').textContent = '分析中...';
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type':'application/json', 'x-api-key':getApiKey(), 'anthropic-version':'2023-06-01' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6', max_tokens: 900,
-        system: prompts[aiImg.mode] || prompts.feature,
-        messages: [{ role: 'user', content: [
-          { type: 'image', source: { type: 'base64', media_type: aiImg.type, data: aiImg.base64 } },
-          { type: 'text', text: '請分析這個角色。' }
-        ]}]
-      })
-    });
-    const data = await res.json();
-    aiImg.desc = data.content?.map(i => i.text || '').join('') || '';
-    document.getElementById('ai-prompt-result').textContent = aiImg.desc || '（無結果）';
-    setAIStatus('done', '分析完成');
-    addToAIHistory(aiImg.base64, aiImg.type, aiImg.desc);
-  } catch(e) {
-    document.getElementById('ai-prompt-result').textContent = '分析失敗：' + e.message;
-    setAIStatus('idle', '分析失敗，請重試');
-  }
-}
-
-async function runFullAIWorkflow() {
-  if (!aiImg.base64) { alert('請先上傳圖片'); return; }
-  await generateAIImagePrompt();
-  if (aiImg.desc) fillAIResultToCharInput();
-}
-
-function fillAIResultToCharInput() {
-  const res = document.getElementById('ai-prompt-result');
-  const txt = res?.textContent;
-  if (!txt || txt === '等待圖片上傳與分析...') return;
-  switchCharTab('text');
-  const inp = document.getElementById('char-input');
-  if (inp) { inp.value = txt; updateDots(); }
-}
-
-function applyAIAndGo() {
-  fillAIResultToCharInput();
-  jumpToSection('combine-section');
-}
-
-function copyAIPromptResult(e) {
-  const res = document.getElementById('ai-prompt-result');
-  if (!res) return;
-  navigator.clipboard.writeText(res.textContent).then(() => {
-    const btn = e?.target || document.activeElement;
-    const orig = btn.textContent;
-    btn.textContent = '已複製！';
-    setTimeout(() => { btn.textContent = orig; }, 1400);
-  }).catch(() => {});
-}
-
-function clearAIPromptResult() {
-  document.getElementById('ai-prompt-result').textContent = '等待圖片上傳與分析...';
-  aiImg.desc = '';
-}
-
-// Initialize AI history on load
-document.addEventListener('DOMContentLoaded', () => { renderAIHistory(); });
-// Also render immediately in case DOMContentLoaded already fired
-renderAIHistory();
 </script>
 </body>
 </html>

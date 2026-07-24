@@ -112,10 +112,14 @@ test("V4: three creation modes (character/emotion/text) are merged into one tool
   assert.ok(html.includes("const EMOTION_CARDS = ["), "emotion card data must exist");
   assert.ok(html.includes("function renderEmotionPicker"), "emotion picker must exist");
   assert.ok(html.includes("function toggleEmotionCard"), "emotion card toggle must exist");
-  assert.ok(html.includes("EMOTION+FX PANEL"), "combineAll must branch for emotion-mode panels");
-  assert.ok(html.includes("TEXT-HERO PANEL"), "combineAll must branch for text-hero-mode panels");
-  assert.ok(html.includes("function buildCoverPrompt"), "main/tab cover image prompt builder must exist");
-  assert.ok(html.includes('id="cover-main-btn"') && html.includes('id="cover-tab-btn"'), "cover image buttons must exist");
+  assert.ok(html.includes("mode === 'emotion'"), "combineAll must branch for emotion-mode panels");
+  assert.ok(html.includes("mode === 'text'"), "combineAll must branch for text-hero-mode panels");
+});
+
+test("cover/tab image prompt section stays removed (one of the 16 panels substitutes)", async () => {
+  const html = await readFile("index.html", "utf8");
+  assert.ok(!html.includes('id="cover-section"'), "cover/tab image section must not come back");
+  assert.ok(!html.includes("function buildCoverPrompt"), "cover/tab prompt builder must not come back");
 });
 
 test("V4: emotion card data is well-formed and unique", async () => {
@@ -148,7 +152,6 @@ test("V4: green chroma-key background is the new default", async () => {
 
 test("workflow shell and navigation helpers are present", async () => {
   const html = await readFile("index.html", "utf8");
-  assert.ok(html.includes("workflow-strip"));
   assert.ok(html.includes("jumpToSection('script-section')"));
   assert.ok(html.includes("jumpToSection('combine-section')"));
 });
@@ -200,12 +203,10 @@ test("template and output logic exists", async () => {
   assert.ok(html.includes("function restoreWorkspace()"));
 });
 
-test("API config is correct", async () => {
+test("dead AI image-analysis feature stays removed", async () => {
   const html = await readFile("index.html", "utf8");
-  assert.ok(html.includes("const ANTHROPIC_API_KEY"), "API key constant must exist");
-  assert.ok(html.includes("claude-sonnet-4-6"), "model ID must be current");
-  assert.ok(!html.includes("claude-sonnet-4-20250514"), "deprecated model ID must be removed");
-  assert.ok(html.includes("anthropic-version"), "anthropic-version header must be present");
+  assert.ok(!html.includes("getApiKey"), "no-op API key helpers must not come back without a real settings UI");
+  assert.ok(!html.includes("api.anthropic.com"), "unwired Anthropic fetch calls must not come back");
 });
 
 test("workspace storage key uses new project namespace", async () => {
@@ -219,7 +220,7 @@ test("script output rules keep text usable for sticker generation", async () => 
   assert.ok(html.includes("Exact text"), "panel text must be exact");
   assert.ok(html.includes("Map the script line-by-line"), "script must map line by line");
   assert.ok(html.includes("Do NOT merge, swap, summarize, translate, or add extra text"));
-  assert.ok(html.includes("DO NOT place text over the face"));
+  assert.ok(html.includes("do not cover the face"));
 });
 
 test("script editor warns when sticker text is too long", async () => {
@@ -230,13 +231,17 @@ test("script editor warns when sticker text is too long", async () => {
   assert.ok(html.includes(".script-editor-status.warn"));
 });
 
-test("image upload dropzone is functional", async () => {
+test("local image upload UI stays removed, but the 'paste photo in ChatGPT' character mode still exists", async () => {
   const html = await readFile("index.html", "utf8");
-  assert.ok(html.includes('id="dropzone"'), "character dropzone must exist");
-  assert.ok(html.includes('id="preview-wrap"'), "preview wrapper must exist");
-  assert.ok(html.includes('id="preview-img"'), "preview image must exist");
-  assert.ok(html.includes('id="file-in"'), "file input must exist");
-  assert.ok(html.includes('id="img-status"'), "img status element must exist");
+  // No local upload/preview mechanics — the photo is attached directly in ChatGPT, not this tool.
+  assert.ok(!html.includes('id="dropzone"'), "character dropzone must not come back");
+  assert.ok(!html.includes('id="preview-wrap"'), "preview wrapper must not come back");
+  assert.ok(!html.includes('id="file-in"'), "file input must not come back");
+  assert.ok(!html.includes("function handleFile"), "handleFile must not come back");
+  // The character-mode tab itself is intentional: it flags the prompt to expect a photo pasted into ChatGPT.
+  assert.ok(html.includes('id="tab-img"'), "the '依照上傳照片人物' character tab must exist");
+  assert.ok(html.includes('id="char-img-note"'), "optional supplementary-notes field for the photo mode must exist");
+  assert.ok(html.includes("attach a reference photo directly in this ChatGPT conversation"), "the img-mode prompt must describe pasting the photo into ChatGPT, not uploading to this tool");
 });
 
 test("cinematic hero UI is present", async () => {
@@ -247,12 +252,118 @@ test("cinematic hero UI is present", async () => {
   assert.ok(html.includes("hero-actions"), "hero actions container must be present");
 });
 
-test("ink doodle daily example preset is available", async () => {
+test("ink doodle daily template stays removed (photo-dependent, no upload feature anymore)", async () => {
   const html = await readFile("index.html", "utf8");
-  assert.ok(html.includes("daily-ink-doodle"));
-  assert.ok(html.includes("ink-doodle-daily"));
-  assert.ok(html.includes("ink-doodle-daily-girl"));
-  assert.ok(html.includes("水墨手寫"));
-  assert.ok(html.includes("REFERENCE STYLE LOCK — INK DOODLE DAILY STICKER EXAMPLE"));
-  assert.ok(html.includes("The main character should keep about 80% facial similarity"));
+  assert.ok(!html.includes("daily-ink-doodle"), "the removed character template must not come back");
+  assert.ok(!html.includes("id: 'ink-doodle-daily',"), "the removed quick-pack combo must not come back");
+  assert.ok(!html.includes("The main character should keep about 80% facial similarity"), "photo-dependent facial-similarity instruction must not come back");
+  // The general ink-doodle art style (independent of the removed template) is still a valid choice.
+  assert.ok(html.includes("inkdoodle"), "the general ink-doodle body style option must still exist");
+  assert.ok(html.includes("水墨手寫"), "the general ink-brush font option must still exist");
+  assert.ok(html.includes("isInkDoodleStyle"), "the ink-doodle style flag must be keyed off body style, not the removed template");
+});
+
+test("script section quick-pack and health-check panels are mounted", async () => {
+  const html = await readFile("index.html", "utf8");
+  assert.ok(html.includes('id="scriptComboPanel"'), "quick-pack combo panel must be mounted in the script section");
+  assert.ok(html.includes('id="fixSuggestionPanel"'), "script health-check panel must be mounted in the script section");
+  assert.ok(html.includes("renderScriptComboPanel();"), "combo panel must be rendered on init");
+  assert.ok(html.includes("renderFixSuggestionPanel();"), "fix suggestion panel must be rendered on init");
+  assert.ok(html.includes("renderSelectedTags();"), "textarea must be synced from selected/custom items on init");
+});
+
+test("workspace restore no longer double-sources the script textarea", async () => {
+  const html = await readFile("index.html", "utf8");
+  assert.ok(!html.includes("payload.scriptEditor"), "restore must derive the textarea from customItems/scriptSelected, not a separately-saved raw string");
+});
+
+test("scriptQuickCombos: every pack has exactly 16 unique, sticker-length lines", async () => {
+  const html = await readFile("index.html", "utf8");
+  const combos = extractConstArray(html, "scriptQuickCombos", "\n\n// ── RANDOM CHAR DESC");
+  assert.ok(combos.length >= 14, "at least the 9 original + 5 new quick packs must exist");
+  const ids = combos.map((c) => c.id);
+  assert.strictEqual(new Set(ids).size, ids.length, "combo ids must be unique");
+  for (const combo of combos) {
+    assert.strictEqual(combo.lines.length, 16, `${combo.id} must have exactly 16 lines`);
+    assert.strictEqual(new Set(combo.lines).size, 16, `${combo.id} must not contain duplicate lines`);
+    for (const line of combo.lines) {
+      const text = line.replace(/^\[(情緒|文字)\]\s*/, "");
+      assert.ok(text.length <= 6, `${combo.id} line "${line}" should stay within the 6-char sticker-text guideline`);
+    }
+  }
+  for (const id of ["couple-flirty", "pet-parent", "binge-lazy", "broke-humor", "meme-comeback", "greeting-daily", "workplace-common", "couple-daily", "emotion-words", "emotion-fx"]) {
+    assert.ok(ids.includes(id), `new quick pack "${id}" must be present`);
+  }
+  const emotionCombo = combos.find((c) => c.id === "emotion-fx");
+  const emotionCards = extractConstArray(html, "EMOTION_CARDS", "\nconst EMOTION_MAP");
+  const emotionNames = new Set(emotionCards.map((c) => c.name));
+  for (const line of emotionCombo.lines) {
+    assert.match(line, /^\[情緒\] /, `emotion-fx line "${line}" must carry the [情緒] tag`);
+    const name = line.replace(/^\[情緒\]\s*/, "");
+    assert.ok(emotionNames.has(name), `emotion-fx references unknown emotion card "${name}"`);
+  }
+});
+
+test("random-fill and fill-to-slots respect the current creation mode", async () => {
+  const html = await readFile("index.html", "utf8");
+  assert.ok(html.includes("function getRandomFillPool()"), "shared mode-aware random pool helper must exist");
+
+  const poolStart = html.indexOf("function getRandomFillPool()");
+  const poolEnd = html.indexOf("\n}", poolStart);
+  const poolBody = html.slice(poolStart, poolEnd);
+  assert.match(poolBody, /EMOTION_CARDS/, "pool must branch to emotion cards");
+  assert.match(poolBody, /\[文字\]/, "pool must tag text-hero picks with [文字]");
+
+  for (const fn of ["randomCurrentCatScripts", "randomScript", "fillScriptToSlots"]) {
+    const start = html.indexOf(`function ${fn}(`);
+    assert.ok(start >= 0, `${fn} must exist`);
+    const end = html.indexOf("\n}", start);
+    const body = html.slice(start, end);
+    assert.ok(body.includes("getRandomFillPool()"), `${fn} must source items from getRandomFillPool(), not the raw text-only pool`);
+    assert.ok(!body.includes("getVisibleScriptItems()"), `${fn} must not bypass mode-awareness by calling getVisibleScriptItems() directly`);
+  }
+});
+
+test("quick-pack panel filters by creation mode", async () => {
+  const html = await readFile("index.html", "utf8");
+  assert.ok(html.includes("function comboCreationMode(combo)"), "combo mode detector must exist");
+  const start = html.indexOf("function renderScriptComboPanel()");
+  const end = html.indexOf("\n}", start);
+  const body = html.slice(start, end);
+  assert.ok(body.includes("comboCreationMode(combo) === state.creationMode"), "combo panel must only list packs matching the active creation mode");
+});
+
+test("text-hero panels are pure text with no character, and emotion panels trust the model on details", async () => {
+  const html = await readFile("index.html", "utf8");
+  const start = html.indexOf("mode === 'text'");
+  const end = html.indexOf("lines.push", start);
+  const body = html.slice(start, html.indexOf(";", end) + 1);
+  assert.match(body, /No character/, "text-hero per-panel instruction must exclude the character entirely");
+  const emoStart = html.indexOf("mode === 'emotion'");
+  const emoEnd = html.indexOf("lines.push", emoStart);
+  const emoBody = html.slice(emoStart, html.indexOf(";", emoEnd) + 1);
+  assert.match(emoBody, /Use your own judgment/, "emotion panel instruction should stay brief and trust the model for exact execution");
+});
+
+test("empty character-text fallback still describes a drawable character", async () => {
+  const html = await readFile("index.html", "utf8");
+  assert.ok(!html.includes("|| '（未填寫）'"), "empty character text must not fall back to a bare 'not filled in' placeholder");
+});
+
+test("status dots only list settings that actually have on-screen controls", async () => {
+  const html = await readFile("index.html", "utf8");
+  const match = html.match(/const dotLabels = (\[[^\]]*\]);/);
+  assert.ok(match, "dotLabels array must exist");
+  const labels = JSON.parse(match[1].replace(/'/g, '"'));
+  assert.deepStrictEqual(labels, ['角色描述', '貼圖數量', '比例風格', '字體', '背景', '腳本']);
+  for (const removed of ['服裝風格', '色系', '構圖', '美顏']) {
+    assert.ok(!labels.includes(removed), `"${removed}" has no on-screen control and must not be a status dot`);
+  }
+});
+
+test("generated prompt drops settings with no on-screen control (beauty filter, color palette)", async () => {
+  const html = await readFile("index.html", "utf8");
+  assert.ok(!html.includes("FACE BEAUTY FILTER"), "beauty filter section must not be generated — there is no UI toggle for it");
+  assert.ok(!html.includes("OUTFIT COLOR PALETTE"), "color palette section must not be generated — there is no UI color picker");
+  assert.ok(!html.includes("OUTFIT STYLE — Selected"), "the unreachable manual/detailed outfit-picker branch must not be generated");
 });

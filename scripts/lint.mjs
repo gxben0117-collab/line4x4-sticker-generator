@@ -11,14 +11,11 @@ const requiredSnippets = [
   CURRENT_VERSION,
   // Page identity
   "LINE 貼圖 4×4 咒語產生器",
-  // API config
-  "const ANTHROPIC_API_KEY",
-  "claude-sonnet-4-6",
   // Workspace
   "line4x4-sticker-workspace",
   // Simple production UI
   'id="char-section"',
-  'id="dropzone"',
+  'id="char-input"',
   'id="script-section"',
   'id="script-edit-area"',
   'id="script-editor-status"',
@@ -42,15 +39,12 @@ const requiredSnippets = [
   "const templateGroups = [",
   "const characterTemplates = [",
   "const scriptQuickCombos = [",
-  "daily-ink-doodle",
-  "ink-doodle-daily",
   "inkdoodle",
   "水墨手寫",
-  "REFERENCE STYLE LOCK — INK DOODLE DAILY STICKER EXAMPLE",
   // Output rules
   "Exact text",
   "Map the script line-by-line",
-  "DO NOT place text over the face",
+  "do not cover the face",
   // Hero UI elements
   "hero-particles",
   "hero-eyebrow",
