@@ -1,6 +1,6 @@
 {
   "name": "sticker-line4x4-prompt-generator",
-  "version": "2.8.0",
+  "version": "2.8.1",
   "private": true,
   "description": "LINE 4×4 sticker prompt generator — builds ChatGPT-ready prompts for LINE sticker sheet production.",
   "scripts": {

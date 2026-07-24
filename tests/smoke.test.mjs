@@ -143,11 +143,12 @@ test("V4: mode tag parsing is backward compatible and correctly tagged", async (
   assert.equal(stripModeTag("早安"), "早安", "stripModeTag must be a no-op on untagged lines");
 });
 
-test("V4: green chroma-key background is the new default", async () => {
+test("background options are white/AI only (green chroma-key removed)", async () => {
   const html = await readFile("index.html", "utf8");
-  assert.ok(html.includes("bgStyle: 'green'"), "bgStyle must default to green");
-  assert.ok(html.includes("green: `## BACKGROUND"), "bgData must define a green key entry");
-  assert.ok(html.includes('id="bg-green"'), "green background option must exist in the UI");
+  assert.ok(html.includes("bgStyle: 'white'"), "bgStyle must default to white");
+  assert.ok(!html.includes('id="bg-green"'), "green background option must not exist in the UI");
+  assert.ok(!html.includes("selectBg('green')"), "no control should be able to select the removed green option");
+  assert.ok(!html.includes("chroma-key green"), "chroma-key green background prompt text must be gone");
 });
 
 test("workflow shell and navigation helpers are present", async () => {
