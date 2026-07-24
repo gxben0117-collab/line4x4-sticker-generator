@@ -16,6 +16,23 @@
 
 ## 目前狀態與下一步
 
+- 2026-07-24（中午，修「純文字主體卻跑出角色」的矛盾 bug）：
+  使用者提供實測證據（`txt/` 資料夾裡的咒語 txt + 出圖 PNG）：16 句全部標 `[文字]`（純文字主體），
+  結果前 8 格正常（純文字），後 8 格卻跑出角色插圖，而且文字還跟原本要求的句子對不上（幻覺文字）。
+  根因：`combineAll()` 不管腳本內容是什麼，永遠無條件輸出整組角色相關段落——
+  `ABSOLUTE PRIORITY`/`IDENTITY LOCK`/`HAIR LOCK`（或 `CHARACTER DESCRIPTION`）、
+  `RENDER QUALITY`（Q版/寫實）、`CHARACTER PROPORTION`、`BODY STYLE`、`COSTUME LOCK`、
+  角色版的 `COMPOSITION LAYOUT`（例如「Character Left + Text Right」）——即使 16 格全部是
+  `[TEXT-ONLY]`（不該有任何角色）也一樣塞好塞滿，等於同一份咒語裡「角色相關指令」跟「這格不要
+  角色」互相矛盾，ChatGPT 生到後半格數時注意力被角色描述拉走，同時文字也開始幻覺跑掉。
+  修法：`combineAll()` 開頭新增 `allTextHero`（腳本裡是否 100% 都是 `[文字]` 標籤，一個角色都
+  沒有），是的話整個跳過角色/畫風/服裝/角色版構圖/角色邊框段落，`FONT STYLE`/`BACKGROUND` 之外
+  換成一組純文字排版專用的 `COMPOSITION LAYOUT — TEXT-ONLY`／`TEXT QUALITY RULES`／
+  `COMPOSITION & DYNAMIC RULES`／`NEGATIVE PROMPT`（明確寫「no character or person of any
+  kind in any panel」）。混合模式（部分格是文字、部分是角色）不受影響，角色段落照常保留給真正
+  需要角色的格子。
+  補了測試驗證 `combineAll()` 裡角色/畫風/服裝/邊框段落確實被 `!allTextHero` 條件包住，
+  build/lint/test 33 項全過。
 - 2026-07-24（上午，修「每格咒語重複」問題）：
   使用者實際貼出兩份 16 格咒語輸出，發現 `combineAll()` 的 `## STICKER SCRIPT` 段落每一格
   都重複同一大段固定句子（一般模式：「Use this phrase exactly as written...Make the text

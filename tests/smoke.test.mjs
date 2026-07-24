@@ -341,6 +341,28 @@ test("text-hero and emotion panels use short per-panel tags, with the mode expla
   assert.match(html, /\[EMOTION-FX\] panels[^`]*no text[^`]*use your own judgment/i, "EMOTION-FX explanation (stated once) must forbid text and defer details to the model");
 });
 
+test("a script made entirely of text-only panels skips every character/body/outfit prompt section", async () => {
+  const html = await readFile("index.html", "utf8");
+  const start = html.indexOf("function combineAll(");
+  let i = html.indexOf("{", start);
+  let depth = 0, end = i;
+  for (; end < html.length; end++) {
+    if (html[end] === "{") depth++;
+    else if (html[end] === "}") { depth--; if (depth === 0) { end++; break; } }
+  }
+  const body = html.slice(start, end);
+  assert.ok(body.includes("const allTextHero = allSelected.length > 0 && allSelected.every"), "combineAll must detect when every panel is text-only");
+  // Every character/body/outfit/border push must be gated so it cannot fire when allTextHero is true.
+  const gatedBlockStart = body.indexOf("if (allTextHero) {\n    // no-op");
+  const gatedBlockEnd = body.indexOf("if (!allTextHero) {");
+  assert.ok(gatedBlockStart >= 0, "character section must short-circuit to a no-op when allTextHero");
+  assert.ok(gatedBlockEnd > gatedBlockStart, "render quality / body / outfit section must be gated behind !allTextHero");
+  const bodyOutfitBlock = body.slice(gatedBlockEnd, body.indexOf("// font", gatedBlockEnd));
+  assert.ok(bodyOutfitBlock.includes("RENDER QUALITY") && bodyOutfitBlock.includes("COSTUME LOCK"), "render quality and costume lock must live inside the !allTextHero block");
+  assert.ok(body.includes("if (!allTextHero && state.borderStyle === 'outline')"), "border style (character-only concept) must also be gated behind !allTextHero");
+  assert.ok(body.includes("no character or person of any kind in any panel"), "text-only negative prompt must explicitly forbid any character");
+});
+
 test("empty character-text fallback still describes a drawable character", async () => {
   const html = await readFile("index.html", "utf8");
   assert.ok(!html.includes("|| '（未填寫）'"), "empty character text must not fall back to a bare 'not filled in' placeholder");

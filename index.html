@@ -3281,11 +3281,15 @@ function combineAll(skipAutoRender = false) {
   }
   const parts = [];
   const qtyMap = {16:'4×4 (16 panels)'};
+  const allSelected = [...state.scriptSelected, ...state.customItems];
+  const allTextHero = allSelected.length > 0 && allSelected.every(raw => parseModeTag(raw).mode === 'text');
 
-  parts.push(`## STICKER SHEET SIZE\n${qtyMap[state.qty]}\nEach panel: 370 × 320 px (max per LINE spec)\nFull sheet: 1480 × 1280 px total canvas\nCharacter occupies approximately 65–75% of each panel.\nOutput format: JPG. Background per the BACKGROUND section below — do not override it here.\n\n## PANEL SPACING & SEPARATION — CRITICAL\nEach panel is a fully independent composition with clear, consistent, EXTRA LARGE white gutters — no overlapping, no content touching panel borders. Prioritize separation over character size (smaller characters are fine); panel contamination is NEVER acceptable.\n\n## ANTI-CONTAMINATION — ABSOLUTE RULE\nNothing may cross panel boundaries — no crossing hair, hands, feet, accessories, shadows, glow effects, speech bubbles, text, or outlines. Each sticker stays entirely inside its own panel.\n\n## SAFE AREA\nNo cropped body parts, hair, accessories, feet, hands, ears, or outline. Character fully visible with large safe margins on all sides.`);
+  parts.push(`## STICKER SHEET SIZE\n${qtyMap[state.qty]}\nEach panel: 370 × 320 px (max per LINE spec)\nFull sheet: 1480 × 1280 px total canvas\n${allTextHero ? 'No character in this sheet — every panel is text-only.' : 'Character occupies approximately 65–75% of each panel.'}\nOutput format: JPG. Background per the BACKGROUND section below — do not override it here.\n\n## PANEL SPACING & SEPARATION — CRITICAL\nEach panel is a fully independent composition with clear, consistent, EXTRA LARGE white gutters — no overlapping, no content touching panel borders. Prioritize separation over character size (smaller characters are fine); panel contamination is NEVER acceptable.\n\n## ANTI-CONTAMINATION — ABSOLUTE RULE\nNothing may cross panel boundaries — no crossing hair, hands, feet, accessories, shadows, glow effects, speech bubbles, text, or outlines. Each sticker stays entirely inside its own panel.\n\n## SAFE AREA\nNo cropped body parts, hair, accessories, feet, hands, ears, or outline. Character fully visible with large safe margins on all sides.`);
 
-  // character
-  if (state.charTab === 'img') {
+  // character — skipped entirely when every panel is a text-only [文字] panel (no character anywhere in this sheet)
+  if (allTextHero) {
+    // no-op: pure typography sheet, character/body/outfit sections below are all skipped
+  } else if (state.charTab === 'img') {
     const note = document.getElementById('char-img-note')?.value.trim();
     const noteExtra = note ? `\n\nSupplementary feature notes from the user: ${note}` : '';
     parts.push(`## ABSOLUTE PRIORITY
@@ -3306,13 +3310,13 @@ Keep original hairstyle, hairline, hair color, hair volume, bangs, and hair silh
 All 16 stickers must show the same character — same face structure and facial features, same hairstyle and hair color, same costume and outfit, same accessories and color palette in every panel. Only expression, pose, and gesture may change between panels. DO NOT generate a different face, hairstyle, or costume in any panel; maintain recognizable identity throughout the entire sheet.`);
   }
 
-  // Quality base — always included
-  // 根據風格分流：Q版 or 寫實
+  // Quality base — 根據風格分流：Q版 or 寫實（純文字模式整段跳過，沒有角色可畫）
   const isReal = realStyleKeys.includes(state.bodyStyle) || ['manga6','korean75','real8'].includes(state.bodyRatio);
   const isInkDoodleStyle = state.bodyStyle === 'inkdoodle';
 
-  if (isReal) {
-    parts.push(`## RENDER QUALITY — REALISTIC / SEMI-REALISTIC BASE
+  if (!allTextHero) {
+    if (isReal) {
+      parts.push(`## RENDER QUALITY — REALISTIC / SEMI-REALISTIC BASE
 High quality semi-realistic or photorealistic rendering,
 refined facial features matching the selected proportion,
 beautiful Asian facial structure, elegant and attractive appearance,
@@ -3325,8 +3329,8 @@ follow the selected CHARACTER PROPORTION exactly,
 NOT cheap illustration style,
 full body visible with correct anatomy,
 elegant mature beauty aesthetic`);
-  } else {
-    parts.push(`## RENDER QUALITY — CHIBI / Q-VERSION BASE
+    } else {
+      parts.push(`## RENDER QUALITY — CHIBI / Q-VERSION BASE
 2.5D semi-realistic chibi face rendering,
 premium hybrid 3D chibi style,
 Pixar + high-end collectible doll aesthetic,
@@ -3350,10 +3354,10 @@ NOT flat cartoon,
 NOT cheap anime style,
 NOT low-detail mascot style,
 NOT toddler-like proportions`);
-  }
+    }
 
-  if (isInkDoodleStyle) {
-    parts.push(`## INK DOODLE STYLE LOCK
+    if (isInkDoodleStyle) {
+      parts.push(`## INK DOODLE STYLE LOCK
 Create one 4x4 LINE sticker illustration sheet in this style.
 Use Japanese hand-drawn illustration style with vivid character features, natural facial expressions, expressive eyes, and mouth shapes matching each daily phrase.
 Use cute dynamic half-body compositions: shoulders, hands, and upper body gestures must be visible and emotionally readable in every panel.
@@ -3361,37 +3365,41 @@ Art style: hand-drawn doodle style, ink splash brush strokes, loose sketch lines
 Add symbolic decorative elements around the character to enhance each mood: hearts, stars, sun, moon, sleepy marks, sweat drops, question marks, exclamation marks, motion lines, and small ink splashes.
 Text style: daily Traditional Chinese phrases, cute handwritten brush style, bold black ink with pastel ink-splash accents, readable and matched to the character pose.
 Keep the character dominant, high detail, high quality, refined hair, face, outfit folds, and expression in every sticker.`);
-  }
+    }
 
-  // body
-  parts.push(bodyRatioData[state.bodyRatio] || bodyRatioData.q25);
-  parts.push(bodyData[state.bodyStyle]);
+    // body
+    parts.push(bodyRatioData[state.bodyRatio] || bodyRatioData.q25);
+    parts.push(bodyData[state.bodyStyle]);
 
-  // outfit
-  if (state.outfitRef) {
-    parts.push(`## COSTUME LOCK — Reference Photo
+    // outfit
+    if (state.outfitRef) {
+      parts.push(`## COSTUME LOCK — Reference Photo
 Keep original costume, clothing style and colors, accessories, jewelry, color palette, and (if present in the photo) glasses or handbag. Base the outfit DIRECTLY on the photo attached in this conversation — faithfully reproduce its clothing style, colors, patterns, and accessories. DO NOT replace or substitute the outfit; you may enhance details for sticker quality, but the core garment design must match the reference.`);
-  } else {
-    parts.push(`## OUTFIT STYLE\nAI freely selects the most suitable outfit style for this character and sticker theme`);
+    } else {
+      parts.push(`## OUTFIT STYLE\nAI freely selects the most suitable outfit style for this character and sticker theme`);
+    }
   }
 
   // font
   parts.push(fontData[state.fontStyle]);
 
-  // layout
-  parts.push(layoutData[state.layoutStyle] + `\n\nPANEL SPACING REMINDER: text and character elements must NEVER overlap each other within a panel (unless Layout F is selected). Maintain clear visual separation.`);
+  // layout — pure-typography sheets skip the character/text split layouts entirely
+  if (allTextHero) {
+    parts.push(`## COMPOSITION LAYOUT — TEXT-ONLY\nNo character in any panel. Each panel is a standalone typography/poster composition — the phrase is free to be arranged with expressive scale, rotation, and layering as fits its meaning.\nMaintain consistent gutters and framing across all 16 panels so the sheet reads as one cohesive set.`);
+  } else {
+    parts.push(layoutData[state.layoutStyle] + `\n\nPANEL SPACING REMINDER: text and character elements must NEVER overlap each other within a panel (unless Layout F is selected). Maintain clear visual separation.`);
+  }
 
   // bg
   parts.push(bgData[state.bgStyle]);
 
   // border
-  if (state.borderStyle === 'outline') {
+  if (!allTextHero && state.borderStyle === 'outline') {
     parts.push(`## STICKER BORDER STYLE — OUTLINED\nEach character must have a clean white border outline around the entire figure.\nOutline width: 3-5px consistent stroke around the character silhouette.\nThis is the traditional LINE sticker outlined style.\nThe white border must be clearly visible against any background.\nDO NOT let the border break or become irregular around complex details like hair strands.`);
   }
 
   // script
   let usesTextHero = false, usesEmotion = false, usesSilent = false;
-  const allSelected = [...state.scriptSelected, ...state.customItems];
   if (allSelected.length > 0) {
     const lines = [`## STICKER SCRIPT (${allSelected.length} / ${state.qty} panels)`, ''];
     allSelected.forEach((raw, i) => {
@@ -3418,25 +3426,43 @@ Keep original costume, clothing style and colors, accessories, jewelry, color pa
     });
     lines.push('', '## SCRIPT RULES');
     lines.push('Map the script line-by-line: Panel 1 uses line 1, Panel 2 uses line 2, and so on. Use each phrase exactly as written — no merging, swapping, summarizing, translating, or adding extra text.');
-    lines.push('Every panel must have a DIFFERENT pose, expression, and gesture — the character\'s performance carries the emotion; text stays readable but never dominates.');
+    lines.push(allTextHero
+      ? 'Every panel must have a DIFFERENT typographic layout — vary scale, position, and composition; no character or person in any panel.'
+      : 'Every panel must have a DIFFERENT pose, expression, and gesture — the character\'s performance carries the emotion; text stays readable but never dominates.');
     lines.push('Text: Traditional Chinese only (繁體中文) — stroke-perfect, immediately readable. Each phrase stays inside its own panel, never spilling into another.');
-    if (usesTextHero) lines.push('[TEXT-ONLY] panels are exempt from the text/character balance rule below: pure typography, poster-style layout, NO character at all — use your own judgment for the exact design.');
+    if (usesTextHero && !allTextHero) lines.push('[TEXT-ONLY] panels are exempt from the text/character balance rule below: pure typography, poster-style layout, NO character at all — use your own judgment for the exact design.');
     if (usesEmotion) lines.push('[EMOTION-FX] panels: exaggerated manga/meme-style reaction — expression + matching background FX act out the named emotion, ABSOLUTELY no text — use your own judgment for the exact pose and effect.');
     if (usesSilent) lines.push('[NO-TEXT POSE] panels: pure visual expression/pose only, zero text.');
     parts.push(lines.join('\n'));
   }
 
   // Text quality + negative prompt — always included
-  parts.push(`${usesTextHero ? 'NOTE: The text/character balance rule below applies only to panels with a character — text-only panels are exempt.\n\n' : ''}## TEXT QUALITY RULES
+  if (allTextHero) {
+    parts.push(`## TEXT QUALITY RULES
+Text is the sole visual content of every panel — large, clearly readable, and composed as standalone typography/poster art with clear padding from borders.
+Traditional Chinese (繁體中文) ONLY — NOT Simplified Chinese (简体字). Every character must be correctly formed, stroke-perfect, and instantly readable by a native speaker — no invented, mutated, mirrored, or simplified-substitute glyphs (e.g. not 爱/来 instead of 愛/來).`);
+
+    parts.push(`## COMPOSITION & DYNAMIC RULES
+every panel MUST have a different layout, scale, and rhythm — NO repeated compositions, NO mirrored duplication, each panel feels alive and unique.
+AI may freely add graphic props matching the theme (icons, motifs, floating decorative elements) and subtle atmosphere matching each panel's mood.
+Ultra high resolution, sharp clean typography, consistent rendering quality across all panels. LINE sticker ready, commercial sticker quality, premium collectible appearance.`);
+
+    parts.push(`## NEGATIVE PROMPT — STRICTLY FORBIDDEN
+no blurry or low-resolution text, no incorrect/simplified/distorted/warped Chinese characters, no unreadable text
+no duplicated layouts across panels, no character or person of any kind in any panel
+no watermark, signature, or copyright logo
+no content bleeding across panels, no missing gutters between panels`);
+  } else {
+    parts.push(`${usesTextHero ? 'NOTE: The text/character balance rule below applies only to panels with a character — text-only panels are exempt.\n\n' : ''}## TEXT QUALITY RULES
 Text is medium-large and clearly readable, sharing the panel evenly with the character (~50/50 visual weight) — do not cover the face, eyes, mouth, hands, or main gesture; keep each panel's text inside its own panel with clear padding from borders.
 Traditional Chinese (繁體中文) ONLY — NOT Simplified Chinese (简体字). Every character must be correctly formed, stroke-perfect, and instantly readable by a native speaker — no invented, mutated, mirrored, or simplified-substitute glyphs (e.g. not 爱/来 instead of 愛/來).`);
 
-  parts.push(`## COMPOSITION & DYNAMIC RULES
+    parts.push(`## COMPOSITION & DYNAMIC RULES
 every panel MUST have a different pose, expression, gesture, and body movement — NO repeated poses/emotions, NO mirrored duplication, each panel feels alive and unique in timing and action.
 AI may freely add props matching the theme (cute accessories, thematic objects, floating decorative elements) and subtle atmosphere matching each panel's mood.
 Ultra high resolution, sharp clean outlines, no blurry character, no muddy textures, no unclear face details — character face stays sharp and distinct in every panel with consistent lighting and rendering quality. LINE sticker ready, commercial sticker quality, premium collectible appearance.`);
 
-  parts.push(`## NEGATIVE PROMPT — STRICTLY FORBIDDEN
+    parts.push(`## NEGATIVE PROMPT — STRICTLY FORBIDDEN
 no blurry or low-resolution face, no incorrect/simplified/distorted/warped Chinese characters, no unreadable text
 no duplicated poses across panels, no outfit changes or identity drift between panels
 no extra limbs, extra fingers, or distorted anatomy
@@ -3444,6 +3470,7 @@ ${isReal ? 'no chibi proportions or Q-version deformation, no flat cartoon style
 ${isInkDoodleStyle ? 'no full-body requirement for this ink doodle style, half-body framing is allowed and preferred' : 'no cropped character, no incomplete body, no floating body parts, no portrait/waist-up framing'}
 no watermark, signature, or copyright logo
 no content bleeding across panels, no missing gutters between panels`);
+  }
 
   const final = parts.join('\n\n');
   if (skipAutoRender) {
