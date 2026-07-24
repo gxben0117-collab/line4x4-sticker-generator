@@ -143,12 +143,15 @@ test("V4: mode tag parsing is backward compatible and correctly tagged", async (
   assert.equal(stripModeTag("早安"), "早安", "stripModeTag must be a no-op on untagged lines");
 });
 
-test("background options are white/AI only (green chroma-key removed)", async () => {
+test("chroma-key green is back as the recommended default background", async () => {
   const html = await readFile("index.html", "utf8");
-  assert.ok(html.includes("bgStyle: 'white'"), "bgStyle must default to white");
-  assert.ok(!html.includes('id="bg-green"'), "green background option must not exist in the UI");
-  assert.ok(!html.includes("selectBg('green')"), "no control should be able to select the removed green option");
-  assert.ok(!html.includes("chroma-key green"), "chroma-key green background prompt text must be gone");
+  assert.ok(html.includes("bgStyle: 'green'"), "bgStyle must default to green");
+  assert.ok(html.includes('id="bg-green"'), "green background option must exist in the UI");
+  assert.ok(html.includes("selectBg('green')"), "green option must be selectable");
+  assert.ok(html.includes("#00FF00"), "must use the standard pure chroma-key green, not an off-shade");
+  assert.ok(html.includes("no shadow") && html.includes("no floor or ground plane") && html.includes("safe margin"),
+    "green background prompt must cover the practices that actually affect keying success (no shadow/floor, safe margin)");
+  assert.ok(["green","white","ai"].every((k) => html.includes(`id="bg-${k}"`)), "all three background options must exist");
 });
 
 test("workflow shell and navigation helpers are present", async () => {
